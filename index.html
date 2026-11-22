@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>오늘의 습관 퀘스트</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  background: #EEF4FF;
+  color: #1E293B;
+  min-height: 100vh;
+  padding: 18px 14px 40px;
+}
+.app {
+  max-width: 540px;
+  margin: 0 auto;
+}
+.header {
+  background: linear-gradient(135deg, #1D4ED8, #2563EB);
+  color: #FFFFFF;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+  margin-bottom: 16px;
+}
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.date-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #FEF08A;
+}
+.progress-bar {
+  background: rgba(255, 255, 255, 0.25);
+  height: 14px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-fill {
+  background: linear-gradient(90deg, #FACC15, #F59E0B);
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+.clear-banner {
+  display: none;
+  background: #FEF9C3;
+  border: 2px solid #FACC15;
+  color: #854D0E;
+  border-radius: 16px;
+  padding: 14px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+.clear-banner.show { display: block; }
+.quest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.quest-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FFFFFF;
+  border: 2px solid #DBEAFE;
+  border-radius: 16px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.2s ease, border-color 0.2s ease;
+  user-select: none;
+}
+.quest-item:active { transform: scale(0.98); }
+.quest-item.done {
+  background: #FFFBEB;
+  border-color: #F59E0B;
+}
+.quest-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.check-box {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  border: 2.5px solid #93C5FD;
+  background: #F8FAFC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 900;
+  color: #FFFFFF;
+  flex-shrink: 0;
+}
+.quest-item.done .check-box {
+  background: #F59E0B;
+  border-color: #F59E0B;
+}
+.quest-emoji {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.quest-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1E293B;
+  word-break: keep-all;
+}
+.quest-item.done .quest-name {
+  color: #92400E;
+  text-decoration: line-through;
+}
+.quest-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.streak-badge {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 6px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.quest-item.done .streak-badge {
+  background: #FEF08A;
+  color: #92400E;
+}
+.del-btn {
+  display: none;
+  background: #FEE2E2;
+  color: #DC2626;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 9px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.edit-mode .del-btn { display: inline-block; }
+.footer-actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 8px;
+}
+.add-input {
+  flex: 1;
+  padding: 13px 14px;
+  border: 2px solid #BFDBFE;
+  border-radius: 14px;
+  font-size: 15px;
+  font-family: inherit;
+  background: #FFFFFF;
+  outline: none;
+}
+.add-input:focus { border-color: #2563EB; }
+.btn {
+  padding: 13px 16px;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-add {
+  background: #2563EB;
+  color: #FFFFFF;
+}
+.btn-edit {
+  margin-top: 12px;
+  width: 100%;
+  background: #E2E8F0;
+  color: #475569;
+  font-size: 14px;
+  padding: 10px;
+}
+.sticker-box {
+  margin-top: 16px;
+  background: #FFFFFF;
+  border: 2px solid #FDE68A;
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+.sticker-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #92400E;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+.sticker-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sticker-chip {
+  background: #FEF9C3;
+  border-radius: 12px;
+  padding: 6px 10px;
+  font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 52px;
+}
+.sticker-date {
+  font-size: 10px;
+  font-weight: 700;
+  color: #B45309;
+  margin-top: 2px;
+}
+.sticker-empty {
+  font-size: 13px;
+  color: #94A3B8;
+}
+.cheer-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%) translateY(20px);
+  background: #1D4ED8;
+  color: #FEF08A;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 12px 20px;
+  border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(29, 78, 216, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  white-space: nowrap;
+  z-index: 100;
+}
+.cheer-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.cal-box {
+  margin-top: 16px;
+  background: #FFFFFF;
+  border: 2px solid #DBEAFE;
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+.cal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.cal-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1D4ED8;
+}
+.cal-nav {
+  display: flex;
+  gap: 6px;
+}
+.cal-nav button {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: none;
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+}
+.cal-dow {
+  font-size: 11px;
+  font-weight: 800;
+  color: #64748B;
+  padding-bottom: 4px;
+}
+.cal-day {
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+  background: #F8FAFC;
+}
+.cal-day.empty { background: transparent; }
+.cal-day.partial { background: #DBEAFE; color: #1D4ED8; }
+.cal-day.full { background: #FEF08A; color: #92400E; }
+.cal-day.today { border: 2px solid #2563EB; }
+.cal-mark { font-size: 10px; line-height: 1; margin-top: 1px; }
+@media (min-width: 640px) {
+  body { padding: 28px 20px 50px; }
+  .quest-name { font-size: 19px; }
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="header">
+    <div class="header-top">
+      <div class="title">🎮 오늘의 습관 퀘스트</div>
+      <div class="date-badge" id="todayLabel"></div>
+    </div>
+    <div class="progress-info">
+      <span>미션 달성률</span>
+      <span id="progressText">0 / 0 완료</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <div class="clear-banner" id="clearBanner">🏆 와! 오늘의 모든 퀘스트를 클리어했어요! 🎉</div>
+
+  <div class="quest-list" id="questList"></div>
+
+  <div class="sticker-box">
+    <div class="sticker-title">
+      <span>⭐ 모은 스티커</span>
+      <span id="stickerCount">0개</span>
+    </div>
+    <div class="sticker-grid" id="stickerGrid"></div>
+  </div>
+
+  <div class="cal-box">
+    <div class="cal-head">
+      <span class="cal-title" id="calTitle">📅 달력</span>
+      <div class="cal-nav">
+        <button type="button" id="calPrev">◀</button>
+        <button type="button" id="calNext">▶</button>
+      </div>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+
+  <div class="footer-actions">
+    <input type="text" id="newHabitInput" class="add-input" placeholder="새 습관 추가하기 (예: 물 마시기)" maxlength="20">
+    <button class="btn btn-add" id="addBtn">추가</button>
+  </div>
+  <button class="btn btn-edit" id="editToggleBtn">습관 지우기 모드</button>
+</div>
+<div class="cheer-toast" id="cheerToast"></div>
+
+<script>
+const STORAGE_KEY = "habit_quest_v1";
+const DEFAULT_HABITS = [
+  { id: 1, emoji: "🪢", name: "줄넘기", dates: [] },
+  { id: 2, emoji: "📘", name: "리얼300", dates: [] },
+  { id: 3, emoji: "📐", name: "디딤돌", dates: [] },
+  { id: 4, emoji: "📖", name: "국어독해", dates: [] },
+  { id: 5, emoji: "🔢", name: "쎈수학", dates: [] },
+  { id: 6, emoji: "📚", name: "책읽기2권", dates: [] },
+  { id: 7, emoji: "🌙", name: "일찍자기", dates: [] }
+];
+
+function getDateStr(offset = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function getKoreanDate() {
+  const d = new Date();
+  const days = ["일", "월", "화", "수", "목", "금", "토"];
+  return `${d.getMonth() + 1}월 ${d.getDate()}일 (${days[d.getDay()]})`;
+}
+
+function loadHabits() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return DEFAULT_HABITS.map(h => ({ ...h, dates: [] }));
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : DEFAULT_HABITS;
+  } catch (e) {
+    return DEFAULT_HABITS.map(h => ({ ...h, dates: [] }));
+  }
+}
+
+function saveHabits() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(habits)); } catch (e) {}
+}
+
+function calcStreak(dates) {
+  const set = new Set(dates);
+  let streak = 0;
+  let offset = set.has(getDateStr(0)) ? 0 : -1;
+  while (set.has(getDateStr(offset))) {
+    streak++;
+    offset--;
+  }
+  return streak;
+}
+
+let habits = loadHabits();
+const STICKER_KEY = "habit_quest_stickers_v1";
+const STICKER_ICONS = ["⭐", "🏆", "👑", "🚀", "💎", "🌈", "🦖", "🦄", "🎖️", "🌟"];
+function loadStickers() {
+  try { return JSON.parse(localStorage.getItem(STICKER_KEY)) || {}; } catch (e) { return {}; }
+}
+function saveStickers() {
+  try { localStorage.setItem(STICKER_KEY, JSON.stringify(stickers)); } catch (e) {}
+}
+let stickers = loadStickers();
+const stickerCountEl = document.getElementById("stickerCount");
+const stickerGridEl = document.getElementById("stickerGrid");
+
+const CHEERS = ["최고야! 정말 잘했어! 👏", "멋지다! 한 걸음 더 성장했어! 🚀", "와우! 오늘도 해냈구나! ⭐", "대단해! 끝까지 파이팅! 💪", "짝짝짝! 너무 기특해! 🎉", "레벨 업! 퀘스트 성공! ⚔️"];
+const cheerToast = document.getElementById("cheerToast");
+let cheerTimer = null;
+function showCheer() {
+  cheerToast.textContent = CHEERS[Math.floor(Math.random() * CHEERS.length)];
+  cheerToast.classList.add("show");
+  clearTimeout(cheerTimer);
+  cheerTimer = setTimeout(() => cheerToast.classList.remove("show"), 1800);
+}
+
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+const calTitleEl = document.getElementById("calTitle");
+const calGridEl = document.getElementById("calGrid");
+document.getElementById("calPrev").addEventListener("click", () => {
+  calMonth--;
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+});
+document.getElementById("calNext").addEventListener("click", () => {
+  calMonth++;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  renderCalendar();
+});
+function renderCalendar() {
+  calTitleEl.textContent = `📅 ${calYear}년 ${calMonth + 1}월 기록`;
+  const dows = ["일", "월", "화", "수", "목", "금", "토"];
+  let out = dows.map(d => `<div class="cal-dow">${d}</div>`).join("");
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const lastDate = new Date(calYear, calMonth + 1, 0).getDate();
+  const todayStr = getDateStr(0);
+  const partialSet = new Set();
+  habits.forEach(h => h.dates.forEach(d => partialSet.add(d)));
+  for (let i = 0; i < firstDay; i++) out += '<div class="cal-day empty"></div>';
+  for (let d = 1; d <= lastDate; d++) {
+    const ds = `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    const isFull = Boolean(stickers[ds]);
+    const isPart = !isFull && partialSet.has(ds);
+    const cls = "cal-day" + (isFull ? " full" : isPart ? " partial" : "") + (ds === todayStr ? " today" : "");
+    const mark = isFull ? stickers[ds] : isPart ? "✓" : "";
+    out += `<div class="${cls}"><span>${d}</span>${mark ? `<span class="cal-mark">${mark}</span>` : ""}</div>`;
+  }
+  calGridEl.innerHTML = out;
+}
+
+let editMode = false;
+
+const appEl = document.getElementById("app");
+const listEl = document.getElementById("questList");
+const todayLabel = document.getElementById("todayLabel");
+const progressText = document.getElementById("progressText");
+const progressFill = document.getElementById("progressFill");
+const clearBanner = document.getElementById("clearBanner");
+const newHabitInput = document.getElementById("newHabitInput");
+const addBtn = document.getElementById("addBtn");
+const editToggleBtn = document.getElementById("editToggleBtn");
+
+function render() {
+  const today = getDateStr(0);
+  todayLabel.textContent = getKoreanDate();
+  listEl.innerHTML = "";
+
+  let doneCount = 0;
+  habits.forEach(h => {
+    const isDone = h.dates.includes(today);
+    if (isDone) doneCount++;
+    const streak = calcStreak(h.dates);
+
+    const item = document.createElement("div");
+    item.className = "quest-item" + (isDone ? " done" : "");
+    item.innerHTML = `
+      <div class="quest-left">
+        <div class="check-box">${isDone ? "✓" : ""}</div>
+        <div class="quest-emoji">${h.emoji}</div>
+        <div class="quest-name">${h.name}</div>
+      </div>
+      <div class="quest-right">
+        <div class="streak-badge">🔥 ${streak}일</div>
+        <button class="del-btn" type="button">삭제</button>
+      </div>
+    `;
+
+    item.addEventListener("click", (e) => {
+      if (e.target.classList.contains("del-btn")) {
+        if (confirm(`'${h.name}' 습관을 지울까요?`)) {
+          habits = habits.filter(x => x.id !== h.id);
+          saveHabits();
+          render();
+        }
+        return;
+      }
+      if (editMode) return;
+      if (isDone) {
+        h.dates = h.dates.filter(d => d !== today);
+      } else {
+        h.dates.push(today);
+        showCheer();
+      }
+      saveHabits();
+      render();
+    });
+
+    listEl.appendChild(item);
+  });
+
+  const total = habits.length;
+  const pct = total === 0 ? 0 : Math.round((doneCount / total) * 100);
+  progressText.textContent = `${doneCount} / ${total} 완료 (${pct}%)`;
+  progressFill.style.width = pct + "%";
+  clearBanner.classList.toggle("show", total > 0 && doneCount === total);
+  const allDone = total > 0 && doneCount === total;
+  if (allDone && !stickers[today]) {
+    const idx = Object.keys(stickers).length % STICKER_ICONS.length;
+    stickers[today] = STICKER_ICONS[idx];
+    saveStickers();
+  } else if (!allDone && stickers[today]) {
+    delete stickers[today];
+    saveStickers();
+  }
+  const entries = Object.entries(stickers).sort((a, b) => a[0].localeCompare(b[0]));
+  stickerCountEl.textContent = `${entries.length}개`;
+  stickerGridEl.innerHTML = entries.length === 0
+    ? '<div class="sticker-empty">오늘 미션을 모두 끝내면 첫 스티커가 붙어요!</div>'
+    : entries.map(([d, icon]) => `<div class="sticker-chip"><span>${icon}</span><span class="sticker-date">${d.slice(5)}</span></div>`).join("");
+
+  appEl.classList.toggle("edit-mode", editMode);
+  editToggleBtn.textContent = editMode ? "지우기 모드 끝내기" : "습관 지우기 모드";
+  renderCalendar();
+}
+
+addBtn.addEventListener("click", () => {
+  const name = newHabitInput.value.trim();
+  if (!name) return;
+  habits.push({ id: Date.now(), emoji: "⭐", name, dates: [] });
+  newHabitInput.value = "";
+  saveHabits();
+  render();
+});
+
+newHabitInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") addBtn.click();
+});
+
+editToggleBtn.addEventListener("click", () => {
+  editMode = !editMode;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
