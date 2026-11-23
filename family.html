@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#FFF9EC">
-<title>우리집 가족 대시보드</title>
+<title>우리집 포켓몬 가족 대시보드</title>
 <style>
   * {
     box-sizing: border-box;
@@ -30,6 +30,8 @@
     --green: #52B788;
     --green-soft: #E8F8F0;
     --coral: #FF7B7B;
+    --purple: #8B5CF6;
+    --purple-soft: #F3E8FF;
     --border: #F2E8D5;
     --shadow: 0 10px 24px rgba(45, 49, 66, 0.07);
   }
@@ -46,26 +48,26 @@
   /* 가로 화면 2단 대시보드 레이아웃 */
   .dashboard {
     display: grid;
-    grid-template-columns: 1.05fr 1fr;
-    gap: 24px;
+    grid-template-columns: 0.95fr 1.15fr;
+    gap: 20px;
     width: 100%;
     height: 100%;
-    padding: 24px 28px;
+    padding: 20px 24px;
   }
 
-  .left-col {
+  .left-col, .right-col {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 18px;
     min-height: 0;
   }
 
   .card {
     background: var(--card);
     border: 3px solid var(--border);
-    border-radius: 28px;
+    border-radius: 26px;
     box-shadow: var(--shadow);
-    padding: 24px 28px;
+    padding: 20px 24px;
   }
 
   /* 시계 & 날짜 카드 */
@@ -82,31 +84,31 @@
   }
 
   .date-text {
-    font-size: clamp(22px, 2.6vw, 34px);
+    font-size: clamp(20px, 2.3vw, 30px);
     font-weight: 800;
     color: #B4690E;
     background: #FFFFFF;
-    padding: 8px 22px;
+    padding: 7px 20px;
     border-radius: 999px;
     box-shadow: 0 4px 10px rgba(180, 105, 14, 0.08);
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
 
   .time-wrap {
     display: flex;
     align-items: baseline;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
   }
 
   .ampm {
-    font-size: clamp(24px, 2.8vw, 36px);
+    font-size: clamp(22px, 2.5vw, 32px);
     font-weight: 800;
     color: var(--blue);
   }
 
   .time-text {
-    font-size: clamp(68px, 9.2vw, 128px);
+    font-size: clamp(60px, 8.2vw, 114px);
     font-weight: 900;
     letter-spacing: -3px;
     line-height: 1;
@@ -116,8 +118,8 @@
 
   .status-bar {
     position: absolute;
-    bottom: 14px;
-    right: 20px;
+    bottom: 12px;
+    right: 16px;
     display: flex;
     gap: 8px;
     align-items: center;
@@ -125,7 +127,7 @@
 
   .pill-btn {
     border: none;
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.88);
     color: var(--muted);
     font-size: 13px;
     font-weight: 700;
@@ -145,7 +147,7 @@
     border-color: #C7E4FA;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
   }
 
   .weather-header {
@@ -155,13 +157,13 @@
   }
 
   .weather-loc {
-    font-size: clamp(20px, 2.1vw, 26px);
+    font-size: clamp(18px, 1.9vw, 24px);
     font-weight: 900;
     color: #1D6FA5;
   }
 
   .weather-updated {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: #5C8DB0;
   }
@@ -169,20 +171,20 @@
   .weather-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    gap: 12px;
   }
 
   .weather-box {
     background: rgba(255, 255, 255, 0.9);
-    border-radius: 22px;
-    padding: 16px 18px;
+    border-radius: 20px;
+    padding: 14px 16px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
   }
 
   .weather-day-label {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 800;
     color: #1D6FA5;
   }
@@ -190,34 +192,158 @@
   .weather-main {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   }
 
   .weather-emoji {
-    font-size: clamp(38px, 4.2vw, 52px);
+    font-size: clamp(34px, 3.8vw, 46px);
     line-height: 1;
   }
 
   .weather-temp-now {
-    font-size: clamp(28px, 3.2vw, 40px);
+    font-size: clamp(26px, 2.8vw, 36px);
     font-weight: 900;
     color: var(--ink);
   }
 
   .weather-desc {
-    font-size: clamp(16px, 1.6vw, 20px);
+    font-size: clamp(15px, 1.5vw, 18px);
     font-weight: 800;
     color: var(--ink);
   }
 
   .weather-sub {
-    font-size: clamp(14px, 1.4vw, 17px);
+    font-size: clamp(13px, 1.3vw, 15px);
     font-weight: 700;
     color: var(--muted);
   }
 
-  /* 오른쪽: 가족 할 일 목록 카드 */
+  /* 오른쪽 상단: 포켓몬 파트너 & 진화 카드 */
+  .poke-card {
+    background: linear-gradient(135deg, #FFF5F7 0%, #FFFBEB 100%);
+    border-color: #FDE68A;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+  }
+
+  .poke-avatar-wrap {
+    width: 84px;
+    height: 84px;
+    border-radius: 22px;
+    background: #FFFFFF;
+    border: 3px solid #FDE68A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.14);
+  }
+
+  .poke-avatar-wrap img {
+    width: 74px;
+    height: 74px;
+    object-fit: contain;
+    transition: transform 0.25s ease;
+  }
+
+  .poke-avatar-wrap:active img {
+    transform: scale(1.1);
+  }
+
+  .poke-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .poke-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .poke-name-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .poke-name {
+    font-size: clamp(20px, 2.1vw, 26px);
+    font-weight: 900;
+    color: #92400E;
+  }
+
+  .stage-badge {
+    background: #FEF08A;
+    color: #92400E;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+
+  .poke-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .mini-btn {
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 800;
+    font-family: inherit;
+    padding: 7px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .mini-btn-poke {
+    background: #FFEDD5;
+    color: #C2410C;
+  }
+
+  .mini-btn-cal {
+    background: #DBEAFE;
+    color: #1D4ED8;
+  }
+
+  .evo-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 800;
+    color: #B45309;
+  }
+
+  .evo-bar {
+    width: 100%;
+    height: 12px;
+    background: #FEF3C7;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .evo-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #F59E0B, #EF4444);
+    border-radius: 999px;
+    transition: width 0.35s ease;
+  }
+
+  /* 오른쪽 하단: 가족 할 일 목록 카드 */
   .todo-card {
+    flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
@@ -229,21 +355,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
 
   .todo-title {
-    font-size: clamp(24px, 2.5vw, 32px);
+    font-size: clamp(22px, 2.2vw, 28px);
     font-weight: 900;
     color: #217A53;
   }
 
   .todo-progress {
-    font-size: clamp(16px, 1.8vw, 22px);
+    font-size: clamp(15px, 1.6vw, 20px);
     font-weight: 800;
     background: var(--green-soft);
     color: #217A53;
-    padding: 6px 16px;
+    padding: 5px 14px;
     border-radius: 999px;
   }
 
@@ -252,7 +378,7 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     padding-right: 4px;
   }
 
@@ -260,9 +386,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
-    padding: 16px 18px;
-    border-radius: 20px;
+    gap: 12px;
+    padding: 13px 16px;
+    border-radius: 18px;
     background: #FAFBFD;
     border: 3px solid #E8EEF5;
     cursor: pointer;
@@ -281,20 +407,20 @@
   .todo-left {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     min-width: 0;
   }
 
   .checkbox {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
     border: 3px solid #B8C7D9;
     background: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 900;
     color: #FFFFFF;
     flex-shrink: 0;
@@ -306,7 +432,7 @@
   }
 
   .todo-text {
-    font-size: clamp(20px, 2.2vw, 28px);
+    font-size: clamp(18px, 2vw, 25px);
     font-weight: 800;
     color: var(--ink);
     word-break: keep-all;
@@ -321,10 +447,10 @@
     border: none;
     background: #FFE5E5;
     color: #D64545;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 800;
-    padding: 8px 12px;
-    border-radius: 12px;
+    padding: 7px 11px;
+    border-radius: 10px;
     cursor: pointer;
     flex-shrink: 0;
     display: none;
@@ -335,19 +461,19 @@
   }
 
   .todo-footer {
-    margin-top: 14px;
+    margin-top: 12px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
   }
 
   .todo-input {
     flex: 1;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     font-family: inherit;
-    padding: 12px 16px;
+    padding: 11px 14px;
     border: 3px solid #DCE7F2;
-    border-radius: 16px;
+    border-radius: 14px;
     outline: none;
   }
 
@@ -357,11 +483,11 @@
 
   .btn {
     border: none;
-    border-radius: 16px;
-    font-size: 18px;
+    border-radius: 14px;
+    font-size: 16px;
     font-weight: 800;
     font-family: inherit;
-    padding: 12px 18px;
+    padding: 11px 16px;
     cursor: pointer;
     white-space: nowrap;
   }
@@ -379,6 +505,255 @@
   .btn-edit.active {
     background: var(--coral);
     color: #FFFFFF;
+  }
+
+  /* 칭찬 격려 토스트 */
+  .cheer-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%) translateY(24px);
+    background: linear-gradient(135deg, #2563EB, #4F46E5);
+    color: #FEF08A;
+    font-size: clamp(18px, 2vw, 24px);
+    font-weight: 900;
+    padding: 14px 26px;
+    border-radius: 999px;
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    white-space: nowrap;
+    z-index: 2000;
+  }
+
+  .cheer-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* 공통 모달 (포켓몬 선택 / 스티커 달력 / 진화 축하) */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    padding: 20px;
+  }
+
+  .modal-backdrop.show {
+    display: flex;
+  }
+
+  .modal-box {
+    background: #FFFFFF;
+    border-radius: 28px;
+    border: 4px solid #FFE49E;
+    width: 100%;
+    max-width: 620px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px 26px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  }
+
+  .modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .modal-title {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--ink);
+  }
+
+  .modal-close {
+    border: none;
+    background: #F1F5F9;
+    color: #475569;
+    font-size: 18px;
+    font-weight: 900;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  /* 포켓몬 선택 그리드 */
+  .poke-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .poke-option {
+    background: #FFFDF7;
+    border: 3px solid #FDE68A;
+    border-radius: 20px;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .poke-option:active { transform: scale(0.97); }
+  .poke-option.selected {
+    background: #FEF3C7;
+    border-color: #F59E0B;
+  }
+
+  .poke-option img {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+  }
+
+  .poke-opt-name {
+    font-size: 17px;
+    font-weight: 900;
+    color: var(--ink);
+  }
+
+  .poke-opt-evo {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  /* 스티커 달력 */
+  .cal-nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .cal-month-label {
+    font-size: 20px;
+    font-weight: 900;
+    color: #1D4ED8;
+  }
+
+  .cal-nav-btns {
+    display: flex;
+    gap: 8px;
+  }
+
+  .cal-nav-btns button {
+    border: none;
+    background: #EFF6FF;
+    color: #1D4ED8;
+    font-size: 16px;
+    font-weight: 900;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    text-align: center;
+  }
+
+  .cal-dow {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--muted);
+    padding-bottom: 4px;
+  }
+
+  .cal-day {
+    height: 54px;
+    border-radius: 14px;
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    color: #334155;
+  }
+
+  .cal-day.empty { background: transparent; }
+  .cal-day.today { border: 3px solid #3B82F6; }
+  .cal-day.stamped {
+    background: #FEF08A;
+    color: #92400E;
+  }
+
+  .cal-sticker {
+    font-size: 20px;
+    line-height: 1.1;
+  }
+
+  .cal-summary {
+    margin-top: 14px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 800;
+    color: #92400E;
+    background: #FEF9C3;
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  /* 축하 / 진화 팝업 */
+  .celeb-box {
+    text-align: center;
+    max-width: 460px;
+  }
+
+  .celeb-img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    margin: 8px auto 12px;
+    animation: bounce 0.8s ease infinite alternate;
+  }
+
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-10px); }
+  }
+
+  .celeb-title {
+    font-size: 26px;
+    font-weight: 900;
+    color: #D97706;
+    margin-bottom: 8px;
+  }
+
+  .celeb-desc {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .celeb-btn {
+    border: none;
+    background: linear-gradient(135deg, #F59E0B, #EA580C);
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 900;
+    padding: 12px 32px;
+    border-radius: 999px;
+    cursor: pointer;
   }
 
   /* 밤 10시 ~ 아침 7시 야간 까만 화면 */
@@ -420,6 +795,7 @@
       height: auto;
       min-height: 100%;
     }
+    .poke-grid { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 </head>
@@ -467,21 +843,91 @@
     </section>
   </div>
 
-  <!-- 오른쪽: 가족 할 일 목록 -->
-  <section class="card todo-card" id="todoCard">
-    <div class="todo-header">
-      <div class="todo-title">🌈 오늘 우리집 할 일</div>
-      <div class="todo-progress" id="todoProgress">0 / 0</div>
-    </div>
+  <!-- 오른쪽: 포켓몬 파트너 + 가족 할 일 목록 -->
+  <div class="right-col">
+    <section class="card poke-card">
+      <div class="poke-avatar-wrap" id="pokeAvatarWrap" title="눌러서 포켓몬 바꾸기">
+        <img id="pokeImg" src="" alt="파트너 포켓몬">
+      </div>
+      <div class="poke-info">
+        <div class="poke-top-row">
+          <div class="poke-name-wrap">
+            <span class="poke-name" id="pokeName">피츄</span>
+            <span class="stage-badge" id="pokeStage">1단계</span>
+          </div>
+          <div class="poke-actions">
+            <button class="mini-btn mini-btn-poke" id="openPokeBtn" type="button">⚡ 포켓몬 바꾸기</button>
+            <button class="mini-btn mini-btn-cal" id="openCalBtn" type="button">📅 스티커 달력</button>
+          </div>
+        </div>
+        <div class="evo-meta">
+          <span id="stickerTotalText">⭐ 모은 스티커: 0개</span>
+          <span id="nextEvoText">다음 진화까지 3개!</span>
+        </div>
+        <div class="evo-bar">
+          <div class="evo-fill" id="evoFill"></div>
+        </div>
+      </div>
+    </section>
 
-    <div class="todo-list" id="todoList"></div>
+    <section class="card todo-card" id="todoCard">
+      <div class="todo-header">
+        <div class="todo-title">🌈 오늘 우리집 미션</div>
+        <div class="todo-progress" id="todoProgress">0 / 0</div>
+      </div>
 
-    <div class="todo-footer">
-      <input type="text" class="todo-input" id="todoInput" placeholder="새 할 일 적기 (예: 물 마시기)" maxlength="25">
-      <button class="btn btn-add" id="addBtn" type="button">추가</button>
-      <button class="btn btn-edit" id="editBtn" type="button">삭제</button>
+      <div class="todo-list" id="todoList"></div>
+
+      <div class="todo-footer">
+        <input type="text" class="todo-input" id="todoInput" placeholder="새 미션 적기 (예: 물 마시기)" maxlength="25">
+        <button class="btn btn-add" id="addBtn" type="button">추가</button>
+        <button class="btn btn-edit" id="editBtn" type="button">삭제</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- 칭찬 토스트 -->
+<div class="cheer-toast" id="cheerToast"></div>
+
+<!-- 포켓몬 선택 모달 -->
+<div class="modal-backdrop" id="pokeModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">⚡ 함께할 포켓몬을 골라요!</div>
+      <button class="modal-close" id="closePokeModal" type="button">✕</button>
     </div>
-  </section>
+    <div class="poke-grid" id="pokeGrid"></div>
+  </div>
+</div>
+
+<!-- 스티커 달력 모달 -->
+<div class="modal-backdrop" id="calModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">📅 우리집 미션 스티커 달력</div>
+      <button class="modal-close" id="closeCalModal" type="button">✕</button>
+    </div>
+    <div class="cal-nav-row">
+      <div class="cal-month-label" id="calMonthLabel">2026년 11월</div>
+      <div class="cal-nav-btns">
+        <button type="button" id="calPrev">◀</button>
+        <button type="button" id="calNext">▶</button>
+      </div>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-summary" id="calSummary">오늘 미션을 모두 끝내면 달력에 스티커가 붙어요!</div>
+  </div>
+</div>
+
+<!-- 미션 올클리어 / 진화 축하 모달 -->
+<div class="modal-backdrop" id="celebModal">
+  <div class="modal-box celeb-box">
+    <img class="celeb-img" id="celebImg" src="" alt="축하 포켓몬">
+    <div class="celeb-title" id="celebTitle">🎉 오늘 미션 모두 완료!</div>
+    <div class="celeb-desc" id="celebDesc">달력에 반짝이는 스티커가 붙었어요!</div>
+    <button class="celeb-btn" id="closeCelebModal" type="button">야호! 신난다!</button>
+  </div>
 </div>
 
 <!-- 밤 10시 ~ 아침 7시 야간 화면 -->
@@ -501,6 +947,61 @@
   const NIGHT_START_HOUR = 22;
   const NIGHT_END_HOUR = 7;
 
+  // 진화 기준 스티커 수 (3개: 2단계 진화 / 7개: 3단계 최종 진화)
+  const EVO_STAGE2_NEED = 3;
+  const EVO_STAGE3_NEED = 7;
+
+  const POKEMON_LINES = [
+    {
+      key: "pichu",
+      stages: [
+        { id: 172, name: "피츄" },
+        { id: 25,  name: "피카츄" },
+        { id: 26,  name: "라이츄" }
+      ]
+    },
+    {
+      key: "charmander",
+      stages: [
+        { id: 4, name: "파이리" },
+        { id: 5, name: "리자드" },
+        { id: 6, name: "리자몽" }
+      ]
+    },
+    {
+      key: "squirtle",
+      stages: [
+        { id: 7, name: "꼬부기" },
+        { id: 8, name: "어니부기" },
+        { id: 9, name: "거북왕" }
+      ]
+    },
+    {
+      key: "bulbasaur",
+      stages: [
+        { id: 1, name: "이상해씨" },
+        { id: 2, name: "이상해풀" },
+        { id: 3, name: "이상해꽃" }
+      ]
+    },
+    {
+      key: "sprigatito",
+      stages: [
+        { id: 906, name: "냐오하" },
+        { id: 907, name: "나로테" },
+        { id: 908, name: "마스카나" }
+      ]
+    },
+    {
+      key: "fuecoco",
+      stages: [
+        { id: 909, name: "뜨아거" },
+        { id: 910, name: "악뜨거" },
+        { id: 911, name: "라우드본" }
+      ]
+    }
+  ];
+
   const DEFAULT_TODOS = [
     { id: 1, text: "🪥 아침·저녁 양치하기", done: false },
     { id: 2, text: "📚 책 2권 읽기", done: false },
@@ -508,10 +1009,27 @@
     { id: 4, text: "🎒 내일 준비물 챙기기", done: false },
     { id: 5, text: "🌙 밤 9시 30분 잠자리 들기", done: false }
   ];
+
+  const CHEER_MESSAGES = [
+    "최고야! 정말 잘했어! 👏",
+    "우와! 한 걸음 더 성장했어! 🚀",
+    "너무 멋져! 포켓몬도 기뻐해! ⭐",
+    "대단해! 끝까지 파이팅! 💪",
+    "짝짝짝! 스스로 해내다니 기특해! 🎉",
+    "레벨 업! 오늘의 히어로야! ⚡"
+  ];
+
+  const STICKER_ICONS = ["⭐", "🏆", "👑", "⚡", "🌈", "💎", "🎖️", "🌟", "🔥", "🍀"];
   /* ============================================ */
 
-  const STORAGE_TODOS_KEY = "family_dash_todos_v1";
-  const STORAGE_DATE_KEY = "family_dash_date_v1";
+  const STORAGE_TODOS_KEY = "family_dash_todos_v2";
+  const STORAGE_DATE_KEY = "family_dash_date_v2";
+  const STORAGE_STICKERS_KEY = "family_dash_stickers_v2";
+  const STORAGE_POKE_KEY = "family_dash_poke_v2";
+
+  function getPokeImgUrl(id) {
+    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+  }
 
   function getTodayKey() {
     const d = new Date();
@@ -521,6 +1039,7 @@
     return `${y}-${m}-${day}`;
   }
 
+  /* 1. 시계 & 날짜 & 야간 모드 */
   const dateText = document.getElementById("dateText");
   const ampmText = document.getElementById("ampmText");
   const timeText = document.getElementById("timeText");
@@ -532,11 +1051,7 @@
   function updateClockAndNight() {
     const now = new Date();
     const days = ["일", "월", "화", "수", "목", "금", "토"];
-    const y = now.getFullYear();
-    const m = now.getMonth() + 1;
-    const d = now.getDate();
-    const dow = days[now.getDay()];
-    dateText.textContent = `${y}년 ${m}월 ${d}일 (${dow})`;
+    dateText.textContent = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 (${days[now.getDay()]})`;
 
     const h24 = now.getHours();
     const min = String(now.getMinutes()).padStart(2, "0");
@@ -559,6 +1074,7 @@
     nightOverlay.classList.remove("show");
   });
 
+  /* 2. Open-Meteo 날씨 */
   const WMO_MAP = {
     0: ["☀️", "맑음"],
     1: ["🌤️", "대체로 맑음"],
@@ -623,6 +1139,187 @@
     }
   }
 
+  /* 3. 포켓몬 & 스티커 & 칭찬 시스템 */
+  let stickers = {};
+  let selectedPokeKey = "pichu";
+
+  function loadMeta() {
+    try {
+      stickers = JSON.parse(localStorage.getItem(STORAGE_STICKERS_KEY)) || {};
+    } catch (e) { stickers = {}; }
+    try {
+      const savedPoke = localStorage.getItem(STORAGE_POKE_KEY);
+      if (savedPoke && POKEMON_LINES.some(p => p.key === savedPoke)) {
+        selectedPokeKey = savedPoke;
+      }
+    } catch (e) {}
+  }
+
+  function saveStickers() {
+    try { localStorage.setItem(STORAGE_STICKERS_KEY, JSON.stringify(stickers)); } catch (e) {}
+  }
+
+  function savePokeKey() {
+    try { localStorage.setItem(STORAGE_POKE_KEY, selectedPokeKey); } catch (e) {}
+  }
+
+  function getStageIndex(count) {
+    if (count >= EVO_STAGE3_NEED) return 2;
+    if (count >= EVO_STAGE2_NEED) return 1;
+    return 0;
+  }
+
+  function getCurrentPokeInfo() {
+    const line = POKEMON_LINES.find(p => p.key === selectedPokeKey) || POKEMON_LINES[0];
+    const count = Object.keys(stickers).length;
+    const stageIdx = getStageIndex(count);
+    return { line, stageIdx, poke: line.stages[stageIdx], count };
+  }
+
+  const pokeImg = document.getElementById("pokeImg");
+  const pokeName = document.getElementById("pokeName");
+  const pokeStage = document.getElementById("pokeStage");
+  const stickerTotalText = document.getElementById("stickerTotalText");
+  const nextEvoText = document.getElementById("nextEvoText");
+  const evoFill = document.getElementById("evoFill");
+
+  function renderPokemon() {
+    const { line, stageIdx, poke, count } = getCurrentPokeInfo();
+    pokeImg.src = getPokeImgUrl(poke.id);
+    pokeImg.alt = poke.name;
+    pokeName.textContent = poke.name;
+    pokeStage.textContent = `${stageIdx + 1}단계`;
+    stickerTotalText.textContent = `⭐ 모은 스티커: ${count}개`;
+
+    if (stageIdx === 0) {
+      const remain = EVO_STAGE2_NEED - count;
+      nextEvoText.textContent = `${line.stages[1].name} 진화까지 ${remain}개!`;
+      evoFill.style.width = `${Math.min(100, (count / EVO_STAGE2_NEED) * 100)}%`;
+    } else if (stageIdx === 1) {
+      const remain = EVO_STAGE3_NEED - count;
+      nextEvoText.textContent = `${line.stages[2].name} 진화까지 ${remain}개!`;
+      evoFill.style.width = `${Math.min(100, ((count - EVO_STAGE2_NEED) / (EVO_STAGE3_NEED - EVO_STAGE2_NEED)) * 100)}%`;
+    } else {
+      nextEvoText.textContent = "👑 최종 진화 완료! 최고예요!";
+      evoFill.style.width = "100%";
+    }
+  }
+
+  const cheerToast = document.getElementById("cheerToast");
+  let cheerTimer = null;
+  function showCheer(customText) {
+    cheerToast.textContent = customText || CHEER_MESSAGES[Math.floor(Math.random() * CHEER_MESSAGES.length)];
+    cheerToast.classList.add("show");
+    clearTimeout(cheerTimer);
+    cheerTimer = setTimeout(() => cheerToast.classList.remove("show"), 2200);
+  }
+
+  /* 축하 / 진화 모달 */
+  const celebModal = document.getElementById("celebModal");
+  const celebImg = document.getElementById("celebImg");
+  const celebTitle = document.getElementById("celebTitle");
+  const celebDesc = document.getElementById("celebDesc");
+  document.getElementById("closeCelebModal").addEventListener("click", () => {
+    celebModal.classList.remove("show");
+  });
+
+  function showCelebration(evolved, stickerIcon) {
+    const { poke } = getCurrentPokeInfo();
+    celebImg.src = getPokeImgUrl(poke.id);
+    if (evolved) {
+      celebTitle.textContent = `✨ 우와! ${poke.name}(으)로 진화했어요!`;
+      celebDesc.textContent = `매일 꾸준히 미션을 해내서 포켓몬이 멋지게 자랐어요!
+달력에 ${stickerIcon} 스티커도 꾹 붙었어요!`;
+    } else {
+      celebTitle.textContent = `🎉 오늘 미션 모두 완료!`;
+      celebDesc.textContent = `${poke.name}도 박수 치고 있어요!
+달력에 반짝이는 ${stickerIcon} 스티커가 붙었어요!`;
+    }
+    celebModal.classList.add("show");
+  }
+
+  /* 포켓몬 선택 모달 */
+  const pokeModal = document.getElementById("pokeModal");
+  const pokeGrid = document.getElementById("pokeGrid");
+  document.getElementById("openPokeBtn").addEventListener("click", openPokeModal);
+  document.getElementById("pokeAvatarWrap").addEventListener("click", openPokeModal);
+  document.getElementById("closePokeModal").addEventListener("click", () => pokeModal.classList.remove("show"));
+  pokeModal.addEventListener("click", (e) => { if (e.target === pokeModal) pokeModal.classList.remove("show"); });
+
+  function openPokeModal() {
+    const count = Object.keys(stickers).length;
+    const stageIdx = getStageIndex(count);
+    pokeGrid.innerHTML = "";
+    POKEMON_LINES.forEach(line => {
+      const current = line.stages[stageIdx];
+      const div = document.createElement("div");
+      div.className = "poke-option" + (line.key === selectedPokeKey ? " selected" : "");
+      div.innerHTML = `
+        <img src="${getPokeImgUrl(current.id)}" alt="${current.name}">
+        <div class="poke-opt-name">${current.name}</div>
+        <div class="poke-opt-evo">${line.stages.map(s => s.name).join(" → ")}</div>
+      `;
+      div.addEventListener("click", () => {
+        selectedPokeKey = line.key;
+        savePokeKey();
+        renderPokemon();
+        pokeModal.classList.remove("show");
+        showCheer(`⚡ ${current.name}(와)과 함께 출발!`);
+      });
+      pokeGrid.appendChild(div);
+    });
+    pokeModal.classList.add("show");
+  }
+
+  /* 스티커 달력 모달 */
+  const calModal = document.getElementById("calModal");
+  const calMonthLabel = document.getElementById("calMonthLabel");
+  const calGrid = document.getElementById("calGrid");
+  const calSummary = document.getElementById("calSummary");
+  let calYear = new Date().getFullYear();
+  let calMonth = new Date().getMonth();
+
+  document.getElementById("openCalBtn").addEventListener("click", () => {
+    calYear = new Date().getFullYear();
+    calMonth = new Date().getMonth();
+    renderCalendar();
+    calModal.classList.add("show");
+  });
+  document.getElementById("closeCalModal").addEventListener("click", () => calModal.classList.remove("show"));
+  calModal.addEventListener("click", (e) => { if (e.target === calModal) calModal.classList.remove("show"); });
+  document.getElementById("calPrev").addEventListener("click", () => {
+    calMonth--;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    renderCalendar();
+  });
+  document.getElementById("calNext").addEventListener("click", () => {
+    calMonth++;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    renderCalendar();
+  });
+
+  function renderCalendar() {
+    calMonthLabel.textContent = `${calYear}년 ${calMonth + 1}월`;
+    const dows = ["일", "월", "화", "수", "목", "금", "토"];
+    let html = dows.map(d => `<div class="cal-dow">${d}</div>`).join("");
+    const firstDay = new Date(calYear, calMonth, 1).getDay();
+    const lastDate = new Date(calYear, calMonth + 1, 0).getDate();
+    const todayKey = getTodayKey();
+    let monthCount = 0;
+
+    for (let i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
+    for (let d = 1; d <= lastDate; d++) {
+      const ds = `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+      const icon = stickers[ds];
+      if (icon) monthCount++;
+      const cls = "cal-day" + (icon ? " stamped" : "") + (ds === todayKey ? " today" : "");
+      html += `<div class="${cls}"><span>${d}</span>${icon ? `<span class="cal-sticker">${icon}</span>` : ""}</div>`;
+    }
+    calGrid.innerHTML = html;
+    calSummary.textContent = `이번 달 스티커 ${monthCount}개 · 전체 모은 스티커 ${Object.keys(stickers).length}개!`;
+  }
+
+  /* 4. 가족 할 일 목록 (로컬 저장 + 다음 날 자동 초기화 + 스티커 지급) */
   let todos = [];
   let editMode = false;
 
@@ -662,6 +1359,26 @@
     }
   }
 
+  function handleStickerCheck() {
+    const today = getTodayKey();
+    const allDone = todos.length > 0 && todos.every(t => t.done);
+    const prevCount = Object.keys(stickers).length;
+    const prevStage = getStageIndex(prevCount);
+
+    if (allDone && !stickers[today]) {
+      const icon = STICKER_ICONS[prevCount % STICKER_ICONS.length];
+      stickers[today] = icon;
+      saveStickers();
+      const newStage = getStageIndex(Object.keys(stickers).length);
+      renderPokemon();
+      showCelebration(newStage > prevStage, icon);
+    } else if (!allDone && stickers[today]) {
+      delete stickers[today];
+      saveStickers();
+      renderPokemon();
+    }
+  }
+
   function renderTodos() {
     todoListEl.innerHTML = "";
     let doneCount = 0;
@@ -683,12 +1400,15 @@
           todos = todos.filter(t => t.id !== item.id);
           saveTodos();
           renderTodos();
+          handleStickerCheck();
           return;
         }
         if (editMode) return;
         item.done = !item.done;
         saveTodos();
+        if (item.done) showCheer();
         renderTodos();
+        handleStickerCheck();
       });
 
       todoListEl.appendChild(row);
@@ -707,6 +1427,7 @@
     todoInput.value = "";
     saveTodos();
     renderTodos();
+    handleStickerCheck();
   });
 
   todoInput.addEventListener("keydown", (e) => {
@@ -718,6 +1439,7 @@
     renderTodos();
   });
 
+  /* 5. 화면 꺼짐 방지 (Wake Lock) */
   let wakeLock = null;
   const wakeBtn = document.getElementById("wakeBtn");
 
@@ -745,7 +1467,10 @@
     if (document.visibilityState === "visible") requestWakeLock();
   });
 
+  /* 초기화 */
+  loadMeta();
   loadTodos();
+  renderPokemon();
   renderTodos();
   updateClockAndNight();
   fetchWeather();
