@@ -50,7 +50,7 @@
   /* 가로 태블릿 3단 레이아웃: 왼쪽(시계·날씨·달력) / 가운데(6세 여아) / 오른쪽(8세 남아) */
   .dashboard {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1.04fr 0.98fr 0.98fr;
     gap: 16px;
     width: 100%;
     height: 100%;
@@ -243,12 +243,32 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 6px;
   }
 
   .cal-title {
     font-size: 16px;
     font-weight: 900;
     color: #1D4ED8;
+  }
+
+  .cal-head-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .notice-btn {
+    border: none;
+    background: linear-gradient(135deg, #F59E0B, #EA580C);
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 900;
+    padding: 5px 10px;
+    border-radius: 9px;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
   }
 
   .cal-nav {
@@ -329,6 +349,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 6px;
   }
 
   .schedule-date-label {
@@ -346,6 +367,7 @@
     padding: 4px 10px;
     border-radius: 8px;
     cursor: pointer;
+    white-space: nowrap;
   }
 
   .schedule-list {
@@ -386,6 +408,18 @@
     word-break: keep-all;
   }
 
+  .kid-tag {
+    font-size: 10px;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+
+  .kid-tag.boy { background: #E0F2FE; color: #0369A1; }
+  .kid-tag.girl { background: #FCE7F3; color: #BE185D; }
+  .kid-tag.family { background: #FEF3C7; color: #B45309; }
+
   .schedule-del {
     border: none;
     background: #FEE2E2;
@@ -395,6 +429,7 @@
     padding: 3px 7px;
     border-radius: 6px;
     cursor: pointer;
+    flex-shrink: 0;
   }
 
   .schedule-empty {
@@ -639,6 +674,7 @@
     border: 2.5px solid #DCE7F2;
     border-radius: 12px;
     outline: none;
+    user-select: text;
   }
 
   .btn {
@@ -703,8 +739,8 @@
     border-radius: 26px;
     border: 4px solid #FFE49E;
     width: 100%;
-    max-width: 560px;
-    max-height: 90vh;
+    max-width: 580px;
+    max-height: 92vh;
     overflow-y: auto;
     padding: 22px 24px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
@@ -753,28 +789,129 @@
   .poke-opt-name { font-size: 16px; font-weight: 900; }
   .poke-opt-evo { font-size: 11px; font-weight: 700; color: var(--muted); text-align: center; }
 
-  /* 설정/스케줄 입력 폼 */
+  /* 설정/스케줄/알림장 입력 폼 */
   .form-row {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 14px;
+    gap: 7px;
+    margin-bottom: 12px;
   }
 
   .form-row label {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 800;
     color: var(--ink);
   }
 
-  .form-input {
-    font-size: 17px;
+  .form-input, .form-textarea {
+    font-size: 16px;
     font-weight: 700;
     font-family: inherit;
-    padding: 11px 14px;
+    padding: 10px 13px;
     border: 2.5px solid #CBD5E1;
     border-radius: 14px;
     outline: none;
+    user-select: text;
+  }
+
+  .form-textarea {
+    min-height: 115px;
+    resize: vertical;
+    line-height: 1.5;
+  }
+
+  .form-input:focus, .form-textarea:focus {
+    border-color: var(--blue);
+  }
+
+  .class-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .class-btn {
+    border: 2.5px solid #E2E8F0;
+    background: #F8FAFC;
+    border-radius: 14px;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .class-btn.active-boy {
+    background: #E0F2FE;
+    border-color: #0284C7;
+    color: #0369A1;
+  }
+
+  .class-btn.active-girl {
+    background: #FCE7F3;
+    border-color: #EC4899;
+    color: #BE185D;
+  }
+
+  .check-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .check-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .check-label input {
+    width: 18px;
+    height: 18px;
+    accent-color: #2563EB;
+  }
+
+  .preview-box {
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 14px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    max-height: 140px;
+    overflow-y: auto;
+  }
+
+  .preview-title {
+    font-size: 12px;
+    font-weight: 900;
+    color: #475569;
+    margin-bottom: 6px;
+  }
+
+  .preview-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 4px 0;
+    border-bottom: 1px dashed #E2E8F0;
+  }
+
+  .preview-item:last-child { border-bottom: none; }
+  .preview-date {
+    font-size: 11px;
+    font-weight: 900;
+    background: #DBEAFE;
+    color: #1D4ED8;
+    padding: 2px 6px;
+    border-radius: 6px;
+    flex-shrink: 0;
   }
 
   .form-submit {
@@ -782,11 +919,15 @@
     border: none;
     background: #2563EB;
     color: #FFFFFF;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 900;
     padding: 12px;
     border-radius: 14px;
     cursor: pointer;
+  }
+
+  .form-submit.orange {
+    background: linear-gradient(135deg, #F59E0B, #EA580C);
   }
 
   /* 축하 / 진화 모달 */
@@ -890,9 +1031,12 @@
     <section class="card cal-card">
       <div class="cal-head">
         <span class="cal-title" id="calTitle">📅 2026년 11월</span>
-        <div class="cal-nav">
-          <button type="button" id="calPrev">◀</button>
-          <button type="button" id="calNext">▶</button>
+        <div class="cal-head-right">
+          <button type="button" class="notice-btn" id="openNoticeModalBtn">📋 알림장 붙여넣기</button>
+          <div class="cal-nav">
+            <button type="button" id="calPrev">◀</button>
+            <button type="button" id="calNext">▶</button>
+          </div>
         </div>
       </div>
       <div class="cal-grid" id="calGrid"></div>
@@ -906,7 +1050,7 @@
     </section>
   </div>
 
-  <!-- 가운데 열: 6세 여아 -->
+  <!-- 가운데 열: 6세 여아 (2학년 1반 연동) -->
   <section class="kid-col girl" id="girlCard">
     <div class="kid-header">
       <div class="poke-avatar" id="girlAvatar">
@@ -931,13 +1075,13 @@
     </div>
     <div class="todo-list" id="girlTodoList"></div>
     <div class="todo-footer">
-      <input type="text" class="todo-input" id="girlInput" placeholder="새 미션 추가" maxlength="22">
+      <input type="text" class="todo-input" id="girlInput" placeholder="새 미션 추가" maxlength="25">
       <button type="button" class="btn btn-add" id="girlAddBtn">추가</button>
       <button type="button" class="btn btn-edit" id="girlEditBtn">삭제</button>
     </div>
   </section>
 
-  <!-- 오른쪽 열: 8세 남아 -->
+  <!-- 오른쪽 열: 8세 남아 (1학년 2반 연동) -->
   <section class="kid-col boy" id="boyCard">
     <div class="kid-header">
       <div class="poke-avatar" id="boyAvatar">
@@ -962,7 +1106,7 @@
     </div>
     <div class="todo-list" id="boyTodoList"></div>
     <div class="todo-footer">
-      <input type="text" class="todo-input" id="boyInput" placeholder="새 미션 추가" maxlength="22">
+      <input type="text" class="todo-input" id="boyInput" placeholder="새 미션 추가" maxlength="25">
       <button type="button" class="btn btn-add" id="boyAddBtn">추가</button>
       <button type="button" class="btn btn-edit" id="boyEditBtn">삭제</button>
     </div>
@@ -1006,10 +1150,58 @@
       <button class="modal-close" id="closeSchedModal" type="button">✕</button>
     </div>
     <div class="form-row">
+      <label>대상</label>
+      <div class="class-toggle" style="grid-template-columns: 1fr 1fr 1fr;">
+        <button type="button" class="class-btn active-boy" id="schedTagFamily">🏠 가족</button>
+        <button type="button" class="class-btn" id="schedTagGirl">👧 6세 여아</button>
+        <button type="button" class="class-btn" id="schedTagBoy">👦 8세 남아</button>
+      </div>
+    </div>
+    <div class="form-row">
       <label for="schedInput">스케줄 또는 해야 할 일</label>
-      <input type="text" id="schedInput" class="form-input" placeholder="예: 16:00 피아노 학원 / 마트 장보기" maxlength="30">
+      <input type="text" id="schedInput" class="form-input" placeholder="예: 16:00 피아노 학원 / 마트 장보기" maxlength="35">
     </div>
     <button type="button" class="form-submit" id="saveSchedBtn">달력에 추가하기</button>
+  </div>
+</div>
+
+<!-- 이알리미 알림장 붙여넣기 모달 -->
+<div class="modal-backdrop" id="noticeModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">📋 이알리미 알림장 붙여넣기</div>
+      <button class="modal-close" id="closeNoticeModal" type="button">✕</button>
+    </div>
+
+    <div class="form-row">
+      <label>어느 반 알림장인가요? (글에 반 이름이 있으면 자동 선택돼요)</label>
+      <div class="class-toggle">
+        <button type="button" class="class-btn active-boy" id="noticeClassBoy">👦 1학년 2반 → 8세 남아</button>
+        <button type="button" class="class-btn" id="noticeClassGirl">👧 2학년 1반 → 6세 여아</button>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label for="noticeDefaultDate">기본 날짜 (글에 날짜가 없을 때 적용)</label>
+      <input type="date" id="noticeDefaultDate" class="form-input">
+    </div>
+
+    <div class="form-row">
+      <label for="noticeTextarea">이알리미 알림장 내용 붙여넣기</label>
+      <textarea id="noticeTextarea" class="form-textarea" placeholder="이알리미 글을 복사해서 여기에 붙여넣으세요!&#10;예)&#10;1. 국어 받아쓰기 5급 연습하기&#10;2. 11/25(수) 줄넘기, 실내화 챙기기&#10;3. 내일 수학 익힘책 32쪽 풀기"></textarea>
+    </div>
+
+    <div class="check-row">
+      <label class="check-label"><input type="checkbox" id="optAddCalendar" checked> 📅 달력 일정에 등록</label>
+      <label class="check-label"><input type="checkbox" id="optAddMission" checked> ✅ 아이 오늘의 미션에도 추가</label>
+    </div>
+
+    <div class="preview-box" id="noticePreviewBox" style="display:none;">
+      <div class="preview-title" id="noticePreviewTitle">자동 추출 미리보기</div>
+      <div id="noticePreviewList"></div>
+    </div>
+
+    <button type="button" class="form-submit orange" id="applyNoticeBtn">✨ 달력·미션에 한 번에 등록하기</button>
   </div>
 </div>
 
@@ -1092,9 +1284,14 @@
     return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
   }
 
-  function getTodayKey() {
+  function formatDateKey(dateObj) {
+    return `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}-${String(dateObj.getDate()).padStart(2, "0")}`;
+  }
+
+  function getTodayKey(offsetDays = 0) {
     const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    d.setDate(d.getDate() + offsetDays);
+    return formatDateKey(d);
   }
 
   function loadState() {
@@ -1108,7 +1305,7 @@
     return {
       lastDate: getTodayKey(),
       bedtime: "21:00",
-      schedules: {}, // { "YYYY-MM-DD": [ { id, text, done } ] }
+      schedules: {},
       kids: JSON.parse(JSON.stringify(DEFAULT_KIDS))
     };
   }
@@ -1170,7 +1367,6 @@
     timeText.textContent = `${String(h12).padStart(2, "0")}:${min}`;
     nightClock.textContent = `${String(h24).padStart(2, "0")}:${min}`;
 
-    // 잠자는 시간 남은 시간 계산
     const [bh, bm] = (state.bedtime || "21:00").split(":").map(Number);
     bedtimeLabel.textContent = `🌙 잠자는 시간: ${formatBedtimeKorean(state.bedtime || "21:00")}`;
 
@@ -1313,16 +1509,22 @@
     });
   }
 
+  function getKidTagHtml(kid) {
+    if (kid === "boy") return '<span class="kid-tag boy">👦 8세 남아</span>';
+    if (kid === "girl") return '<span class="kid-tag girl">👧 6세 여아</span>';
+    return '<span class="kid-tag family">🏠 가족</span>';
+  }
+
   function renderSchedules() {
     const todayKey = getTodayKey();
-    const [y, m, d] = selectedDateKey.split("-");
+    const [, m, d] = selectedDateKey.split("-");
     selDateLabel.textContent = selectedDateKey === todayKey
-      ? `오늘(${Number(m)}/${Number(d)}) 가족 스케줄·할 일`
-      : `${Number(m)}월 ${Number(d)}일 가족 스케줄·할 일`;
+      ? `오늘(${Number(m)}/${Number(d)}) 가족·알림장 일정`
+      : `${Number(m)}월 ${Number(d)}일 가족·알림장 일정`;
 
     const items = state.schedules[selectedDateKey] || [];
     if (items.length === 0) {
-      scheduleList.innerHTML = '<div class="schedule-empty">등록된 가족 스케줄이 없어요.</div>';
+      scheduleList.innerHTML = '<div class="schedule-empty">등록된 일정이 없어요. 위 「📋 알림장 붙여넣기」를 써보세요!</div>';
       return;
     }
 
@@ -1333,6 +1535,7 @@
       row.innerHTML = `
         <div class="schedule-item-left">
           <span>${ev.done ? "✅" : "📌"}</span>
+          ${getKidTagHtml(ev.kid || "family")}
           <span>${ev.text}</span>
         </div>
         <button type="button" class="schedule-del">삭제</button>
@@ -1352,14 +1555,26 @@
     });
   }
 
-  /* 스케줄 추가 모달 */
+  /* 단건 스케줄 추가 모달 */
   const schedModal = document.getElementById("schedModal");
   const schedInput = document.getElementById("schedInput");
   const schedModalTitle = document.getElementById("schedModalTitle");
+  let schedSelectedKid = "family";
+
+  function updateSchedKidBtns() {
+    document.getElementById("schedTagFamily").className = "class-btn" + (schedSelectedKid === "family" ? " active-boy" : "");
+    document.getElementById("schedTagGirl").className = "class-btn" + (schedSelectedKid === "girl" ? " active-girl" : "");
+    document.getElementById("schedTagBoy").className = "class-btn" + (schedSelectedKid === "boy" ? " active-boy" : "");
+  }
+  document.getElementById("schedTagFamily").addEventListener("click", () => { schedSelectedKid = "family"; updateSchedKidBtns(); });
+  document.getElementById("schedTagGirl").addEventListener("click", () => { schedSelectedKid = "girl"; updateSchedKidBtns(); });
+  document.getElementById("schedTagBoy").addEventListener("click", () => { schedSelectedKid = "boy"; updateSchedKidBtns(); });
 
   document.getElementById("openSchedModalBtn").addEventListener("click", () => {
     const [, m, d] = selectedDateKey.split("-");
-    schedModalTitle.textContent = `📅 ${Number(m)}월 ${Number(d)}일 스케줄 추가`;
+    schedModalTitle.textContent = `📅 ${Number(m)}월 ${Number(d)}일 일정 추가`;
+    schedSelectedKid = "family";
+    updateSchedKidBtns();
     schedInput.value = "";
     schedModal.classList.add("show");
     setTimeout(() => schedInput.focus(), 100);
@@ -1370,7 +1585,7 @@
     const text = schedInput.value.trim();
     if (!text) return;
     if (!state.schedules[selectedDateKey]) state.schedules[selectedDateKey] = [];
-    state.schedules[selectedDateKey].push({ id: Date.now(), text, done: false });
+    state.schedules[selectedDateKey].push({ id: Date.now(), text, done: false, kid: schedSelectedKid });
     saveState();
     renderCalendar();
     renderSchedules();
@@ -1380,6 +1595,179 @@
     if (e.key === "Enter") document.getElementById("saveSchedBtn").click();
   });
 
+  /* 3-2. 이알리미 알림장 붙여넣기 기능 */
+  const noticeModal = document.getElementById("noticeModal");
+  const noticeClassBoyBtn = document.getElementById("noticeClassBoy");
+  const noticeClassGirlBtn = document.getElementById("noticeClassGirl");
+  const noticeDefaultDate = document.getElementById("noticeDefaultDate");
+  const noticeTextarea = document.getElementById("noticeTextarea");
+  const noticePreviewBox = document.getElementById("noticePreviewBox");
+  const noticePreviewTitle = document.getElementById("noticePreviewTitle");
+  const noticePreviewList = document.getElementById("noticePreviewList");
+  const optAddCalendar = document.getElementById("optAddCalendar");
+  const optAddMission = document.getElementById("optAddMission");
+
+  let noticeTargetKid = "boy"; // 기본: 1학년 2반 -> 8세 남아
+
+  function updateNoticeClassUI() {
+    noticeClassBoyBtn.className = "class-btn" + (noticeTargetKid === "boy" ? " active-boy" : "");
+    noticeClassGirlBtn.className = "class-btn" + (noticeTargetKid === "girl" ? " active-girl" : "");
+  }
+
+  noticeClassBoyBtn.addEventListener("click", () => { noticeTargetKid = "boy"; updateNoticeClassUI(); updateNoticePreview(); });
+  noticeClassGirlBtn.addEventListener("click", () => { noticeTargetKid = "girl"; updateNoticeClassUI(); updateNoticePreview(); });
+
+  document.getElementById("openNoticeModalBtn").addEventListener("click", () => {
+    noticeDefaultDate.value = selectedDateKey;
+    noticeTextarea.value = "";
+    noticePreviewBox.style.display = "none";
+    updateNoticeClassUI();
+    noticeModal.classList.add("show");
+    setTimeout(() => noticeTextarea.focus(), 100);
+  });
+  document.getElementById("closeNoticeModal").addEventListener("click", () => noticeModal.classList.remove("show"));
+  noticeModal.addEventListener("click", (e) => { if (e.target === noticeModal) noticeModal.classList.remove("show"); });
+
+  function detectIcon(text) {
+    if (/숙제|풀기|익힘|받아쓰기|일기|독서|읽기|연습|공부|단원/.test(text)) return "📝";
+    if (/준비물|챙기|가져오|실내화|줄넘기|가위|풀|색연필|물통|교재|교과서/.test(text)) return "🎒";
+    if (/행사|체험|현장|수업|발표|검사|접종|소풍|운동회/.test(text)) return "📢";
+    return "📌";
+  }
+
+  function extractDateFromLine(line, fallbackDate) {
+    const baseYear = Number(fallbackDate.split("-")[0]) || new Date().getFullYear();
+
+    let m = line.match(/(20\d{2})\s*[./-]\s*(\d{1,2})\s*[./-]\s*(\d{1,2})/);
+    if (m) {
+      return `${m[1]}-${String(Number(m[2])).padStart(2, "0")}-${String(Number(m[3])).padStart(2, "0")}`;
+    }
+    m = line.match(/(\d{1,2})\s*월\s*(\d{1,2})\s*일/);
+    if (m) {
+      const mo = Number(m[1]), da = Number(m[2]);
+      if (mo >= 1 && mo <= 12 && da >= 1 && da <= 31) {
+        return `${baseYear}-${String(mo).padStart(2, "0")}-${String(da).padStart(2, "0")}`;
+      }
+    }
+    m = line.match(/(?:^|[^\d])(\d{1,2})\s*[/.]\s*(\d{1,2})(?:$|[^\d])/);
+    if (m) {
+      const mo = Number(m[1]), da = Number(m[2]);
+      if (mo >= 1 && mo <= 12 && da >= 1 && da <= 31) {
+        return `${baseYear}-${String(mo).padStart(2, "0")}-${String(da).padStart(2, "0")}`;
+      }
+    }
+    if (/모레/.test(line)) return getTodayKey(2);
+    if (/내일/.test(line)) return getTodayKey(1);
+    if (/오늘/.test(line)) return getTodayKey(0);
+    return null;
+  }
+
+  function parseNoticeText(rawText, fallbackDate) {
+    const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    let currentDate = fallbackDate || getTodayKey();
+    const results = [];
+
+    for (const rawLine of lines) {
+      if (/^[-=_~*#]{3,}$/.test(rawLine)) continue;
+      if (/^(안녕하세요|감사합니다|고맙습니다|사랑합니다|좋은\s*하루)/.test(rawLine)) continue;
+
+      const foundDate = extractDateFromLine(rawLine, fallbackDate);
+      const cleanedHeaderCheck = rawLine
+        .replace(/\[.*?\]/g, "")
+        .replace(/(20\d{2}\s*[./-]\s*)?\d{1,2}\s*[월./-]\s*\d{1,2}\s*일?(\s*\([월화수목금토일]\))?/g, "")
+        .replace(/[12]학년\s*[12]반/g, "")
+        .replace(/알림장|가정통신문|주간학습|안내/g, "")
+        .trim();
+
+      if (cleanedHeaderCheck.length === 0) {
+        if (foundDate) currentDate = foundDate;
+        continue;
+      }
+
+      const itemText = rawLine.replace(/^(\d+[.)]|[-*•▪▶▷☞※①-⑮])\s*/, "").trim();
+      if (!itemText) continue;
+
+      const targetDate = foundDate || currentDate;
+      const icon = detectIcon(itemText);
+      results.push({ date: targetDate, icon, text: itemText });
+    }
+    return results;
+  }
+
+  function updateNoticePreview() {
+    const raw = noticeTextarea.value;
+    if (/1학년\s*2반|1-2/.test(raw) && !/2학년\s*1반|2-1/.test(raw)) {
+      noticeTargetKid = "boy";
+      updateNoticeClassUI();
+    } else if (/2학년\s*1반|2-1/.test(raw) && !/1학년\s*2반|1-2/.test(raw)) {
+      noticeTargetKid = "girl";
+      updateNoticeClassUI();
+    }
+
+    const items = parseNoticeText(raw, noticeDefaultDate.value || selectedDateKey);
+    if (items.length === 0) {
+      noticePreviewBox.style.display = "none";
+      return;
+    }
+
+    const label = noticeTargetKid === "boy" ? "👦 8세 남아 (1학년 2반)" : "👧 6세 여아 (2학년 1반)";
+    noticePreviewTitle.textContent = `자동 추출 ${items.length}건 → ${label}`;
+    noticePreviewList.innerHTML = items.map(it => {
+      const [, m, d] = it.date.split("-");
+      return `<div class="preview-item"><span class="preview-date">${Number(m)}/${Number(d)}</span><span>${it.icon} ${it.text}</span></div>`;
+    }).join("");
+    noticePreviewBox.style.display = "block";
+  }
+
+  noticeTextarea.addEventListener("input", updateNoticePreview);
+  noticeDefaultDate.addEventListener("change", updateNoticePreview);
+
+  document.getElementById("applyNoticeBtn").addEventListener("click", () => {
+    const items = parseNoticeText(noticeTextarea.value, noticeDefaultDate.value || selectedDateKey);
+    if (items.length === 0) {
+      showCheer("알림장 내용을 먼저 붙여넣어 주세요!");
+      return;
+    }
+
+    const addCal = optAddCalendar.checked;
+    const addMis = optAddMission.checked;
+    const kid = state.kids[noticeTargetKid];
+
+    items.forEach((it, idx) => {
+      const fullText = `${it.icon} ${it.text}`;
+      if (addCal) {
+        if (!state.schedules[it.date]) state.schedules[it.date] = [];
+        const dupCal = state.schedules[it.date].some(x => x.text === it.text && x.kid === noticeTargetKid);
+        if (!dupCal) {
+          state.schedules[it.date].push({
+            id: Date.now() + idx,
+            text: it.text,
+            done: false,
+            kid: noticeTargetKid
+          });
+        }
+      }
+      if (addMis) {
+        const dupMis = kid.todos.some(t => t.text === fullText || t.text === it.text);
+        if (!dupMis) {
+          kid.todos.push({ id: Date.now() + 1000 + idx, text: fullText, done: false });
+        }
+      }
+    });
+
+    selectedDateKey = items[0].date;
+    const [sy, sm] = selectedDateKey.split("-").map(Number);
+    calYear = sy;
+    calMonth = sm - 1;
+
+    saveState();
+    renderCalendar();
+    renderSchedules();
+    renderKid(noticeTargetKid);
+    noticeModal.classList.remove("show");
+    showCheer(`📋 ${kid.label} 알림장 ${items.length}건 등록 완료!`);
+  });
+
   /* 4. 아이별 포켓몬 & 미션 렌더링 */
   const cheerToast = document.getElementById("cheerToast");
   let cheerTimer = null;
@@ -1387,7 +1775,7 @@
     cheerToast.textContent = msg || CHEER_MESSAGES[Math.floor(Math.random() * CHEER_MESSAGES.length)];
     cheerToast.classList.add("show");
     clearTimeout(cheerTimer);
-    cheerTimer = setTimeout(() => cheerToast.classList.remove("show"), 2000);
+    cheerTimer = setTimeout(() => cheerToast.classList.remove("show"), 2200);
   }
 
   function getStageIndex(count) {
@@ -1416,12 +1804,10 @@
     celebImg.src = getPokeImgUrl(poke.id);
     if (evolved) {
       celebTitle.textContent = `✨ ${kid.label}의 ${poke.name} 진화!`;
-      celebDesc.textContent = `매일 미션을 멋지게 해내서 진화했어요!
-달력에 ${icon} 스티커도 꾹 붙었어요!`;
+      celebDesc.textContent = `매일 미션을 멋지게 해내서 진화했어요!\n달력에 ${icon} 스티커도 꾹 붙었어요!`;
     } else {
       celebTitle.textContent = `🎉 ${kid.label} 미션 올클리어!`;
-      celebDesc.textContent = `${poke.name}도 박수 치고 있어요!
-달력에 반짝이는 ${icon} 스티커가 붙었어요!`;
+      celebDesc.textContent = `${poke.name}도 박수 치고 있어요!\n달력에 반짝이는 ${icon} 스티커가 붙었어요!`;
     }
     celebModal.classList.add("show");
   }
@@ -1451,7 +1837,7 @@
 
   function renderKid(kidKey) {
     const kid = state.kids[kidKey];
-    const { line, stageIdx, poke, count } = getKidPoke(kidKey);
+    const { stageIdx, poke, count } = getKidPoke(kidKey);
 
     document.getElementById(`${kidKey}PokeImg`).src = getPokeImgUrl(poke.id);
     document.getElementById(`${kidKey}PokeName`).textContent = `${poke.name} (${stageIdx + 1}단계)`;
@@ -1528,7 +1914,6 @@
   const pokeModal = document.getElementById("pokeModal");
   const pokeGrid = document.getElementById("pokeGrid");
   const pokeModalTitle = document.getElementById("pokeModalTitle");
-  let activePokeKid = "girl";
 
   document.querySelectorAll(".poke-change-btn").forEach(btn => {
     btn.addEventListener("click", () => openPokeModal(btn.dataset.kid));
@@ -1537,7 +1922,6 @@
   pokeModal.addEventListener("click", (e) => { if (e.target === pokeModal) pokeModal.classList.remove("show"); });
 
   function openPokeModal(kidKey) {
-    activePokeKid = kidKey;
     const kid = state.kids[kidKey];
     const stageIdx = getStageIndex(Object.keys(kid.stickers).length);
     pokeModalTitle.textContent = `⚡ ${kid.label}의 포켓몬 고르기`;
