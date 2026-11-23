@@ -34,6 +34,8 @@
     --green-soft: #ECFDF5;
     --amber: #F59E0B;
     --amber-soft: #FFFBEB;
+    --purple: #7C3AED;
+    --purple-soft: #F5F3FF;
     --border: #F2E8D5;
     --shadow: 0 8px 20px rgba(45, 49, 66, 0.06);
   }
@@ -47,45 +49,45 @@
     font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
   }
 
-  /* 가로 태블릿 3단 레이아웃: 왼쪽(시계·날씨·달력) / 가운데(6세 여아) / 오른쪽(8세 남아) */
+  /* 가로 태블릿 3단 레이아웃 */
   .dashboard {
     display: grid;
-    grid-template-columns: 1.04fr 0.98fr 0.98fr;
-    gap: 16px;
+    grid-template-columns: 1.02fr 0.99fr 0.99fr;
+    gap: 14px;
     width: 100%;
     height: 100%;
-    padding: 16px 18px;
+    padding: 14px 16px;
   }
 
   .col {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     min-height: 0;
   }
 
   .card {
     background: var(--card);
     border: 2.5px solid var(--border);
-    border-radius: 22px;
+    border-radius: 20px;
     box-shadow: var(--shadow);
-    padding: 14px 16px;
+    padding: 12px 14px;
   }
 
-  /* 1. 왼쪽 상단: 작은 시계 & 잠자는 시간 카운트다운 */
+  /* 1. 왼쪽 상단: 작은 시계 & 잠자는 시간 & 부모관리 */
   .clock-card {
     background: linear-gradient(135deg, #FFFDF7 0%, #FFF4D2 100%);
     border-color: #FFE49E;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
   }
 
   .clock-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
 
   .clock-left {
@@ -94,7 +96,7 @@
   }
 
   .date-text {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 800;
     color: #B4690E;
   }
@@ -102,17 +104,17 @@
   .time-wrap {
     display: flex;
     align-items: baseline;
-    gap: 6px;
+    gap: 5px;
   }
 
   .ampm {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 800;
     color: var(--blue);
   }
 
   .time-text {
-    font-size: clamp(28px, 3vw, 38px);
+    font-size: clamp(26px, 2.8vw, 36px);
     font-weight: 900;
     letter-spacing: -1px;
     line-height: 1.05;
@@ -121,16 +123,18 @@
 
   .clock-btns {
     display: flex;
-    gap: 6px;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
   .icon-pill {
     border: none;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.92);
     color: var(--muted);
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 800;
-    padding: 6px 10px;
+    padding: 6px 9px;
     border-radius: 999px;
     cursor: pointer;
     white-space: nowrap;
@@ -141,32 +145,35 @@
     color: #047857;
   }
 
+  .icon-pill.parent-on {
+    background: var(--purple);
+    color: #FFFFFF;
+  }
+
   .bedtime-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(255, 255, 255, 0.85);
-    border-radius: 14px;
-    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.88);
+    border-radius: 12px;
+    padding: 7px 11px;
     gap: 8px;
   }
 
   .bedtime-info {
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 800;
     color: #4338CA;
   }
 
   .bedtime-remain {
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 900;
     color: #DC2626;
     white-space: nowrap;
   }
 
-  .bedtime-remain.calm {
-    color: #4F46E5;
-  }
+  .bedtime-remain.calm { color: #4F46E5; }
 
   /* 2. 왼쪽 중간: 날씨 카드 */
   .weather-card {
@@ -174,8 +181,8 @@
     border-color: #C7E4FA;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 12px 14px;
+    gap: 7px;
+    padding: 10px 13px;
   }
 
   .weather-header {
@@ -184,49 +191,30 @@
     align-items: center;
   }
 
-  .weather-loc {
-    font-size: 15px;
-    font-weight: 900;
-    color: #1D6FA5;
-  }
-
-  .weather-updated {
-    font-size: 11px;
-    font-weight: 700;
-    color: #5C8DB0;
-  }
+  .weather-loc { font-size: 14px; font-weight: 900; color: #1D6FA5; }
+  .weather-updated { font-size: 11px; font-weight: 700; color: #5C8DB0; }
 
   .weather-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 7px;
   }
 
   .weather-box {
     background: rgba(255, 255, 255, 0.92);
-    border-radius: 16px;
-    padding: 9px 11px;
+    border-radius: 14px;
+    padding: 8px 10px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
   }
 
-  .weather-day-label {
-    font-size: 12px;
-    font-weight: 800;
-    color: #1D6FA5;
-  }
-
-  .weather-main {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .weather-emoji { font-size: 26px; line-height: 1; }
-  .weather-temp-now { font-size: 22px; font-weight: 900; }
-  .weather-desc { font-size: 13px; font-weight: 800; }
-  .weather-sub { font-size: 11px; font-weight: 700; color: var(--muted); }
+  .weather-day-label { font-size: 11.5px; font-weight: 800; color: #1D6FA5; }
+  .weather-main { display: flex; align-items: center; gap: 7px; }
+  .weather-emoji { font-size: 24px; line-height: 1; }
+  .weather-temp-now { font-size: 20px; font-weight: 900; }
+  .weather-desc { font-size: 12.5px; font-weight: 800; }
+  .weather-sub { font-size: 10.5px; font-weight: 700; color: var(--muted); }
 
   /* 3. 왼쪽 하단: 가족 스케줄 달력 카드 */
   .cal-card {
@@ -234,9 +222,9 @@
     min-height: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
     border-color: #DBEAFE;
-    padding: 12px 14px;
+    padding: 11px 13px;
   }
 
   .cal-head {
@@ -246,44 +234,30 @@
     gap: 6px;
   }
 
-  .cal-title {
-    font-size: 16px;
-    font-weight: 900;
-    color: #1D4ED8;
-  }
-
-  .cal-head-right {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+  .cal-title { font-size: 15px; font-weight: 900; color: #1D4ED8; }
+  .cal-head-right { display: flex; align-items: center; gap: 5px; }
 
   .notice-btn {
     border: none;
     background: linear-gradient(135deg, #F59E0B, #EA580C);
     color: #FFFFFF;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 900;
-    padding: 5px 10px;
+    padding: 5px 9px;
     border-radius: 9px;
     cursor: pointer;
     white-space: nowrap;
-    box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
   }
 
-  .cal-nav {
-    display: flex;
-    gap: 4px;
-  }
-
+  .cal-nav { display: flex; gap: 4px; }
   .cal-nav button {
     border: none;
     background: #EFF6FF;
     color: #1D4ED8;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 900;
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     border-radius: 8px;
     cursor: pointer;
   }
@@ -295,88 +269,57 @@
     text-align: center;
   }
 
-  .cal-dow {
-    font-size: 11px;
-    font-weight: 800;
-    color: var(--muted);
-    padding-bottom: 2px;
-  }
+  .cal-dow { font-size: 11px; font-weight: 800; color: var(--muted); padding-bottom: 1px; }
 
   .cal-day {
-    height: 34px;
-    border-radius: 9px;
+    height: 31px;
+    border-radius: 8px;
     background: #F8FAFC;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 800;
     color: #334155;
     cursor: pointer;
-    position: relative;
   }
 
   .cal-day.empty { background: transparent; cursor: default; }
   .cal-day.today { border: 2px solid #3B82F6; background: #EFF6FF; }
   .cal-day.selected { background: #DBEAFE; color: #1E3A8A; border: 2px solid #2563EB; }
 
-  .cal-dots {
-    display: flex;
-    gap: 2px;
-    margin-top: 1px;
-    height: 7px;
-    align-items: center;
-  }
-
+  .cal-dots { display: flex; gap: 2px; margin-top: 1px; height: 6px; align-items: center; }
   .dot-event { width: 5px; height: 5px; border-radius: 50%; background: #F59E0B; }
   .dot-girl { width: 5px; height: 5px; border-radius: 50%; background: #EC4899; }
   .dot-boy { width: 5px; height: 5px; border-radius: 50%; background: #0284C7; }
 
-  /* 선택 날짜 스케줄 & 할 일 영역 */
   .schedule-box {
     flex: 1;
     min-height: 0;
     background: #F8FAFC;
-    border-radius: 14px;
-    padding: 9px 11px;
+    border-radius: 13px;
+    padding: 8px 10px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
   }
 
-  .schedule-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .schedule-date-label {
-    font-size: 13px;
-    font-weight: 900;
-    color: #1E40AF;
-  }
-
+  .schedule-head { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+  .schedule-date-label { font-size: 12.5px; font-weight: 900; color: #1E40AF; }
   .schedule-add-btn {
     border: none;
     background: #2563EB;
     color: #FFFFFF;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 800;
-    padding: 4px 10px;
+    padding: 4px 9px;
     border-radius: 8px;
     cursor: pointer;
     white-space: nowrap;
   }
 
-  .schedule-list {
-    flex: 1;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
+  .schedule-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
 
   .schedule-item {
     display: flex;
@@ -384,11 +327,11 @@
     align-items: center;
     background: #FFFFFF;
     border: 1.5px solid #E2E8F0;
-    border-radius: 10px;
-    padding: 6px 9px;
-    font-size: 13px;
+    border-radius: 9px;
+    padding: 5px 8px;
+    font-size: 12.5px;
     font-weight: 800;
-    gap: 6px;
+    gap: 5px;
   }
 
   .schedule-item.done {
@@ -401,7 +344,7 @@
   .schedule-item-left {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     cursor: pointer;
     flex: 1;
     min-width: 0;
@@ -411,7 +354,7 @@
   .kid-tag {
     font-size: 10px;
     font-weight: 900;
-    padding: 2px 6px;
+    padding: 2px 5px;
     border-radius: 999px;
     flex-shrink: 0;
   }
@@ -424,20 +367,20 @@
     border: none;
     background: #FEE2E2;
     color: #DC2626;
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 800;
-    padding: 3px 7px;
+    padding: 3px 6px;
     border-radius: 6px;
     cursor: pointer;
     flex-shrink: 0;
   }
 
   .schedule-empty {
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 700;
     color: #94A3B8;
     text-align: center;
-    padding: 10px 0;
+    padding: 8px 0;
   }
 
   /* 가운데(6세 여아) & 오른쪽(8세 남아) 카드 */
@@ -445,34 +388,30 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
-    border-radius: 24px;
+    border-radius: 22px;
     border: 3px solid var(--border);
     background: #FFFFFF;
     box-shadow: var(--shadow);
-    padding: 14px 16px;
-    gap: 12px;
+    padding: 12px 14px;
+    gap: 9px;
   }
 
   .kid-col.girl {
     border-color: var(--pink-border);
-    background: linear-gradient(180deg, #FFF5F8 0%, #FFFFFF 130px);
+    background: linear-gradient(180deg, #FFF5F8 0%, #FFFFFF 115px);
   }
 
   .kid-col.boy {
     border-color: var(--sky-border);
-    background: linear-gradient(180deg, #F0F9FF 0%, #FFFFFF 130px);
+    background: linear-gradient(180deg, #F0F9FF 0%, #FFFFFF 115px);
   }
 
-  .kid-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+  .kid-header { display: flex; align-items: center; gap: 10px; }
 
   .poke-avatar {
-    width: 72px;
-    height: 72px;
-    border-radius: 20px;
+    width: 62px;
+    height: 62px;
+    border-radius: 18px;
     background: #FFFFFF;
     border: 3px solid #FDE68A;
     display: flex;
@@ -485,42 +424,20 @@
 
   .kid-col.girl .poke-avatar { border-color: #F9A8D4; }
   .kid-col.boy .poke-avatar { border-color: #7DD3FC; }
+  .poke-avatar img { width: 54px; height: 54px; object-fit: contain; }
 
-  .poke-avatar img {
-    width: 62px;
-    height: 62px;
-    object-fit: contain;
-  }
-
-  .kid-meta {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  .kid-title-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .kid-name {
-    font-size: clamp(18px, 1.8vw, 22px);
-    font-weight: 900;
-  }
-
+  .kid-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .kid-title-row { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+  .kid-name { font-size: clamp(17px, 1.7vw, 21px); font-weight: 900; }
   .kid-col.girl .kid-name { color: #BE185D; }
   .kid-col.boy .kid-name { color: #0369A1; }
 
   .poke-change-btn {
     border: none;
-    border-radius: 10px;
-    font-size: 12px;
+    border-radius: 9px;
+    font-size: 11.5px;
     font-weight: 800;
-    padding: 5px 9px;
+    padding: 4px 8px;
     cursor: pointer;
     white-space: nowrap;
   }
@@ -528,60 +445,25 @@
   .kid-col.girl .poke-change-btn { background: #FCE7F3; color: #BE185D; }
   .kid-col.boy .poke-change-btn { background: #E0F2FE; color: #0369A1; }
 
-  .poke-sub-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    font-weight: 800;
-    color: var(--muted);
-  }
-
-  .evo-bar {
-    width: 100%;
-    height: 10px;
-    background: #F1F5F9;
-    border-radius: 999px;
-    overflow: hidden;
-  }
-
-  .evo-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: 999px;
-    transition: width 0.35s ease;
-  }
-
+  .poke-sub-row { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 800; color: var(--muted); }
+  .evo-bar { width: 100%; height: 9px; background: #F1F5F9; border-radius: 999px; overflow: hidden; }
+  .evo-fill { height: 100%; width: 0%; border-radius: 999px; transition: width 0.35s ease; }
   .kid-col.girl .evo-fill { background: linear-gradient(90deg, #F472B6, #EC4899); }
   .kid-col.boy .evo-fill { background: linear-gradient(90deg, #38BDF8, #0284C7); }
 
-  .mission-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .mission-label {
-    font-size: 16px;
-    font-weight: 900;
-    color: var(--ink);
-  }
-
-  .mission-prog {
-    font-size: 14px;
-    font-weight: 800;
-    padding: 4px 11px;
-    border-radius: 999px;
-  }
-
+  .mission-head { display: flex; justify-content: space-between; align-items: center; }
+  .mission-label { font-size: 15px; font-weight: 900; color: var(--ink); }
+  .mission-prog { font-size: 13px; font-weight: 800; padding: 3px 10px; border-radius: 999px; }
   .kid-col.girl .mission-prog { background: #FCE7F3; color: #BE185D; }
   .kid-col.boy .mission-prog { background: #E0F2FE; color: #0369A1; }
 
   .todo-list {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     padding-right: 2px;
   }
 
@@ -589,69 +471,46 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    padding: 12px 13px;
-    border-radius: 16px;
+    gap: 9px;
+    padding: 9px 11px;
+    border-radius: 14px;
     background: #FAFBFD;
-    border: 2.5px solid #E8EEF5;
+    border: 2px solid #E8EEF5;
     cursor: pointer;
     transition: transform 0.1s ease, background 0.2s ease, border-color 0.2s ease;
   }
 
   .todo-item:active { transform: scale(0.98); }
-
-  .todo-item.done {
-    background: var(--green-soft);
-    border-color: #6EE7B7;
-  }
-
-  .todo-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-  }
+  .todo-item.done { background: var(--green-soft); border-color: #6EE7B7; }
+  .todo-left { display: flex; align-items: center; gap: 9px; min-width: 0; }
 
   .checkbox {
-    width: 30px;
-    height: 30px;
-    border-radius: 10px;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
     border: 2.5px solid #B8C7D9;
     background: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 900;
     color: #FFFFFF;
     flex-shrink: 0;
   }
 
-  .todo-item.done .checkbox {
-    background: var(--green);
-    border-color: var(--green);
-  }
-
-  .todo-text {
-    font-size: clamp(16px, 1.65vw, 21px);
-    font-weight: 800;
-    color: var(--ink);
-    word-break: keep-all;
-  }
-
-  .todo-item.done .todo-text {
-    color: #047857;
-    text-decoration: line-through;
-  }
+  .todo-item.done .checkbox { background: var(--green); border-color: var(--green); }
+  .todo-text { font-size: clamp(14.5px, 1.45vw, 18px); font-weight: 800; color: var(--ink); word-break: keep-all; }
+  .todo-item.done .todo-text { color: #047857; text-decoration: line-through; }
 
   .del-btn {
     border: none;
     background: #FFE5E5;
     color: #D64545;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 800;
-    padding: 6px 9px;
-    border-radius: 9px;
+    padding: 5px 8px;
+    border-radius: 8px;
     cursor: pointer;
     flex-shrink: 0;
     display: none;
@@ -659,31 +518,36 @@
 
   .edit-mode .del-btn { display: inline-block; }
 
+  /* 부모 모드일 때만 미션 편집 바 표시 */
   .todo-footer {
+    display: none;
+    gap: 5px;
+  }
+
+  body.parent-mode .todo-footer {
     display: flex;
-    gap: 6px;
   }
 
   .todo-input {
     flex: 1;
     min-width: 0;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     font-family: inherit;
-    padding: 9px 11px;
-    border: 2.5px solid #DCE7F2;
-    border-radius: 12px;
+    padding: 7px 10px;
+    border: 2px solid #DCE7F2;
+    border-radius: 10px;
     outline: none;
     user-select: text;
   }
 
   .btn {
     border: none;
-    border-radius: 12px;
-    font-size: 14px;
+    border-radius: 10px;
+    font-size: 13px;
     font-weight: 800;
     font-family: inherit;
-    padding: 9px 12px;
+    padding: 7px 10px;
     cursor: pointer;
     white-space: nowrap;
   }
@@ -691,34 +555,135 @@
   .btn-add { background: var(--blue); color: #FFFFFF; }
   .kid-col.girl .btn-add { background: var(--pink); }
   .kid-col.boy .btn-add { background: var(--sky); }
-
   .btn-edit { background: #EEF2F7; color: var(--muted); }
   .btn-edit.active { background: #EF4444; color: #FFFFFF; }
+
+  /* NEW: 아이별 오늘의 기록 (기분 이모지 + 읽은 책 + 오늘의 일기) */
+  .journal-box {
+    background: #FFFDF7;
+    border: 2px solid #FDE68A;
+    border-radius: 16px;
+    padding: 10px 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    flex-shrink: 0;
+  }
+
+  .kid-col.girl .journal-box { background: #FFF8FB; border-color: #FBCFE8; }
+  .kid-col.boy .journal-box { background: #F7FCFF; border-color: #BAE6FD; }
+
+  .journal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .journal-title {
+    font-size: 13.5px;
+    font-weight: 900;
+    color: var(--ink);
+  }
+
+  .journal-saved {
+    font-size: 11px;
+    font-weight: 800;
+    color: #10B981;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .journal-saved.show { opacity: 1; }
+
+  .mood-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+  }
+
+  .mood-btn {
+    flex: 1;
+    border: 2px solid transparent;
+    background: #FFFFFF;
+    border-radius: 11px;
+    padding: 5px 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    cursor: pointer;
+    transition: transform 0.1s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .mood-btn:active { transform: scale(0.95); }
+  .mood-emoji { font-size: 20px; line-height: 1.1; }
+  .mood-label { font-size: 10px; font-weight: 800; color: var(--muted); }
+
+  .kid-col.girl .mood-btn.selected {
+    background: #FCE7F3;
+    border-color: #EC4899;
+  }
+  .kid-col.boy .mood-btn.selected {
+    background: #E0F2FE;
+    border-color: #0284C7;
+  }
+  .mood-btn.selected .mood-label { color: var(--ink); }
+
+  .journal-input {
+    width: 100%;
+    font-size: 13.5px;
+    font-weight: 700;
+    font-family: inherit;
+    padding: 7px 10px;
+    border: 2px solid #E2E8F0;
+    border-radius: 10px;
+    background: #FFFFFF;
+    outline: none;
+    user-select: text;
+  }
+
+  .journal-textarea {
+    width: 100%;
+    min-height: 52px;
+    max-height: 76px;
+    resize: none;
+    font-size: 13.5px;
+    font-weight: 700;
+    font-family: inherit;
+    padding: 7px 10px;
+    border: 2px solid #E2E8F0;
+    border-radius: 10px;
+    background: #FFFFFF;
+    outline: none;
+    line-height: 1.4;
+    user-select: text;
+  }
+
+  .journal-input:focus, .journal-textarea:focus {
+    border-color: var(--blue);
+  }
 
   /* 칭찬 토스트 */
   .cheer-toast {
     position: fixed;
     left: 50%;
-    bottom: 24px;
+    bottom: 22px;
     transform: translateX(-50%) translateY(24px);
     background: linear-gradient(135deg, #2563EB, #4F46E5);
     color: #FEF08A;
-    font-size: clamp(17px, 1.9vw, 22px);
+    font-size: clamp(16px, 1.8vw, 21px);
     font-weight: 900;
-    padding: 13px 24px;
+    padding: 12px 22px;
     border-radius: 999px;
     box-shadow: 0 12px 28px rgba(37, 99, 235, 0.35);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s ease, transform 0.25s ease;
     white-space: nowrap;
-    z-index: 2000;
+    z-index: 2500;
   }
 
-  .cheer-toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
+  .cheer-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* 모달 공통 */
   .modal-backdrop {
@@ -729,20 +694,20 @@
     align-items: center;
     justify-content: center;
     z-index: 3000;
-    padding: 20px;
+    padding: 18px;
   }
 
   .modal-backdrop.show { display: flex; }
 
   .modal-box {
     background: #FFFFFF;
-    border-radius: 26px;
+    border-radius: 24px;
     border: 4px solid #FFE49E;
     width: 100%;
-    max-width: 580px;
+    max-width: 600px;
     max-height: 92vh;
     overflow-y: auto;
-    padding: 22px 24px;
+    padding: 20px 22px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
   }
 
@@ -753,156 +718,91 @@
     margin-bottom: 14px;
   }
 
-  .modal-title { font-size: 21px; font-weight: 900; }
+  .modal-title { font-size: 20px; font-weight: 900; }
   .modal-close {
     border: none;
     background: #F1F5F9;
     color: #475569;
     font-size: 16px;
     font-weight: 900;
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     cursor: pointer;
   }
 
-  .poke-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
-
+  .poke-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
   .poke-option {
     background: #FFFDF7;
     border: 3px solid #FDE68A;
-    border-radius: 18px;
-    padding: 12px 8px;
+    border-radius: 16px;
+    padding: 11px 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     cursor: pointer;
   }
-
   .poke-option.selected { background: #FEF3C7; border-color: #F59E0B; }
-  .poke-option img { width: 64px; height: 64px; object-fit: contain; }
-  .poke-opt-name { font-size: 16px; font-weight: 900; }
+  .poke-option img { width: 60px; height: 60px; object-fit: contain; }
+  .poke-opt-name { font-size: 15px; font-weight: 900; }
   .poke-opt-evo { font-size: 11px; font-weight: 700; color: var(--muted); text-align: center; }
 
-  /* 설정/스케줄/알림장 입력 폼 */
-  .form-row {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    margin-bottom: 12px;
-  }
-
-  .form-row label {
-    font-size: 14px;
-    font-weight: 800;
-    color: var(--ink);
-  }
-
+  /* 폼 공통 */
+  .form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .form-row label { font-size: 13.5px; font-weight: 800; color: var(--ink); }
   .form-input, .form-textarea {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     font-family: inherit;
-    padding: 10px 13px;
+    padding: 10px 12px;
     border: 2.5px solid #CBD5E1;
-    border-radius: 14px;
+    border-radius: 12px;
     outline: none;
     user-select: text;
   }
+  .form-textarea { min-height: 110px; resize: vertical; line-height: 1.5; }
+  .form-input:focus, .form-textarea:focus { border-color: var(--blue); }
 
-  .form-textarea {
-    min-height: 115px;
-    resize: vertical;
-    line-height: 1.5;
-  }
-
-  .form-input:focus, .form-textarea:focus {
-    border-color: var(--blue);
-  }
-
-  .class-toggle {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
+  .class-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .class-btn {
     border: 2.5px solid #E2E8F0;
     background: #F8FAFC;
-    border-radius: 14px;
-    padding: 10px;
-    font-size: 14px;
+    border-radius: 12px;
+    padding: 9px;
+    font-size: 13.5px;
     font-weight: 900;
     cursor: pointer;
     color: var(--muted);
     text-align: center;
   }
+  .class-btn.active-boy { background: #E0F2FE; border-color: #0284C7; color: #0369A1; }
+  .class-btn.active-girl { background: #FCE7F3; border-color: #EC4899; color: #BE185D; }
+  .class-btn.active-purple { background: #F5F3FF; border-color: #7C3AED; color: #6D28D9; }
 
-  .class-btn.active-boy {
-    background: #E0F2FE;
-    border-color: #0284C7;
-    color: #0369A1;
-  }
-
-  .class-btn.active-girl {
-    background: #FCE7F3;
-    border-color: #EC4899;
-    color: #BE185D;
-  }
-
-  .check-row {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-  }
-
-  .check-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    font-weight: 800;
-    cursor: pointer;
-  }
-
-  .check-label input {
-    width: 18px;
-    height: 18px;
-    accent-color: #2563EB;
-  }
+  .check-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
+  .check-label { display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 800; cursor: pointer; }
+  .check-label input { width: 17px; height: 17px; accent-color: #2563EB; }
 
   .preview-box {
     background: #F8FAFC;
     border: 2px solid #E2E8F0;
-    border-radius: 14px;
-    padding: 10px 12px;
-    margin-bottom: 14px;
-    max-height: 140px;
+    border-radius: 12px;
+    padding: 9px 11px;
+    margin-bottom: 12px;
+    max-height: 130px;
     overflow-y: auto;
   }
-
-  .preview-title {
-    font-size: 12px;
-    font-weight: 900;
-    color: #475569;
-    margin-bottom: 6px;
-  }
-
+  .preview-title { font-size: 12px; font-weight: 900; color: #475569; margin-bottom: 5px; }
   .preview-item {
     display: flex;
     align-items: center;
-    gap: 7px;
-    font-size: 13px;
+    gap: 6px;
+    font-size: 12.5px;
     font-weight: 800;
-    padding: 4px 0;
+    padding: 3px 0;
     border-bottom: 1px dashed #E2E8F0;
   }
-
   .preview-item:last-child { border-bottom: none; }
   .preview-date {
     font-size: 11px;
@@ -919,34 +819,126 @@
     border: none;
     background: #2563EB;
     color: #FFFFFF;
-    font-size: 16px;
+    font-size: 15.5px;
     font-weight: 900;
-    padding: 12px;
-    border-radius: 14px;
+    padding: 11px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  .form-submit.orange { background: linear-gradient(135deg, #F59E0B, #EA580C); }
+  .form-submit.purple { background: linear-gradient(135deg, #7C3AED, #6D28D9); }
+  .form-submit.gray { background: #E2E8F0; color: #334155; }
+
+  /* 부모 관리 모달 탭 & 기록 리스트 */
+  .admin-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .admin-tab {
+    border: 2px solid #E2E8F0;
+    background: #F8FAFC;
+    color: #475569;
+    font-size: 13.5px;
+    font-weight: 900;
+    padding: 9px 6px;
+    border-radius: 12px;
     cursor: pointer;
   }
 
-  .form-submit.orange {
-    background: linear-gradient(135deg, #F59E0B, #EA580C);
+  .admin-tab.active {
+    background: var(--purple-soft);
+    border-color: var(--purple);
+    color: var(--purple);
+  }
+
+  .admin-panel { display: none; }
+  .admin-panel.active { display: block; }
+
+  .log-card {
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 14px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .log-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 900;
+  }
+
+  .log-card-body {
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+    line-height: 1.45;
+    white-space: pre-wrap;
+  }
+
+  .admin-kid-row {
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .inline-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .small-btn {
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 8px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .small-btn.purple { background: var(--purple); color: #FFFFFF; }
+  .small-btn.amber { background: #FEF3C7; color: #B45309; }
+  .small-btn.red { background: #FEE2E2; color: #DC2626; }
+
+  .hint-text {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748B;
+    line-height: 1.4;
   }
 
   /* 축하 / 진화 모달 */
-  .celeb-box { text-align: center; max-width: 440px; }
+  .celeb-box { text-align: center; max-width: 430px; }
   .celeb-img {
-    width: 140px;
-    height: 140px;
+    width: 135px;
+    height: 135px;
     object-fit: contain;
     margin: 6px auto 10px;
     animation: bounce 0.8s ease infinite alternate;
   }
   @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
-  .celeb-title { font-size: 24px; font-weight: 900; color: #D97706; margin-bottom: 8px; }
-  .celeb-desc { font-size: 17px; font-weight: 700; margin-bottom: 18px; line-height: 1.5; white-space: pre-line; }
+  .celeb-title { font-size: 23px; font-weight: 900; color: #D97706; margin-bottom: 8px; }
+  .celeb-desc { font-size: 16px; font-weight: 700; margin-bottom: 16px; line-height: 1.5; white-space: pre-line; }
   .celeb-btn {
     border: none;
     background: linear-gradient(135deg, #F59E0B, #EA580C);
     color: #FFFFFF;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 900;
     padding: 11px 28px;
     border-radius: 999px;
@@ -991,7 +983,7 @@
           </div>
         </div>
         <div class="clock-btns">
-          <button class="icon-pill" id="bedtimeSetBtn" type="button">🌙 취침설정</button>
+          <button class="icon-pill" id="parentBtn" type="button">🔒 엄마관리</button>
           <button class="icon-pill" id="wakeBtn" type="button">💡 켜짐유지</button>
         </div>
       </div>
@@ -1032,7 +1024,7 @@
       <div class="cal-head">
         <span class="cal-title" id="calTitle">📅 2026년 11월</span>
         <div class="cal-head-right">
-          <button type="button" class="notice-btn" id="openNoticeModalBtn">📋 알림장 붙여넣기</button>
+          <button type="button" class="notice-btn" id="openNoticeModalBtn">📋 알림장</button>
           <div class="cal-nav">
             <button type="button" id="calPrev">◀</button>
             <button type="button" id="calNext">▶</button>
@@ -1042,15 +1034,15 @@
       <div class="cal-grid" id="calGrid"></div>
       <div class="schedule-box">
         <div class="schedule-head">
-          <span class="schedule-date-label" id="selDateLabel">오늘 가족 스케줄·할 일</span>
-          <button type="button" class="schedule-add-btn" id="openSchedModalBtn">+ 일정 추가</button>
+          <span class="schedule-date-label" id="selDateLabel">오늘 가족·알림장 일정</span>
+          <button type="button" class="schedule-add-btn" id="openSchedModalBtn">+ 일정</button>
         </div>
         <div class="schedule-list" id="scheduleList"></div>
       </div>
     </section>
   </div>
 
-  <!-- 가운데 열: 6세 여아 (2학년 1반 연동) -->
+  <!-- 가운데 열: 6세 여아 -->
   <section class="kid-col girl" id="girlCard">
     <div class="kid-header">
       <div class="poke-avatar" id="girlAvatar">
@@ -1058,7 +1050,7 @@
       </div>
       <div class="kid-meta">
         <div class="kid-title-row">
-          <span class="kid-name">👧 6세 여아</span>
+          <span class="kid-name" id="girlTitleLabel">👧 6세 여아</span>
           <button type="button" class="poke-change-btn" data-kid="girl">⚡ 포켓몬</button>
         </div>
         <div class="poke-sub-row">
@@ -1079,9 +1071,20 @@
       <button type="button" class="btn btn-add" id="girlAddBtn">추가</button>
       <button type="button" class="btn btn-edit" id="girlEditBtn">삭제</button>
     </div>
+
+    <!-- 6세 여아 오늘의 기록 (기분 · 읽은 책 · 일기) -->
+    <div class="journal-box">
+      <div class="journal-head">
+        <span class="journal-title">📖 오늘의 기분 · 독서 · 일기</span>
+        <span class="journal-saved" id="girlJournalSaved">저장됨 ✓</span>
+      </div>
+      <div class="mood-row" id="girlMoodRow"></div>
+      <input type="text" class="journal-input" id="girlBookInput" placeholder="📚 오늘 읽은 책 제목을 적어봐요" maxlength="60">
+      <textarea class="journal-textarea" id="girlDiaryInput" placeholder="✏️ 오늘 있었던 일이나 느낀 점을 간단히 메모해요" maxlength="200"></textarea>
+    </div>
   </section>
 
-  <!-- 오른쪽 열: 8세 남아 (1학년 2반 연동) -->
+  <!-- 오른쪽 열: 8세 남아 -->
   <section class="kid-col boy" id="boyCard">
     <div class="kid-header">
       <div class="poke-avatar" id="boyAvatar">
@@ -1089,7 +1092,7 @@
       </div>
       <div class="kid-meta">
         <div class="kid-title-row">
-          <span class="kid-name">👦 8세 남아</span>
+          <span class="kid-name" id="boyTitleLabel">👦 8세 남아</span>
           <button type="button" class="poke-change-btn" data-kid="boy">⚡ 포켓몬</button>
         </div>
         <div class="poke-sub-row">
@@ -1110,11 +1113,103 @@
       <button type="button" class="btn btn-add" id="boyAddBtn">추가</button>
       <button type="button" class="btn btn-edit" id="boyEditBtn">삭제</button>
     </div>
+
+    <!-- 8세 남아 오늘의 기록 (기분 · 읽은 책 · 일기) -->
+    <div class="journal-box">
+      <div class="journal-head">
+        <span class="journal-title">📖 오늘의 기분 · 독서 · 일기</span>
+        <span class="journal-saved" id="boyJournalSaved">저장됨 ✓</span>
+      </div>
+      <div class="mood-row" id="boyMoodRow"></div>
+      <input type="text" class="journal-input" id="boyBookInput" placeholder="📚 오늘 읽은 책 제목을 적어봐요" maxlength="60">
+      <textarea class="journal-textarea" id="boyDiaryInput" placeholder="✏️ 오늘 있었던 일이나 느낀 점을 간단히 메모해요" maxlength="200"></textarea>
+    </div>
   </section>
 </div>
 
 <!-- 칭찬 토스트 -->
 <div class="cheer-toast" id="cheerToast"></div>
+
+<!-- 부모 로그인 모달 -->
+<div class="modal-backdrop" id="loginModal">
+  <div class="modal-box" style="max-width: 390px;">
+    <div class="modal-head">
+      <div class="modal-title">🔐 부모 관리 계정 로그인</div>
+      <button class="modal-close" id="closeLoginModal" type="button">✕</button>
+    </div>
+    <div class="form-row">
+      <label for="loginIdInput">관리자 아이디</label>
+      <input type="text" id="loginIdInput" class="form-input" value="mom" autocomplete="username">
+    </div>
+    <div class="form-row">
+      <label for="loginPinInput">비밀번호 (초기값: 1234)</label>
+      <input type="password" id="loginPinInput" class="form-input" placeholder="비밀번호 입력" inputmode="numeric" autocomplete="current-password">
+    </div>
+    <p class="hint-text" id="loginErrorText" style="color:#DC2626; margin-bottom:10px; display:none;">아이디 또는 비밀번호가 맞지 않아요.</p>
+    <button type="button" class="form-submit purple" id="doLoginBtn">엄마 모드로 로그인</button>
+  </div>
+</div>
+
+<!-- 부모 관리 센터 모달 -->
+<div class="modal-backdrop" id="adminModal">
+  <div class="modal-box" style="max-width: 640px;">
+    <div class="modal-head">
+      <div class="modal-title">👩‍👧‍👦 엄마 관리 센터</div>
+      <button class="modal-close" id="closeAdminModal" type="button">✕</button>
+    </div>
+
+    <div class="admin-tabs">
+      <button type="button" class="admin-tab active" data-tab="logs">📖 독서·일기 기록장</button>
+      <button type="button" class="admin-tab" data-tab="kids">⭐ 아이·스티커 관리</button>
+      <button type="button" class="admin-tab" data-tab="settings">⚙️ 취침·계정 설정</button>
+    </div>
+
+    <!-- 탭 1: 아이별 독서/일기/기분 기록장 -->
+    <div class="admin-panel active" id="panel-logs">
+      <div class="class-toggle" style="margin-bottom: 10px;">
+        <button type="button" class="class-btn active-girl" id="logFilterGirl">👧 6세 여아 기록</button>
+        <button type="button" class="class-btn" id="logFilterBoy">👦 8세 남아 기록</button>
+      </div>
+      <div id="adminLogList" style="max-height: 320px; overflow-y: auto;"></div>
+    </div>
+
+    <!-- 탭 2: 아이 이름 & 스티커 관리 -->
+    <div class="admin-panel" id="panel-kids">
+      <div class="admin-kid-row">
+        <div class="inline-row">
+          <strong style="color:#BE185D; width:75px;">👧 여아 이름</strong>
+          <input type="text" id="adminGirlName" class="form-input" style="flex:1; padding:7px 10px;">
+          <button type="button" class="small-btn amber" id="bonusGirlBtn">⭐ 칭찬 스티커 +1</button>
+        </div>
+        <div class="inline-row">
+          <strong style="color:#0369A1; width:75px;">👦 남아 이름</strong>
+          <input type="text" id="adminBoyName" class="form-input" style="flex:1; padding:7px 10px;">
+          <button type="button" class="small-btn amber" id="bonusBoyBtn">⭐ 칭찬 스티커 +1</button>
+        </div>
+        <button type="button" class="form-submit purple" id="saveKidNamesBtn">이름 변경 저장</button>
+      </div>
+      <p class="hint-text">💡 엄마 모드가 켜져 있는 동안 메인 화면에서 아이별 미션을 직접 추가·삭제하고, 달력 일정과 이알리미 알림장을 관리할 수 있어요.</p>
+    </div>
+
+    <!-- 탭 3: 취침 시간 & 부모 계정 비밀번호 변경 -->
+    <div class="admin-panel" id="panel-settings">
+      <div class="form-row">
+        <label for="adminBedTime">🌙 아이들 잠자는 시간</label>
+        <input type="time" id="adminBedTime" class="form-input" value="21:00">
+      </div>
+      <div class="form-row">
+        <label for="adminNewId">관리자 아이디 변경</label>
+        <input type="text" id="adminNewId" class="form-input" placeholder="mom">
+      </div>
+      <div class="form-row">
+        <label for="adminNewPin">새 비밀번호 (변경할 때만 입력)</label>
+        <input type="password" id="adminNewPin" class="form-input" placeholder="새 비밀번호 (예: 4자리 숫자)" inputmode="numeric">
+      </div>
+      <button type="button" class="form-submit purple" id="saveAdminSettingsBtn" style="margin-bottom: 10px;">설정 저장하기</button>
+      <button type="button" class="form-submit gray" id="logoutBtn">🔒 엄마 모드 잠그기 (로그아웃)</button>
+    </div>
+  </div>
+</div>
 
 <!-- 포켓몬 선택 모달 -->
 <div class="modal-backdrop" id="pokeModal">
@@ -1124,21 +1219,6 @@
       <button class="modal-close" id="closePokeModal" type="button">✕</button>
     </div>
     <div class="poke-grid" id="pokeGrid"></div>
-  </div>
-</div>
-
-<!-- 잠자는 시간 설정 모달 -->
-<div class="modal-backdrop" id="bedModal">
-  <div class="modal-box" style="max-width: 380px;">
-    <div class="modal-head">
-      <div class="modal-title">🌙 잠자는 시간 설정</div>
-      <button class="modal-close" id="closeBedModal" type="button">✕</button>
-    </div>
-    <div class="form-row">
-      <label for="bedTimeInput">아이들 잠자리 드는 시간</label>
-      <input type="time" id="bedTimeInput" class="form-input" value="21:00">
-    </div>
-    <button type="button" class="form-submit" id="saveBedBtn">저장하기</button>
   </div>
 </div>
 
@@ -1172,7 +1252,6 @@
       <div class="modal-title">📋 이알리미 알림장 붙여넣기</div>
       <button class="modal-close" id="closeNoticeModal" type="button">✕</button>
     </div>
-
     <div class="form-row">
       <label>어느 반 알림장인가요? (글에 반 이름이 있으면 자동 선택돼요)</label>
       <div class="class-toggle">
@@ -1180,27 +1259,22 @@
         <button type="button" class="class-btn" id="noticeClassGirl">👧 2학년 1반 → 6세 여아</button>
       </div>
     </div>
-
     <div class="form-row">
       <label for="noticeDefaultDate">기본 날짜 (글에 날짜가 없을 때 적용)</label>
       <input type="date" id="noticeDefaultDate" class="form-input">
     </div>
-
     <div class="form-row">
       <label for="noticeTextarea">이알리미 알림장 내용 붙여넣기</label>
-      <textarea id="noticeTextarea" class="form-textarea" placeholder="이알리미 글을 복사해서 여기에 붙여넣으세요!&#10;예)&#10;1. 국어 받아쓰기 5급 연습하기&#10;2. 11/25(수) 줄넘기, 실내화 챙기기&#10;3. 내일 수학 익힘책 32쪽 풀기"></textarea>
+      <textarea id="noticeTextarea" class="form-textarea" placeholder="이알리미 글을 복사해서 여기에 붙여넣으세요!&#10;예)&#10;1. 국어 받아쓰기 5급 연습하기&#10;2. 11/25(수) 줄넘기, 실내화 챙기기"></textarea>
     </div>
-
     <div class="check-row">
       <label class="check-label"><input type="checkbox" id="optAddCalendar" checked> 📅 달력 일정에 등록</label>
       <label class="check-label"><input type="checkbox" id="optAddMission" checked> ✅ 아이 오늘의 미션에도 추가</label>
     </div>
-
     <div class="preview-box" id="noticePreviewBox" style="display:none;">
       <div class="preview-title" id="noticePreviewTitle">자동 추출 미리보기</div>
       <div id="noticePreviewList"></div>
     </div>
-
     <button type="button" class="form-submit orange" id="applyNoticeBtn">✨ 달력·미션에 한 번에 등록하기</button>
   </div>
 </div>
@@ -1230,6 +1304,14 @@
   const EVO_STAGE2_NEED = 3;
   const EVO_STAGE3_NEED = 7;
 
+  const MOODS = [
+    { key: "excited", emoji: "😄", label: "신남" },
+    { key: "happy",   emoji: "😊", label: "행복" },
+    { key: "okay",    emoji: "😐", label: "보통" },
+    { key: "sad",     emoji: "😢", label: "속상" },
+    { key: "angry",   emoji: "😡", label: "화남" }
+  ];
+
   const POKEMON_LINES = [
     { key: "pichu",      stages: [{ id: 172, name: "피츄" }, { id: 25, name: "피카츄" }, { id: 26, name: "라이츄" }] },
     { key: "charmander", stages: [{ id: 4, name: "파이리" }, { id: 5, name: "리자드" }, { id: 6, name: "리자몽" }] },
@@ -1250,7 +1332,8 @@
         { id: 4, text: "🍚 밥 골고루 먹기", done: false },
         { id: 5, text: "🌙 일찍 잠자리 들기", done: false }
       ],
-      stickers: {}
+      stickers: {},
+      journals: {}
     },
     boy: {
       label: "8세 남아",
@@ -1262,7 +1345,8 @@
         { id: 4, text: "🎒 내일 준비물 챙기기", done: false },
         { id: 5, text: "🌙 일찍 잠자리 들기", done: false }
       ],
-      stickers: {}
+      stickers: {},
+      journals: {}
     }
   };
 
@@ -1295,22 +1379,31 @@
   }
 
   function loadState() {
+    let base = {
+      lastDate: getTodayKey(),
+      bedtime: "21:00",
+      parentAuth: { id: "mom", pin: "1234" },
+      schedules: {},
+      kids: JSON.parse(JSON.stringify(DEFAULT_KIDS))
+    };
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (parsed && parsed.kids && parsed.kids.girl && parsed.kids.boy) return parsed;
+        if (parsed && parsed.kids && parsed.kids.girl && parsed.kids.boy) {
+          base = { ...base, ...parsed };
+          if (!base.parentAuth) base.parentAuth = { id: "mom", pin: "1234" };
+          if (!base.kids.girl.journals) base.kids.girl.journals = {};
+          if (!base.kids.boy.journals) base.kids.boy.journals = {};
+        }
       }
     } catch (e) {}
-    return {
-      lastDate: getTodayKey(),
-      bedtime: "21:00",
-      schedules: {},
-      kids: JSON.parse(JSON.stringify(DEFAULT_KIDS))
-    };
+    return base;
   }
 
   let state = loadState();
+  let isParentLoggedIn = false;
+  let pendingParentAction = null;
   let editModes = { girl: false, boy: false };
   let selectedDateKey = getTodayKey();
   let calYear = new Date().getFullYear();
@@ -1332,10 +1425,203 @@
       saveState();
       renderKid("girl");
       renderKid("boy");
+      renderJournal("girl");
+      renderJournal("boy");
       renderCalendar();
       renderSchedules();
     }
   }
+
+  /* ===== 부모 관리 계정 로그인 & 권한 가드 ===== */
+  const parentBtn = document.getElementById("parentBtn");
+  const loginModal = document.getElementById("loginModal");
+  const loginIdInput = document.getElementById("loginIdInput");
+  const loginPinInput = document.getElementById("loginPinInput");
+  const loginErrorText = document.getElementById("loginErrorText");
+  const adminModal = document.getElementById("adminModal");
+
+  function updateParentModeUI() {
+    document.body.classList.toggle("parent-mode", isParentLoggedIn);
+    parentBtn.classList.toggle("parent-on", isParentLoggedIn);
+    parentBtn.textContent = isParentLoggedIn ? "🔓 엄마모드" : "🔒 엄마관리";
+    if (!isParentLoggedIn) {
+      editModes.girl = false;
+      editModes.boy = false;
+      renderKid("girl");
+      renderKid("boy");
+    }
+  }
+
+  function requireParent(actionFn) {
+    if (isParentLoggedIn) {
+      actionFn();
+      return;
+    }
+    pendingParentAction = actionFn;
+    loginIdInput.value = state.parentAuth.id || "mom";
+    loginPinInput.value = "";
+    loginErrorText.style.display = "none";
+    loginModal.classList.add("show");
+    setTimeout(() => loginPinInput.focus(), 100);
+  }
+
+  parentBtn.addEventListener("click", () => {
+    if (isParentLoggedIn) {
+      openAdminModal();
+    } else {
+      requireParent(openAdminModal);
+    }
+  });
+
+  document.getElementById("closeLoginModal").addEventListener("click", () => {
+    pendingParentAction = null;
+    loginModal.classList.remove("show");
+  });
+  loginModal.addEventListener("click", (e) => {
+    if (e.target === loginModal) {
+      pendingParentAction = null;
+      loginModal.classList.remove("show");
+    }
+  });
+
+  function tryLogin() {
+    const id = loginIdInput.value.trim();
+    const pin = loginPinInput.value.trim();
+    if (id === (state.parentAuth.id || "mom") && pin === (state.parentAuth.pin || "1234")) {
+      isParentLoggedIn = true;
+      loginModal.classList.remove("show");
+      updateParentModeUI();
+      showCheer("🔓 엄마 관리 모드가 열렸어요!");
+      if (pendingParentAction) {
+        const fn = pendingParentAction;
+        pendingParentAction = null;
+        fn();
+      }
+    } else {
+      loginErrorText.style.display = "block";
+      loginPinInput.value = "";
+      loginPinInput.focus();
+    }
+  }
+
+  document.getElementById("doLoginBtn").addEventListener("click", tryLogin);
+  loginPinInput.addEventListener("keydown", (e) => { if (e.key === "Enter") tryLogin(); });
+
+  /* 엄마 관리 센터 모달 */
+  let adminLogKid = "girl";
+
+  function openAdminModal() {
+    document.getElementById("adminGirlName").value = state.kids.girl.label;
+    document.getElementById("adminBoyName").value = state.kids.boy.label;
+    document.getElementById("adminBedTime").value = state.bedtime || "21:00";
+    document.getElementById("adminNewId").value = state.parentAuth.id || "mom";
+    document.getElementById("adminNewPin").value = "";
+    renderAdminLogs();
+    adminModal.classList.add("show");
+  }
+
+  document.getElementById("closeAdminModal").addEventListener("click", () => adminModal.classList.remove("show"));
+  adminModal.addEventListener("click", (e) => { if (e.target === adminModal) adminModal.classList.remove("show"); });
+
+  document.querySelectorAll(".admin-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".admin-panel").forEach(p => p.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById(`panel-${tab.dataset.tab}`).classList.add("active");
+    });
+  });
+
+  const logFilterGirl = document.getElementById("logFilterGirl");
+  const logFilterBoy = document.getElementById("logFilterBoy");
+  logFilterGirl.addEventListener("click", () => { adminLogKid = "girl"; renderAdminLogs(); });
+  logFilterBoy.addEventListener("click", () => { adminLogKid = "boy"; renderAdminLogs(); });
+
+  function renderAdminLogs() {
+    logFilterGirl.className = "class-btn" + (adminLogKid === "girl" ? " active-girl" : "");
+    logFilterBoy.className = "class-btn" + (adminLogKid === "boy" ? " active-boy" : "");
+    logFilterGirl.textContent = `👧 ${state.kids.girl.label} 기록`;
+    logFilterBoy.textContent = `👦 ${state.kids.boy.label} 기록`;
+
+    const listEl = document.getElementById("adminLogList");
+    const journals = state.kids[adminLogKid].journals || {};
+    const dates = Object.keys(journals).sort((a, b) => b.localeCompare(a));
+
+    if (dates.length === 0) {
+      listEl.innerHTML = '<div class="schedule-empty" style="padding:24px 0;">아직 작성된 독서·일기 기록이 없어요.</div>';
+      return;
+    }
+
+    listEl.innerHTML = dates.map(ds => {
+      const j = journals[ds];
+      const moodObj = MOODS.find(m => m.key === j.mood);
+      const moodStr = moodObj ? `${moodObj.emoji} ${moodObj.label}` : "기분 미선택";
+      const bookStr = j.book ? `📚 읽은 책: ${j.book}` : "📚 읽은 책: -";
+      const diaryStr = j.diary ? `✏️ 일기: ${j.diary}` : "";
+      return `
+        <div class="log-card">
+          <div class="log-card-head">
+            <span>📅 ${ds}</span>
+            <span>${moodStr}</span>
+          </div>
+          <div class="log-card-body">${bookStr}${diaryStr ? "\n" + diaryStr : ""}</div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  document.getElementById("saveKidNamesBtn").addEventListener("click", () => {
+    const g = document.getElementById("adminGirlName").value.trim();
+    const b = document.getElementById("adminBoyName").value.trim();
+    if (g) state.kids.girl.label = g;
+    if (b) state.kids.boy.label = b;
+    saveState();
+    renderKid("girl");
+    renderKid("boy");
+    renderSchedules();
+    renderAdminLogs();
+    showCheer("아이 이름이 저장되었어요!");
+  });
+
+  function giveBonusSticker(kidKey) {
+    const kid = state.kids[kidKey];
+    const prevCount = Object.keys(kid.stickers).length;
+    const prevStage = getStageIndex(prevCount);
+    const bonusKey = `bonus-${Date.now()}`;
+    const icon = STICKER_ICONS[prevCount % STICKER_ICONS.length];
+    kid.stickers[bonusKey] = icon;
+    saveState();
+    const newStage = getStageIndex(Object.keys(kid.stickers).length);
+    renderKid(kidKey);
+    if (newStage > prevStage) {
+      adminModal.classList.remove("show");
+      showCelebration(kidKey, true, icon);
+    } else {
+      showCheer(`⭐ ${kid.label}에게 엄마 칭찬 스티커 선물!`);
+    }
+  }
+  document.getElementById("bonusGirlBtn").addEventListener("click", () => giveBonusSticker("girl"));
+  document.getElementById("bonusBoyBtn").addEventListener("click", () => giveBonusSticker("boy"));
+
+  document.getElementById("saveAdminSettingsBtn").addEventListener("click", () => {
+    const bed = document.getElementById("adminBedTime").value;
+    const newId = document.getElementById("adminNewId").value.trim();
+    const newPin = document.getElementById("adminNewPin").value.trim();
+    if (bed) state.bedtime = bed;
+    if (newId) state.parentAuth.id = newId;
+    if (newPin) state.parentAuth.pin = newPin;
+    saveState();
+    updateClockAndBedtime();
+    document.getElementById("adminNewPin").value = "";
+    showCheer("⚙️ 취침 시간 및 계정 설정이 저장되었어요!");
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    isParentLoggedIn = false;
+    adminModal.classList.remove("show");
+    updateParentModeUI();
+    showCheer("🔒 엄마 모드가 잠겼어요.");
+  });
 
   /* 1. 시계, 잠자는 시간 카운트다운, 야간 모드 */
   const dateText = document.getElementById("dateText");
@@ -1397,24 +1683,6 @@
   nightOverlay.addEventListener("click", () => {
     tempWakeUntil = Date.now() + 15000;
     nightOverlay.classList.remove("show");
-  });
-
-  /* 잠자는 시간 설정 모달 */
-  const bedModal = document.getElementById("bedModal");
-  const bedTimeInput = document.getElementById("bedTimeInput");
-  document.getElementById("bedtimeSetBtn").addEventListener("click", () => {
-    bedTimeInput.value = state.bedtime || "21:00";
-    bedModal.classList.add("show");
-  });
-  document.getElementById("closeBedModal").addEventListener("click", () => bedModal.classList.remove("show"));
-  bedModal.addEventListener("click", (e) => { if (e.target === bedModal) bedModal.classList.remove("show"); });
-  document.getElementById("saveBedBtn").addEventListener("click", () => {
-    if (bedTimeInput.value) {
-      state.bedtime = bedTimeInput.value;
-      saveState();
-      updateClockAndBedtime();
-    }
-    bedModal.classList.remove("show");
   });
 
   /* 2. Open-Meteo 날씨 */
@@ -1510,8 +1778,8 @@
   }
 
   function getKidTagHtml(kid) {
-    if (kid === "boy") return '<span class="kid-tag boy">👦 8세 남아</span>';
-    if (kid === "girl") return '<span class="kid-tag girl">👧 6세 여아</span>';
+    if (kid === "boy") return `<span class="kid-tag boy">👦 ${state.kids.boy.label}</span>`;
+    if (kid === "girl") return `<span class="kid-tag girl">👧 ${state.kids.girl.label}</span>`;
     return '<span class="kid-tag family">🏠 가족</span>';
   }
 
@@ -1524,7 +1792,7 @@
 
     const items = state.schedules[selectedDateKey] || [];
     if (items.length === 0) {
-      scheduleList.innerHTML = '<div class="schedule-empty">등록된 일정이 없어요. 위 「📋 알림장 붙여넣기」를 써보세요!</div>';
+      scheduleList.innerHTML = '<div class="schedule-empty">등록된 일정이 없어요.</div>';
       return;
     }
 
@@ -1546,16 +1814,18 @@
         renderSchedules();
       });
       row.querySelector(".schedule-del").addEventListener("click", () => {
-        state.schedules[selectedDateKey] = items.filter(x => x.id !== ev.id);
-        saveState();
-        renderCalendar();
-        renderSchedules();
+        requireParent(() => {
+          state.schedules[selectedDateKey] = items.filter(x => x.id !== ev.id);
+          saveState();
+          renderCalendar();
+          renderSchedules();
+        });
       });
       scheduleList.appendChild(row);
     });
   }
 
-  /* 단건 스케줄 추가 모달 */
+  /* 단건 스케줄 추가 모달 (부모 권한 확인) */
   const schedModal = document.getElementById("schedModal");
   const schedInput = document.getElementById("schedInput");
   const schedModalTitle = document.getElementById("schedModalTitle");
@@ -1565,19 +1835,23 @@
     document.getElementById("schedTagFamily").className = "class-btn" + (schedSelectedKid === "family" ? " active-boy" : "");
     document.getElementById("schedTagGirl").className = "class-btn" + (schedSelectedKid === "girl" ? " active-girl" : "");
     document.getElementById("schedTagBoy").className = "class-btn" + (schedSelectedKid === "boy" ? " active-boy" : "");
+    document.getElementById("schedTagGirl").textContent = `👧 ${state.kids.girl.label}`;
+    document.getElementById("schedTagBoy").textContent = `👦 ${state.kids.boy.label}`;
   }
   document.getElementById("schedTagFamily").addEventListener("click", () => { schedSelectedKid = "family"; updateSchedKidBtns(); });
   document.getElementById("schedTagGirl").addEventListener("click", () => { schedSelectedKid = "girl"; updateSchedKidBtns(); });
   document.getElementById("schedTagBoy").addEventListener("click", () => { schedSelectedKid = "boy"; updateSchedKidBtns(); });
 
   document.getElementById("openSchedModalBtn").addEventListener("click", () => {
-    const [, m, d] = selectedDateKey.split("-");
-    schedModalTitle.textContent = `📅 ${Number(m)}월 ${Number(d)}일 일정 추가`;
-    schedSelectedKid = "family";
-    updateSchedKidBtns();
-    schedInput.value = "";
-    schedModal.classList.add("show");
-    setTimeout(() => schedInput.focus(), 100);
+    requireParent(() => {
+      const [, m, d] = selectedDateKey.split("-");
+      schedModalTitle.textContent = `📅 ${Number(m)}월 ${Number(d)}일 일정 추가`;
+      schedSelectedKid = "family";
+      updateSchedKidBtns();
+      schedInput.value = "";
+      schedModal.classList.add("show");
+      setTimeout(() => schedInput.focus(), 100);
+    });
   });
   document.getElementById("closeSchedModal").addEventListener("click", () => schedModal.classList.remove("show"));
   schedModal.addEventListener("click", (e) => { if (e.target === schedModal) schedModal.classList.remove("show"); });
@@ -1595,7 +1869,7 @@
     if (e.key === "Enter") document.getElementById("saveSchedBtn").click();
   });
 
-  /* 3-2. 이알리미 알림장 붙여넣기 기능 */
+  /* 3-2. 이알리미 알림장 붙여넣기 (부모 권한 확인) */
   const noticeModal = document.getElementById("noticeModal");
   const noticeClassBoyBtn = document.getElementById("noticeClassBoy");
   const noticeClassGirlBtn = document.getElementById("noticeClassGirl");
@@ -1607,23 +1881,27 @@
   const optAddCalendar = document.getElementById("optAddCalendar");
   const optAddMission = document.getElementById("optAddMission");
 
-  let noticeTargetKid = "boy"; // 기본: 1학년 2반 -> 8세 남아
+  let noticeTargetKid = "boy";
 
   function updateNoticeClassUI() {
     noticeClassBoyBtn.className = "class-btn" + (noticeTargetKid === "boy" ? " active-boy" : "");
     noticeClassGirlBtn.className = "class-btn" + (noticeTargetKid === "girl" ? " active-girl" : "");
+    noticeClassBoyBtn.textContent = `👦 1학년 2반 → ${state.kids.boy.label}`;
+    noticeClassGirlBtn.textContent = `👧 2학년 1반 → ${state.kids.girl.label}`;
   }
 
   noticeClassBoyBtn.addEventListener("click", () => { noticeTargetKid = "boy"; updateNoticeClassUI(); updateNoticePreview(); });
   noticeClassGirlBtn.addEventListener("click", () => { noticeTargetKid = "girl"; updateNoticeClassUI(); updateNoticePreview(); });
 
   document.getElementById("openNoticeModalBtn").addEventListener("click", () => {
-    noticeDefaultDate.value = selectedDateKey;
-    noticeTextarea.value = "";
-    noticePreviewBox.style.display = "none";
-    updateNoticeClassUI();
-    noticeModal.classList.add("show");
-    setTimeout(() => noticeTextarea.focus(), 100);
+    requireParent(() => {
+      noticeDefaultDate.value = selectedDateKey;
+      noticeTextarea.value = "";
+      noticePreviewBox.style.display = "none";
+      updateNoticeClassUI();
+      noticeModal.classList.add("show");
+      setTimeout(() => noticeTextarea.focus(), 100);
+    });
   });
   document.getElementById("closeNoticeModal").addEventListener("click", () => noticeModal.classList.remove("show"));
   noticeModal.addEventListener("click", (e) => { if (e.target === noticeModal) noticeModal.classList.remove("show"); });
@@ -1637,24 +1915,18 @@
 
   function extractDateFromLine(line, fallbackDate) {
     const baseYear = Number(fallbackDate.split("-")[0]) || new Date().getFullYear();
-
     let m = line.match(/(20\d{2})\s*[./-]\s*(\d{1,2})\s*[./-]\s*(\d{1,2})/);
-    if (m) {
-      return `${m[1]}-${String(Number(m[2])).padStart(2, "0")}-${String(Number(m[3])).padStart(2, "0")}`;
-    }
+    if (m) return `${m[1]}-${String(Number(m[2])).padStart(2, "0")}-${String(Number(m[3])).padStart(2, "0")}`;
+
     m = line.match(/(\d{1,2})\s*월\s*(\d{1,2})\s*일/);
     if (m) {
       const mo = Number(m[1]), da = Number(m[2]);
-      if (mo >= 1 && mo <= 12 && da >= 1 && da <= 31) {
-        return `${baseYear}-${String(mo).padStart(2, "0")}-${String(da).padStart(2, "0")}`;
-      }
+      if (mo >= 1 && mo <= 12 && da >= 1 && da <= 31) return `${baseYear}-${String(mo).padStart(2, "0")}-${String(da).padStart(2, "0")}`;
     }
     m = line.match(/(?:^|[^\d])(\d{1,2})\s*[/.]\s*(\d{1,2})(?:$|[^\d])/);
     if (m) {
       const mo = Number(m[1]), da = Number(m[2]);
-      if (mo >= 1 && mo <= 12 && da >= 1 && da <= 31) {
-        return `${baseYear}-${String(mo).padStart(2, "0")}-${String(da).padStart(2, "0")}`;
-      }
+      if (mo >= 1 && mo <= 12 && da >= 1 && da <= 31) return `${baseYear}-${String(mo).padStart(2, "0")}-${String(da).padStart(2, "0")}`;
     }
     if (/모레/.test(line)) return getTodayKey(2);
     if (/내일/.test(line)) return getTodayKey(1);
@@ -1687,9 +1959,7 @@
       const itemText = rawLine.replace(/^(\d+[.)]|[-*•▪▶▷☞※①-⑮])\s*/, "").trim();
       if (!itemText) continue;
 
-      const targetDate = foundDate || currentDate;
-      const icon = detectIcon(itemText);
-      results.push({ date: targetDate, icon, text: itemText });
+      results.push({ date: foundDate || currentDate, icon: detectIcon(itemText), text: itemText });
     }
     return results;
   }
@@ -1710,7 +1980,7 @@
       return;
     }
 
-    const label = noticeTargetKid === "boy" ? "👦 8세 남아 (1학년 2반)" : "👧 6세 여아 (2학년 1반)";
+    const label = noticeTargetKid === "boy" ? `👦 ${state.kids.boy.label} (1학년 2반)` : `👧 ${state.kids.girl.label} (2학년 1반)`;
     noticePreviewTitle.textContent = `자동 추출 ${items.length}건 → ${label}`;
     noticePreviewList.innerHTML = items.map(it => {
       const [, m, d] = it.date.split("-");
@@ -1724,10 +1994,7 @@
 
   document.getElementById("applyNoticeBtn").addEventListener("click", () => {
     const items = parseNoticeText(noticeTextarea.value, noticeDefaultDate.value || selectedDateKey);
-    if (items.length === 0) {
-      showCheer("알림장 내용을 먼저 붙여넣어 주세요!");
-      return;
-    }
+    if (items.length === 0) { showCheer("알림장 내용을 먼저 붙여넣어 주세요!"); return; }
 
     const addCal = optAddCalendar.checked;
     const addMis = optAddMission.checked;
@@ -1737,19 +2004,12 @@
       const fullText = `${it.icon} ${it.text}`;
       if (addCal) {
         if (!state.schedules[it.date]) state.schedules[it.date] = [];
-        const dupCal = state.schedules[it.date].some(x => x.text === it.text && x.kid === noticeTargetKid);
-        if (!dupCal) {
-          state.schedules[it.date].push({
-            id: Date.now() + idx,
-            text: it.text,
-            done: false,
-            kid: noticeTargetKid
-          });
+        if (!state.schedules[it.date].some(x => x.text === it.text && x.kid === noticeTargetKid)) {
+          state.schedules[it.date].push({ id: Date.now() + idx, text: it.text, done: false, kid: noticeTargetKid });
         }
       }
       if (addMis) {
-        const dupMis = kid.todos.some(t => t.text === fullText || t.text === it.text);
-        if (!dupMis) {
+        if (!kid.todos.some(t => t.text === fullText || t.text === it.text)) {
           kid.todos.push({ id: Date.now() + 1000 + idx, text: fullText, done: false });
         }
       }
@@ -1768,7 +2028,67 @@
     showCheer(`📋 ${kid.label} 알림장 ${items.length}건 등록 완료!`);
   });
 
-  /* 4. 아이별 포켓몬 & 미션 렌더링 */
+  /* 4. 아이별 오늘의 기록 (기분 · 읽은 책 · 일기) */
+  const journalTimers = { girl: null, boy: null };
+
+  function showJournalSaved(kidKey) {
+    const badge = document.getElementById(`${kidKey}JournalSaved`);
+    badge.classList.add("show");
+    clearTimeout(journalTimers[kidKey]);
+    journalTimers[kidKey] = setTimeout(() => badge.classList.remove("show"), 1400);
+  }
+
+  function getTodayJournal(kidKey) {
+    const today = getTodayKey();
+    if (!state.kids[kidKey].journals) state.kids[kidKey].journals = {};
+    if (!state.kids[kidKey].journals[today]) {
+      state.kids[kidKey].journals[today] = { mood: "", book: "", diary: "" };
+    }
+    return state.kids[kidKey].journals[today];
+  }
+
+  function renderJournal(kidKey) {
+    const j = getTodayJournal(kidKey);
+    const moodRow = document.getElementById(`${kidKey}MoodRow`);
+    moodRow.innerHTML = MOODS.map(m => `
+      <button type="button" class="mood-btn ${j.mood === m.key ? "selected" : ""}" data-mood="${m.key}">
+        <span class="mood-emoji">${m.emoji}</span>
+        <span class="mood-label">${m.label}</span>
+      </button>
+    `).join("");
+
+    moodRow.querySelectorAll(".mood-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const cur = getTodayJournal(kidKey);
+        cur.mood = btn.dataset.mood;
+        saveState();
+        renderJournal(kidKey);
+        showJournalSaved(kidKey);
+        const mObj = MOODS.find(m => m.key === cur.mood);
+        if (mObj) showCheer(`${state.kids[kidKey].label} 오늘 기분: ${mObj.emoji} ${mObj.label}!`);
+      });
+    });
+
+    const bookEl = document.getElementById(`${kidKey}BookInput`);
+    const diaryEl = document.getElementById(`${kidKey}DiaryInput`);
+    if (document.activeElement !== bookEl) bookEl.value = j.book || "";
+    if (document.activeElement !== diaryEl) diaryEl.value = j.diary || "";
+  }
+
+  ["girl", "boy"].forEach(kidKey => {
+    document.getElementById(`${kidKey}BookInput`).addEventListener("input", (e) => {
+      getTodayJournal(kidKey).book = e.target.value;
+      saveState();
+      showJournalSaved(kidKey);
+    });
+    document.getElementById(`${kidKey}DiaryInput`).addEventListener("input", (e) => {
+      getTodayJournal(kidKey).diary = e.target.value;
+      saveState();
+      showJournalSaved(kidKey);
+    });
+  });
+
+  /* 5. 아이별 포켓몬 & 미션 렌더링 */
   const cheerToast = document.getElementById("cheerToast");
   let cheerTimer = null;
   function showCheer(msg) {
@@ -1839,6 +2159,7 @@
     const kid = state.kids[kidKey];
     const { stageIdx, poke, count } = getKidPoke(kidKey);
 
+    document.getElementById(`${kidKey}TitleLabel`).textContent = `${kidKey === "girl" ? "👧" : "👦"} ${kid.label}`;
     document.getElementById(`${kidKey}PokeImg`).src = getPokeImgUrl(poke.id);
     document.getElementById(`${kidKey}PokeName`).textContent = `${poke.name} (${stageIdx + 1}단계)`;
     document.getElementById(`${kidKey}StickerCnt`).textContent = `⭐ ${count}개`;
@@ -1948,7 +2269,7 @@
     pokeModal.classList.add("show");
   }
 
-  /* 5. Wake Lock */
+  /* 6. Wake Lock */
   let wakeLock = null;
   const wakeBtn = document.getElementById("wakeBtn");
   async function requestWakeLock() {
@@ -1972,8 +2293,11 @@
   });
 
   /* 초기화 */
+  updateParentModeUI();
   renderKid("girl");
   renderKid("boy");
+  renderJournal("girl");
+  renderJournal("boy");
   renderCalendar();
   renderSchedules();
   updateClockAndBedtime();
