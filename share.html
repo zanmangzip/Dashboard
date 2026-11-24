@@ -7,7 +7,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#FFF9EC">
-<title>우리집 포켓몬 가족 대시보드</title>
+<title>우리 아이 포켓몬 대시보드</title>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer></script>
 <style>
   * {
     box-sizing: border-box;
@@ -49,10 +50,10 @@
     font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
   }
 
-  /* 가로 태블릿 3단 레이아웃 */
+  /* 가로 태블릿 3단 레이아웃: 왼쪽(시계·날씨·달력) / 가운데(포켓몬·주간시간표·미션) / 오른쪽(일기·부모님 편지) */
   .dashboard {
     display: grid;
-    grid-template-columns: 1.02fr 0.99fr 0.99fr;
+    grid-template-columns: 0.96fr 1.18fr 0.86fr;
     gap: 14px;
     width: 100%;
     height: 100%;
@@ -90,65 +91,26 @@
     gap: 6px;
   }
 
-  .clock-left {
-    display: flex;
-    flex-direction: column;
-  }
+  .clock-left { display: flex; flex-direction: column; }
+  .date-text { font-size: 13px; font-weight: 800; color: #B4690E; }
+  .time-wrap { display: flex; align-items: baseline; gap: 5px; }
+  .ampm { font-size: 14px; font-weight: 800; color: var(--blue); }
+  .time-text { font-size: clamp(24px, 2.5vw, 34px); font-weight: 900; letter-spacing: -1px; line-height: 1.05; font-variant-numeric: tabular-nums; }
 
-  .date-text {
-    font-size: 13px;
-    font-weight: 800;
-    color: #B4690E;
-  }
-
-  .time-wrap {
-    display: flex;
-    align-items: baseline;
-    gap: 5px;
-  }
-
-  .ampm {
-    font-size: 14px;
-    font-weight: 800;
-    color: var(--blue);
-  }
-
-  .time-text {
-    font-size: clamp(26px, 2.8vw, 36px);
-    font-weight: 900;
-    letter-spacing: -1px;
-    line-height: 1.05;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .clock-btns {
-    display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
-
+  .clock-btns { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
   .icon-pill {
     border: none;
     background: rgba(255, 255, 255, 0.92);
     color: var(--muted);
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 800;
-    padding: 6px 9px;
+    padding: 5px 9px;
     border-radius: 999px;
     cursor: pointer;
     white-space: nowrap;
   }
-
-  .icon-pill.active {
-    background: var(--green-soft);
-    color: #047857;
-  }
-
-  .icon-pill.parent-on {
-    background: var(--purple);
-    color: #FFFFFF;
-  }
+  .icon-pill.active { background: var(--green-soft); color: #047857; }
+  .icon-pill.parent-on { background: var(--purple); color: #FFFFFF; }
 
   .bedtime-bar {
     display: flex;
@@ -159,20 +121,8 @@
     padding: 7px 11px;
     gap: 8px;
   }
-
-  .bedtime-info {
-    font-size: 12.5px;
-    font-weight: 800;
-    color: #4338CA;
-  }
-
-  .bedtime-remain {
-    font-size: 13.5px;
-    font-weight: 900;
-    color: #DC2626;
-    white-space: nowrap;
-  }
-
+  .bedtime-info { font-size: 12px; font-weight: 800; color: #4338CA; }
+  .bedtime-remain { font-size: 13px; font-weight: 900; color: #DC2626; white-space: nowrap; }
   .bedtime-remain.calm { color: #4F46E5; }
 
   /* 2. 왼쪽 중간: 날씨 카드 */
@@ -181,146 +131,106 @@
     border-color: #C7E4FA;
     display: flex;
     flex-direction: column;
-    gap: 7px;
-    padding: 10px 13px;
+    gap: 6px;
+    padding: 10px 12px;
   }
+  .weather-header { display: flex; justify-content: space-between; align-items: center; }
+  .weather-loc { font-size: 13.5px; font-weight: 900; color: #1D6FA5; }
+  .weather-updated { font-size: 10.5px; font-weight: 700; color: #5C8DB0; }
+  .weather-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .weather-box { background: rgba(255, 255, 255, 0.92); border-radius: 13px; padding: 7px 9px; display: flex; flex-direction: column; gap: 1px; }
+  .weather-day-label { font-size: 11px; font-weight: 800; color: #1D6FA5; }
+  .weather-main { display: flex; align-items: center; gap: 6px; }
+  .weather-emoji { font-size: 22px; line-height: 1; }
+  .weather-temp-now { font-size: 19px; font-weight: 900; }
+  .weather-desc { font-size: 12px; font-weight: 800; }
+  .weather-sub { font-size: 10px; font-weight: 700; color: var(--muted); }
 
-  .weather-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .weather-loc { font-size: 14px; font-weight: 900; color: #1D6FA5; }
-  .weather-updated { font-size: 11px; font-weight: 700; color: #5C8DB0; }
-
-  .weather-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 7px;
-  }
-
-  .weather-box {
-    background: rgba(255, 255, 255, 0.92);
-    border-radius: 14px;
-    padding: 8px 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-  }
-
-  .weather-day-label { font-size: 11.5px; font-weight: 800; color: #1D6FA5; }
-  .weather-main { display: flex; align-items: center; gap: 7px; }
-  .weather-emoji { font-size: 24px; line-height: 1; }
-  .weather-temp-now { font-size: 20px; font-weight: 900; }
-  .weather-desc { font-size: 12.5px; font-weight: 800; }
-  .weather-sub { font-size: 10.5px; font-weight: 700; color: var(--muted); }
-
-  /* 3. 왼쪽 하단: 가족 스케줄 달력 카드 */
+  /* 3. 왼쪽 하단: 달력 & 알림장 사진/글 등록 */
   .cal-card {
     flex: 1;
     min-height: 0;
     display: flex;
     flex-direction: column;
-    gap: 7px;
-    border-color: #DBEAFE;
-    padding: 11px 13px;
-  }
-
-  .cal-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     gap: 6px;
+    border-color: #DBEAFE;
+    padding: 10px 12px;
   }
-
-  .cal-title { font-size: 15px; font-weight: 900; color: #1D4ED8; }
+  .cal-head { display: flex; justify-content: space-between; align-items: center; gap: 5px; }
+  .cal-title { font-size: 14.5px; font-weight: 900; color: #1D4ED8; }
   .cal-head-right { display: flex; align-items: center; gap: 5px; }
 
   .notice-btn {
     border: none;
     background: linear-gradient(135deg, #F59E0B, #EA580C);
     color: #FFFFFF;
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 900;
-    padding: 5px 9px;
+    padding: 5px 8px;
     border-radius: 9px;
     cursor: pointer;
     white-space: nowrap;
   }
 
-  .cal-nav { display: flex; gap: 4px; }
+  .cal-nav { display: flex; gap: 3px; }
   .cal-nav button {
     border: none;
     background: #EFF6FF;
     color: #1D4ED8;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 900;
-    width: 26px;
-    height: 26px;
-    border-radius: 8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
     cursor: pointer;
   }
 
-  .cal-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 3px;
-    text-align: center;
-  }
-
-  .cal-dow { font-size: 11px; font-weight: 800; color: var(--muted); padding-bottom: 1px; }
-
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+  .cal-dow { font-size: 10.5px; font-weight: 800; color: var(--muted); padding-bottom: 1px; }
   .cal-day {
-    height: 31px;
+    height: 29px;
     border-radius: 8px;
     background: #F8FAFC;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 800;
     color: #334155;
     cursor: pointer;
   }
-
   .cal-day.empty { background: transparent; cursor: default; }
   .cal-day.today { border: 2px solid #3B82F6; background: #EFF6FF; }
   .cal-day.selected { background: #DBEAFE; color: #1E3A8A; border: 2px solid #2563EB; }
-
-  .cal-dots { display: flex; gap: 2px; margin-top: 1px; height: 6px; align-items: center; }
+  .cal-dots { display: flex; gap: 2px; margin-top: 1px; height: 5px; align-items: center; }
   .dot-event { width: 5px; height: 5px; border-radius: 50%; background: #F59E0B; }
-  .dot-kid1 { width: 5px; height: 5px; border-radius: 50%; background: #0284C7; }
-  .dot-kid2 { width: 5px; height: 5px; border-radius: 50%; background: #EC4899; }
+  .dot-sticker { width: 5px; height: 5px; border-radius: 50%; background: #10B981; }
 
   .schedule-box {
     flex: 1;
     min-height: 0;
     background: #F8FAFC;
-    border-radius: 13px;
-    padding: 8px 10px;
+    border-radius: 12px;
+    padding: 8px 9px;
     display: flex;
     flex-direction: column;
     gap: 5px;
   }
-
   .schedule-head { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
-  .schedule-date-label { font-size: 12.5px; font-weight: 900; color: #1E40AF; }
+  .schedule-date-label { font-size: 12px; font-weight: 900; color: #1E40AF; }
   .schedule-add-btn {
     border: none;
     background: #2563EB;
     color: #FFFFFF;
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 800;
-    padding: 4px 9px;
-    border-radius: 8px;
+    padding: 4px 8px;
+    border-radius: 7px;
     cursor: pointer;
     white-space: nowrap;
   }
-
   .schedule-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
-
   .schedule-item {
     display: flex;
     justify-content: space-between;
@@ -329,91 +239,46 @@
     border: 1.5px solid #E2E8F0;
     border-radius: 9px;
     padding: 5px 8px;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 800;
     gap: 5px;
   }
-
-  .schedule-item.done {
-    background: #ECFDF5;
-    border-color: #A7F3D0;
-    color: #047857;
-    text-decoration: line-through;
-  }
-
-  .schedule-item-left {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-    flex: 1;
-    min-width: 0;
-    word-break: keep-all;
-  }
-
-  .kid-tag {
-    font-size: 10px;
-    font-weight: 900;
-    padding: 2px 5px;
-    border-radius: 999px;
-    flex-shrink: 0;
-  }
-
-  .kid-tag.kid1 { background: #E0F2FE; color: #0369A1; }
-  .kid-tag.kid2 { background: #FCE7F3; color: #BE185D; }
-  .kid-tag.family { background: #FEF3C7; color: #B45309; }
-
+  .schedule-item.done { background: #ECFDF5; border-color: #A7F3D0; color: #047857; text-decoration: line-through; }
+  .schedule-item-left { display: flex; align-items: center; gap: 5px; cursor: pointer; flex: 1; min-width: 0; word-break: keep-all; }
   .schedule-del {
     border: none;
     background: #FEE2E2;
     color: #DC2626;
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 800;
     padding: 3px 6px;
     border-radius: 6px;
     cursor: pointer;
     flex-shrink: 0;
   }
+  .schedule-empty { font-size: 11.5px; font-weight: 700; color: #94A3B8; text-align: center; padding: 8px 0; }
 
-  .schedule-empty {
-    font-size: 11.5px;
-    font-weight: 700;
-    color: #94A3B8;
-    text-align: center;
-    padding: 8px 0;
-  }
-
-  /* 가운데(첫째 아이) & 오른쪽(둘째 아이) 카드 */
-  .kid-col {
+  /* ===== 가운데 열: 포켓몬 + 항상 보이는 주간 시간표 + 오늘의 미션 ===== */
+  .center-card {
+    flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    min-height: 0;
     border-radius: 22px;
-    border: 3px solid var(--border);
-    background: #FFFFFF;
+    border: 3px solid var(--sky-border);
+    background: linear-gradient(180deg, #F0F9FF 0%, #FFFFFF 120px);
     box-shadow: var(--shadow);
-    padding: 12px 14px;
-    gap: 9px;
+    padding: 13px 15px;
+    gap: 10px;
   }
 
-  .kid-col.kid1 {
-    border-color: var(--sky-border);
-    background: linear-gradient(180deg, #F0F9FF 0%, #FFFFFF 115px);
-  }
-
-  .kid-col.kid2 {
-    border-color: var(--pink-border);
-    background: linear-gradient(180deg, #FFF5F8 0%, #FFFFFF 115px);
-  }
-
-  .kid-header { display: flex; align-items: center; gap: 10px; }
-
+  .kid-header { display: flex; align-items: center; gap: 12px; }
   .poke-avatar {
-    width: 62px;
-    height: 62px;
+    width: 64px;
+    height: 64px;
     border-radius: 18px;
     background: #FFFFFF;
-    border: 3px solid #FDE68A;
+    border: 3px solid #7DD3FC;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -421,41 +286,117 @@
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0,0,0,0.06);
   }
-
-  .kid-col.kid1 .poke-avatar { border-color: #7DD3FC; }
-  .kid-col.kid2 .poke-avatar { border-color: #F9A8D4; }
   .poke-avatar img { width: 54px; height: 54px; object-fit: contain; }
 
   .kid-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
   .kid-title-row { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
-  .kid-name { font-size: clamp(17px, 1.7vw, 21px); font-weight: 900; }
-  .kid-col.kid1 .kid-name { color: #0369A1; }
-  .kid-col.kid2 .kid-name { color: #BE185D; }
-
+  .kid-name { font-size: clamp(18px, 1.8vw, 22px); font-weight: 900; color: #0369A1; }
   .poke-change-btn {
     border: none;
     border-radius: 9px;
     font-size: 11.5px;
     font-weight: 800;
-    padding: 4px 8px;
+    padding: 5px 9px;
     cursor: pointer;
+    background: #E0F2FE;
+    color: #0369A1;
     white-space: nowrap;
   }
-
-  .kid-col.kid1 .poke-change-btn { background: #E0F2FE; color: #0369A1; }
-  .kid-col.kid2 .poke-change-btn { background: #FCE7F3; color: #BE185D; }
-
   .poke-sub-row { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 800; color: var(--muted); }
   .evo-bar { width: 100%; height: 9px; background: #F1F5F9; border-radius: 999px; overflow: hidden; }
-  .evo-fill { height: 100%; width: 0%; border-radius: 999px; transition: width 0.35s ease; }
-  .kid-col.kid1 .evo-fill { background: linear-gradient(90deg, #38BDF8, #0284C7); }
-  .kid-col.kid2 .evo-fill { background: linear-gradient(90deg, #F472B6, #EC4899); }
+  .evo-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, #38BDF8, #0284C7); transition: width 0.35s ease; }
 
+  /* 항상 보이는 일주일 시간표 */
+  .weekly-board {
+    background: #FFFDF7;
+    border: 2px solid #FDE68A;
+    border-radius: 16px;
+    padding: 9px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .weekly-board-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .weekly-board-title {
+    font-size: 13.5px;
+    font-weight: 900;
+    color: #B45309;
+  }
+
+  .weekly-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+  }
+
+  .weekly-col {
+    background: #FFFFFF;
+    border: 1.5px solid #F3E8D2;
+    border-radius: 11px;
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 92px;
+    max-height: 125px;
+    overflow-y: auto;
+  }
+
+  .weekly-col.is-today {
+    background: #FEF3C7;
+    border-color: #F59E0B;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.18);
+  }
+
+  .weekly-day-head {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 900;
+    color: #475569;
+    padding-bottom: 3px;
+    border-bottom: 1.5px dashed #E2E8F0;
+  }
+
+  .weekly-col.is-today .weekly-day-head {
+    color: #B45309;
+    border-bottom-color: #FCD34D;
+  }
+
+  .weekly-slot {
+    background: #F8FAFC;
+    border-radius: 6px;
+    padding: 3px 4px;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--ink);
+    text-align: center;
+    line-height: 1.25;
+    word-break: keep-all;
+  }
+
+  .weekly-col.is-today .weekly-slot {
+    background: #FFFFFF;
+  }
+
+  .weekly-empty {
+    font-size: 10px;
+    font-weight: 700;
+    color: #CBD5E1;
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  /* 오늘의 미션 */
   .mission-head { display: flex; justify-content: space-between; align-items: center; }
   .mission-label { font-size: 15px; font-weight: 900; color: var(--ink); }
-  .mission-prog { font-size: 13px; font-weight: 800; padding: 3px 10px; border-radius: 999px; }
-  .kid-col.kid1 .mission-prog { background: #E0F2FE; color: #0369A1; }
-  .kid-col.kid2 .mission-prog { background: #FCE7F3; color: #BE185D; }
+  .mission-prog { font-size: 13px; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: #E0F2FE; color: #0369A1; }
 
   .todo-list {
     flex: 1;
@@ -472,18 +413,16 @@
     align-items: center;
     justify-content: space-between;
     gap: 9px;
-    padding: 9px 11px;
-    border-radius: 14px;
+    padding: 9px 12px;
+    border-radius: 13px;
     background: #FAFBFD;
     border: 2px solid #E8EEF5;
     cursor: pointer;
     transition: transform 0.1s ease, background 0.2s ease, border-color 0.2s ease;
   }
-
   .todo-item:active { transform: scale(0.98); }
   .todo-item.done { background: var(--green-soft); border-color: #6EE7B7; }
   .todo-left { display: flex; align-items: center; gap: 9px; min-width: 0; }
-
   .checkbox {
     width: 26px;
     height: 26px;
@@ -493,12 +432,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 900;
     color: #FFFFFF;
     flex-shrink: 0;
   }
-
   .todo-item.done .checkbox { background: var(--green); border-color: var(--green); }
   .todo-text { font-size: clamp(14.5px, 1.45vw, 18px); font-weight: 800; color: var(--ink); word-break: keep-all; }
   .todo-item.done .todo-text { color: #047857; text-decoration: line-through; }
@@ -515,18 +453,10 @@
     flex-shrink: 0;
     display: none;
   }
-
   .edit-mode .del-btn { display: inline-block; }
 
-  /* 부모 모드일 때만 미션 편집 바 표시 */
-  .todo-footer {
-    display: none;
-    gap: 5px;
-  }
-
-  body.parent-mode .todo-footer {
-    display: flex;
-  }
+  .todo-footer { display: none; gap: 5px; }
+  body.parent-mode .todo-footer { display: flex; }
 
   .todo-input {
     flex: 1;
@@ -540,7 +470,6 @@
     outline: none;
     user-select: text;
   }
-
   .btn {
     border: none;
     border-radius: 10px;
@@ -551,56 +480,52 @@
     cursor: pointer;
     white-space: nowrap;
   }
-
-  .btn-add { background: var(--blue); color: #FFFFFF; }
-  .kid-col.kid1 .btn-add { background: var(--sky); }
-  .kid-col.kid2 .btn-add { background: var(--pink); }
+  .btn-add { background: var(--sky); color: #FFFFFF; }
   .btn-edit { background: #EEF2F7; color: var(--muted); }
   .btn-edit.active { background: #EF4444; color: #FFFFFF; }
 
-  /* 아이별 오늘의 기록 (기분 이모지 + 읽은 책 + 오늘의 일기) */
-  .journal-box {
-    background: #FFFDF7;
-    border: 2px solid #FDE68A;
-    border-radius: 16px;
-    padding: 10px 11px;
+  /* ===== 오른쪽 열: 일기 공간 2개 (1. 오늘의 기분·독서·일기 / 2. 엄마·아빠에게 보내는 편지) ===== */
+  .diary-card {
+    flex: 1.05;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    gap: 7px;
-    flex-shrink: 0;
+    gap: 8px;
+    background: linear-gradient(180deg, #F5F3FF 0%, #FFFFFF 75px);
+    border-color: #DDD6FE;
   }
 
-  .kid-col.kid1 .journal-box { background: #F7FCFF; border-color: #BAE6FD; }
-  .kid-col.kid2 .journal-box { background: #FFF8FB; border-color: #FBCFE8; }
+  .letter-card {
+    flex: 0.95;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: linear-gradient(180deg, #FDF2F8 0%, #FFFFFF 75px);
+    border-color: #FBCFE8;
+  }
 
-  .journal-head {
+  .space-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 6px;
   }
 
-  .journal-title {
-    font-size: 13.5px;
-    font-weight: 900;
-    color: var(--ink);
-  }
+  .space-title { font-size: 15px; font-weight: 900; color: var(--ink); }
+  .letter-card .space-title { color: #BE185D; }
+  .diary-card .space-title { color: #6D28D9; }
 
-  .journal-saved {
+  .saved-badge {
     font-size: 11px;
     font-weight: 800;
     color: #10B981;
     opacity: 0;
     transition: opacity 0.25s ease;
   }
+  .saved-badge.show { opacity: 1; }
 
-  .journal-saved.show { opacity: 1; }
-
-  .mood-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 5px;
-  }
-
+  .mood-row { display: flex; justify-content: space-between; gap: 4px; }
   .mood-btn {
     flex: 1;
     border: 2px solid transparent;
@@ -612,55 +537,57 @@
     align-items: center;
     gap: 1px;
     cursor: pointer;
-    transition: transform 0.1s ease, border-color 0.15s ease, background 0.15s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
   }
-
   .mood-btn:active { transform: scale(0.95); }
   .mood-emoji { font-size: 20px; line-height: 1.1; }
   .mood-label { font-size: 10px; font-weight: 800; color: var(--muted); }
-
-  .kid-col.kid1 .mood-btn.selected {
-    background: #E0F2FE;
-    border-color: #0284C7;
-  }
-  .kid-col.kid2 .mood-btn.selected {
-    background: #FCE7F3;
-    border-color: #EC4899;
-  }
-  .mood-btn.selected .mood-label { color: var(--ink); }
+  .mood-btn.selected { background: #EDE9FE; border-color: #7C3AED; }
+  .mood-btn.selected .mood-label { color: #5B21B6; }
 
   .journal-input {
     width: 100%;
     font-size: 13.5px;
     font-weight: 700;
     font-family: inherit;
-    padding: 7px 10px;
+    padding: 8px 10px;
     border: 2px solid #E2E8F0;
-    border-radius: 10px;
+    border-radius: 11px;
     background: #FFFFFF;
     outline: none;
     user-select: text;
   }
+  .journal-input:focus { border-color: #7C3AED; }
 
   .journal-textarea {
+    flex: 1;
+    min-height: 70px;
     width: 100%;
-    min-height: 52px;
-    max-height: 76px;
     resize: none;
     font-size: 13.5px;
     font-weight: 700;
     font-family: inherit;
-    padding: 7px 10px;
+    padding: 9px 11px;
     border: 2px solid #E2E8F0;
-    border-radius: 10px;
+    border-radius: 12px;
     background: #FFFFFF;
     outline: none;
-    line-height: 1.4;
+    line-height: 1.5;
     user-select: text;
   }
+  .diary-card .journal-textarea:focus { border-color: #7C3AED; }
+  .letter-card .journal-textarea { border-color: #FBCFE8; background: #FFFBFD; }
+  .letter-card .journal-textarea:focus { border-color: #EC4899; background: #FFFFFF; }
 
-  .journal-input:focus, .journal-textarea:focus {
-    border-color: var(--blue);
+  .letter-send-btn {
+    border: none;
+    background: linear-gradient(135deg, #EC4899, #F43F5E);
+    color: #FFFFFF;
+    font-size: 13.5px;
+    font-weight: 900;
+    padding: 9px;
+    border-radius: 12px;
+    cursor: pointer;
   }
 
   /* 칭찬 토스트 */
@@ -682,7 +609,6 @@
     white-space: nowrap;
     z-index: 2500;
   }
-
   .cheer-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* 모달 공통 */
@@ -694,9 +620,8 @@
     align-items: center;
     justify-content: center;
     z-index: 3000;
-    padding: 18px;
+    padding: 16px;
   }
-
   .modal-backdrop.show { display: flex; }
 
   .modal-box {
@@ -710,14 +635,7 @@
     padding: 20px 22px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
   }
-
-  .modal-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-  }
-
+  .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
   .modal-title { font-size: 20px; font-weight: 900; }
   .modal-close {
     border: none;
@@ -731,6 +649,46 @@
     cursor: pointer;
   }
 
+  /* 사진 업로드 OCR 영역 */
+  .ocr-upload-box {
+    border: 2.5px dashed #F59E0B;
+    background: #FFFBEB;
+    border-radius: 14px;
+    padding: 12px;
+    text-align: center;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ocr-file-label {
+    display: inline-block;
+    background: linear-gradient(135deg, #F59E0B, #EA580C);
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 900;
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .ocr-status {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #B45309;
+  }
+
+  .ocr-preview-img {
+    max-height: 110px;
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1.5px solid #FDE68A;
+    display: none;
+  }
+
+  /* 포켓몬 선택 */
   .poke-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
   .poke-option {
     background: #FFFDF7;
@@ -755,30 +713,28 @@
     font-size: 15px;
     font-weight: 700;
     font-family: inherit;
-    padding: 10px 12px;
+    padding: 9px 12px;
     border: 2.5px solid #CBD5E1;
     border-radius: 12px;
     outline: none;
     user-select: text;
   }
-  .form-textarea { min-height: 110px; resize: vertical; line-height: 1.5; }
+  .form-textarea { min-height: 100px; resize: vertical; line-height: 1.5; }
   .form-input:focus, .form-textarea:focus { border-color: var(--blue); }
 
-  .class-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .class-btn {
-    border: 2.5px solid #E2E8F0;
+  .dow-tabs { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 12px; }
+  .dow-tab {
+    border: 2px solid #E2E8F0;
     background: #F8FAFC;
-    border-radius: 12px;
-    padding: 9px;
+    color: #475569;
     font-size: 13.5px;
     font-weight: 900;
+    padding: 8px 4px;
+    border-radius: 10px;
     cursor: pointer;
-    color: var(--muted);
     text-align: center;
   }
-  .class-btn.active-kid1 { background: #E0F2FE; border-color: #0284C7; color: #0369A1; }
-  .class-btn.active-kid2 { background: #FCE7F3; border-color: #EC4899; color: #BE185D; }
-  .class-btn.active-purple { background: #F5F3FF; border-color: #7C3AED; color: #6D28D9; }
+  .dow-tab.active { background: var(--purple); border-color: var(--purple); color: #FFFFFF; }
 
   .check-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
   .check-label { display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 800; cursor: pointer; }
@@ -790,7 +746,7 @@
     border-radius: 12px;
     padding: 9px 11px;
     margin-bottom: 12px;
-    max-height: 130px;
+    max-height: 125px;
     overflow-y: auto;
   }
   .preview-title { font-size: 12px; font-weight: 900; color: #475569; margin-bottom: 5px; }
@@ -819,7 +775,7 @@
     border: none;
     background: #2563EB;
     color: #FFFFFF;
-    font-size: 15.5px;
+    font-size: 15px;
     font-weight: 900;
     padding: 11px;
     border-radius: 12px;
@@ -829,33 +785,43 @@
   .form-submit.purple { background: linear-gradient(135deg, #7C3AED, #6D28D9); }
   .form-submit.gray { background: #E2E8F0; color: #334155; }
 
-  /* 부모 관리 모달 탭 & 기록 리스트 */
-  .admin-tabs {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    margin-bottom: 14px;
-  }
-
+  /* 부모 관리 모달 4탭 */
+  .admin-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px; }
   .admin-tab {
     border: 2px solid #E2E8F0;
     background: #F8FAFC;
     color: #475569;
-    font-size: 13.5px;
+    font-size: 12.5px;
     font-weight: 900;
-    padding: 9px 6px;
+    padding: 9px 4px;
     border-radius: 12px;
     cursor: pointer;
   }
-
-  .admin-tab.active {
-    background: var(--purple-soft);
-    border-color: var(--purple);
-    color: var(--purple);
-  }
-
+  .admin-tab.active { background: var(--purple-soft); border-color: var(--purple); color: var(--purple); }
   .admin-panel { display: none; }
   .admin-panel.active { display: block; }
+
+  .admin-edit-section {
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 14px;
+    padding: 11px 12px;
+    margin-bottom: 10px;
+  }
+  .admin-edit-title { font-size: 13.5px; font-weight: 900; color: var(--ink); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .admin-item-list { display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; max-height: 150px; overflow-y: auto; }
+  .admin-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #FFFFFF;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 9px;
+    padding: 6px 9px;
+    font-size: 13px;
+    font-weight: 800;
+    gap: 8px;
+  }
 
   .log-card {
     background: #F8FAFC;
@@ -867,68 +833,29 @@
     flex-direction: column;
     gap: 4px;
   }
+  .log-card.letter-log { background: #FFF8FB; border-color: #FBCFE8; }
+  .log-card-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 900; }
+  .log-card-body { font-size: 13px; font-weight: 700; color: #334155; line-height: 1.45; white-space: pre-wrap; }
 
-  .log-card-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-    font-weight: 900;
-  }
-
-  .log-card-body {
-    font-size: 13px;
-    font-weight: 700;
-    color: #334155;
-    line-height: 1.45;
-    white-space: pre-wrap;
-  }
-
-  .admin-kid-row {
-    background: #F8FAFC;
-    border: 2px solid #E2E8F0;
-    border-radius: 14px;
-    padding: 12px;
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .inline-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
+  .inline-row { display: flex; gap: 6px; align-items: center; }
   .small-btn {
     border: none;
-    border-radius: 10px;
-    font-size: 13px;
+    border-radius: 9px;
+    font-size: 12.5px;
     font-weight: 800;
-    padding: 8px 12px;
+    padding: 7px 11px;
     cursor: pointer;
     white-space: nowrap;
   }
-
+  .small-btn.purple { background: var(--purple); color: #FFFFFF; }
   .small-btn.amber { background: #FEF3C7; color: #B45309; }
-
-  .hint-text {
-    font-size: 12px;
-    font-weight: 700;
-    color: #64748B;
-    line-height: 1.4;
-  }
+  .small-btn.red { background: #FEE2E2; color: #DC2626; }
+  .small-btn.blue { background: #DBEAFE; color: #1D4ED8; }
+  .hint-text { font-size: 12px; font-weight: 700; color: #64748B; line-height: 1.4; }
 
   /* 축하 / 진화 모달 */
   .celeb-box { text-align: center; max-width: 430px; }
-  .celeb-img {
-    width: 135px;
-    height: 135px;
-    object-fit: contain;
-    margin: 6px auto 10px;
-    animation: bounce 0.8s ease infinite alternate;
-  }
+  .celeb-img { width: 135px; height: 135px; object-fit: contain; margin: 6px auto 10px; animation: bounce 0.8s ease infinite alternate; }
   @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
   .celeb-title { font-size: 23px; font-weight: 900; color: #D97706; margin-bottom: 8px; }
   .celeb-desc { font-size: 16px; font-weight: 700; margin-bottom: 16px; line-height: 1.5; white-space: pre-line; }
@@ -960,16 +887,18 @@
   .night-clock { font-size: 72px; font-weight: 800; letter-spacing: -2px; font-variant-numeric: tabular-nums; }
   .night-hint { margin-top: 16px; font-size: 16px; color: #1F1F1F; }
 
-  @media (orientation: portrait) {
+  @media (max-width: 1024px), (orientation: portrait) {
     html, body { overflow: auto; }
     .dashboard { grid-template-columns: 1fr; height: auto; min-height: 100%; }
+    .weekly-grid { grid-template-columns: repeat(7, minmax(60px, 1fr)); overflow-x: auto; }
+    .admin-tabs { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 </head>
 <body>
 
 <div class="dashboard">
-  <!-- 왼쪽 열: 작은 시계 + 잠자는 시간 + 날씨 + 가족 스케줄 달력 -->
+  <!-- 왼쪽 열: 시계 + 취침 카운트다운 + 날씨 + 달력(알림장 사진/글 등록) -->
   <div class="col">
     <section class="card clock-card">
       <div class="clock-top">
@@ -1022,7 +951,7 @@
       <div class="cal-head">
         <span class="cal-title" id="calTitle">📅 2026년 11월</span>
         <div class="cal-head-right">
-          <button type="button" class="notice-btn" id="openNoticeModalBtn">📋 알림장</button>
+          <button type="button" class="notice-btn" id="openNoticeModalBtn">📸 알림장 사진·글</button>
           <div class="cal-nav">
             <button type="button" id="calPrev">◀</button>
             <button type="button" id="calNext">▶</button>
@@ -1032,7 +961,7 @@
       <div class="cal-grid" id="calGrid"></div>
       <div class="schedule-box">
         <div class="schedule-head">
-          <span class="schedule-date-label" id="selDateLabel">오늘 가족·알림장 일정</span>
+          <span class="schedule-date-label" id="selDateLabel">오늘 일정·알림장</span>
           <button type="button" class="schedule-add-btn" id="openSchedModalBtn">+ 일정</button>
         </div>
         <div class="schedule-list" id="scheduleList"></div>
@@ -1040,89 +969,68 @@
     </section>
   </div>
 
-  <!-- 가운데 열: 첫째 아이 -->
-  <section class="kid-col kid1" id="kid1Card">
+  <!-- 가운데 열: 아이 1명 (포켓몬 + 항상 보이는 주간 시간표 + 오늘의 미션) -->
+  <section class="center-card" id="kidCard">
     <div class="kid-header">
-      <div class="poke-avatar" id="kid1Avatar">
-        <img id="kid1PokeImg" src="" alt="첫째 아이 포켓몬">
+      <div class="poke-avatar" id="kidAvatar">
+        <img id="kidPokeImg" src="" alt="내 포켓몬">
       </div>
       <div class="kid-meta">
         <div class="kid-title-row">
-          <span class="kid-name" id="kid1TitleLabel">🌟 첫째 아이</span>
-          <button type="button" class="poke-change-btn" data-kid="kid1">⚡ 포켓몬</button>
+          <span class="kid-name" id="kidTitleLabel">🌟 우리 아이</span>
+          <button type="button" class="poke-change-btn" id="openPokeBtn">⚡ 포켓몬 바꾸기</button>
         </div>
         <div class="poke-sub-row">
-          <span id="kid1PokeName">파이리 (1단계)</span>
-          <span id="kid1StickerCnt">⭐ 0개</span>
+          <span id="kidPokeName">피츄 (1단계)</span>
+          <span id="kidStickerCnt">⭐ 모은 스티커 0개</span>
         </div>
-        <div class="evo-bar"><div class="evo-fill" id="kid1EvoFill"></div></div>
+        <div class="evo-bar"><div class="evo-fill" id="kidEvoFill"></div></div>
       </div>
     </div>
 
+    <!-- 항상 보이는 일주일 시간표 -->
+    <div class="weekly-board">
+      <div class="weekly-board-head">
+        <span class="weekly-board-title">🗓️ 일주일 주간일정표</span>
+        <span class="hint-text">부모관리에서 요일별 수정 가능</span>
+      </div>
+      <div class="weekly-grid" id="weeklyGrid"></div>
+    </div>
+
+    <!-- 오늘 요일 미션 체크리스트 -->
     <div class="mission-head">
-      <span class="mission-label">🚀 오늘의 미션</span>
-      <span class="mission-prog" id="kid1Prog">0 / 0</span>
+      <span class="mission-label" id="kidMissionLabel">🚀 오늘(화)의 미션</span>
+      <span class="mission-prog" id="kidProg">0 / 0</span>
     </div>
-    <div class="todo-list" id="kid1TodoList"></div>
+    <div class="todo-list" id="kidTodoList"></div>
     <div class="todo-footer">
-      <input type="text" class="todo-input" id="kid1Input" placeholder="새 미션 추가" maxlength="25">
-      <button type="button" class="btn btn-add" id="kid1AddBtn">추가</button>
-      <button type="button" class="btn btn-edit" id="kid1EditBtn">삭제</button>
-    </div>
-
-    <!-- 첫째 아이 오늘의 기록 -->
-    <div class="journal-box">
-      <div class="journal-head">
-        <span class="journal-title">📖 오늘의 기분 · 독서 · 일기</span>
-        <span class="journal-saved" id="kid1JournalSaved">저장됨 ✓</span>
-      </div>
-      <div class="mood-row" id="kid1MoodRow"></div>
-      <input type="text" class="journal-input" id="kid1BookInput" placeholder="📚 오늘 읽은 책 제목을 적어봐요" maxlength="60">
-      <textarea class="journal-textarea" id="kid1DiaryInput" placeholder="✏️ 오늘 있었던 일이나 느낀 점을 간단히 메모해요" maxlength="200"></textarea>
+      <input type="text" class="todo-input" id="kidInput" placeholder="오늘 요일 미션 추가" maxlength="25">
+      <button type="button" class="btn btn-add" id="kidAddBtn">추가</button>
+      <button type="button" class="btn btn-edit" id="kidEditBtn">삭제</button>
     </div>
   </section>
 
-  <!-- 오른쪽 열: 둘째 아이 -->
-  <section class="kid-col kid2" id="kid2Card">
-    <div class="kid-header">
-      <div class="poke-avatar" id="kid2Avatar">
-        <img id="kid2PokeImg" src="" alt="둘째 아이 포켓몬">
+  <!-- 오른쪽 열: 일기 공간 2개 (1. 오늘의 기분·독서·일기 / 2. 엄마·아빠에게 보내는 편지) -->
+  <div class="col">
+    <section class="card diary-card">
+      <div class="space-head">
+        <span class="space-title">📖 오늘의 기분 · 일기</span>
+        <span class="saved-badge" id="diarySaved">저장됨 ✓</span>
       </div>
-      <div class="kid-meta">
-        <div class="kid-title-row">
-          <span class="kid-name" id="kid2TitleLabel">🌈 둘째 아이</span>
-          <button type="button" class="poke-change-btn" data-kid="kid2">⚡ 포켓몬</button>
-        </div>
-        <div class="poke-sub-row">
-          <span id="kid2PokeName">피츄 (1단계)</span>
-          <span id="kid2StickerCnt">⭐ 0개</span>
-        </div>
-        <div class="evo-bar"><div class="evo-fill" id="kid2EvoFill"></div></div>
-      </div>
-    </div>
+      <div class="mood-row" id="moodRow"></div>
+      <input type="text" class="journal-input" id="bookInput" placeholder="📚 오늘 읽은 책 제목을 적어봐요" maxlength="60">
+      <textarea class="journal-textarea" id="diaryInput" placeholder="✏️ 오늘 있었던 일이나 내 느낌을 자유롭게 일기로 적어봐요!" maxlength="300"></textarea>
+    </section>
 
-    <div class="mission-head">
-      <span class="mission-label">🎀 오늘의 미션</span>
-      <span class="mission-prog" id="kid2Prog">0 / 0</span>
-    </div>
-    <div class="todo-list" id="kid2TodoList"></div>
-    <div class="todo-footer">
-      <input type="text" class="todo-input" id="kid2Input" placeholder="새 미션 추가" maxlength="25">
-      <button type="button" class="btn btn-add" id="kid2AddBtn">추가</button>
-      <button type="button" class="btn btn-edit" id="kid2EditBtn">삭제</button>
-    </div>
-
-    <!-- 둘째 아이 오늘의 기록 -->
-    <div class="journal-box">
-      <div class="journal-head">
-        <span class="journal-title">📖 오늘의 기분 · 독서 · 일기</span>
-        <span class="journal-saved" id="kid2JournalSaved">저장됨 ✓</span>
+    <section class="card letter-card">
+      <div class="space-head">
+        <span class="space-title">💌 엄마·아빠에게 보내는 편지</span>
+        <span class="saved-badge" id="letterSaved">전달됨 ✓</span>
       </div>
-      <div class="mood-row" id="kid2MoodRow"></div>
-      <input type="text" class="journal-input" id="kid2BookInput" placeholder="📚 오늘 읽은 책 제목을 적어봐요" maxlength="60">
-      <textarea class="journal-textarea" id="kid2DiaryInput" placeholder="✏️ 오늘 있었던 일이나 느낀 점을 간단히 메모해요" maxlength="200"></textarea>
-    </div>
-  </section>
+      <textarea class="journal-textarea" id="letterInput" placeholder="엄마, 아빠에게 하고 싶은 말, 고마운 점, 부탁하고 싶은 일을 편지로 써 보세요! ❤️" maxlength="300"></textarea>
+      <button type="button" class="letter-send-btn" id="sendLetterBtn">💌 엄마·아빠 우체통에 넣기</button>
+    </section>
+  </div>
 </div>
 
 <!-- 칭찬 토스트 -->
@@ -1150,53 +1058,73 @@
 
 <!-- 부모 관리 센터 모달 -->
 <div class="modal-backdrop" id="adminModal">
-  <div class="modal-box" style="max-width: 640px;">
+  <div class="modal-box" style="max-width: 660px;">
     <div class="modal-head">
-      <div class="modal-title">👨‍👩‍👧‍👦 부모 관리 센터</div>
+      <div class="modal-title">👨‍👩‍👧 부모 관리 센터</div>
       <button class="modal-close" id="closeAdminModal" type="button">✕</button>
     </div>
 
     <div class="admin-tabs">
-      <button type="button" class="admin-tab active" data-tab="logs">📖 독서·일기 기록장</button>
-      <button type="button" class="admin-tab" data-tab="kids">⭐ 아이·스티커 관리</button>
-      <button type="button" class="admin-tab" data-tab="settings">⚙️ 취침·계정 설정</button>
+      <button type="button" class="admin-tab active" data-tab="weekly">🗓️ 주간시간표·할일</button>
+      <button type="button" class="admin-tab" data-tab="letters">💌 편지 우체통</button>
+      <button type="button" class="admin-tab" data-tab="logs">📖 일기·독서장</button>
+      <button type="button" class="admin-tab" data-tab="settings">⚙️ 아이·계정 설정</button>
     </div>
 
-    <!-- 탭 1: 아이별 독서/일기/기분 기록장 -->
-    <div class="admin-panel active" id="panel-logs">
-      <div class="class-toggle" style="margin-bottom: 10px;">
-        <button type="button" class="class-btn active-kid1" id="logFilterKid1">🌟 첫째 아이 기록</button>
-        <button type="button" class="class-btn" id="logFilterKid2">🌈 둘째 아이 기록</button>
-      </div>
-      <div id="adminLogList" style="max-height: 320px; overflow-y: auto;"></div>
-    </div>
+    <!-- 탭 1: 요일별 시간표 & 할 일 세팅 -->
+    <div class="admin-panel active" id="panel-weekly">
+      <div class="dow-tabs" id="wkDowTabs"></div>
 
-    <!-- 탭 2: 아이 이름 & 스티커 관리 -->
-    <div class="admin-panel" id="panel-kids">
-      <div class="admin-kid-row">
-        <div class="inline-row">
-          <strong style="color:#0369A1; width:75px;">🌟 첫째</strong>
-          <input type="text" id="adminKid1Name" class="form-input" style="flex:1; padding:7px 10px;">
-          <button type="button" class="small-btn amber" id="bonusKid1Btn">⭐ 칭찬 스티커 +1</button>
+      <div class="admin-edit-section">
+        <div class="admin-edit-title">
+          <span id="wkTtTitle">🗓️ 월요일 주간일정표</span>
+          <span class="hint-text">메인 화면 주간일정표에 바로 반영돼요</span>
         </div>
+        <div class="admin-item-list" id="wkTtList"></div>
         <div class="inline-row">
-          <strong style="color:#BE185D; width:75px;">🌈 둘째</strong>
-          <input type="text" id="adminKid2Name" class="form-input" style="flex:1; padding:7px 10px;">
-          <button type="button" class="small-btn amber" id="bonusKid2Btn">⭐ 칭찬 스티커 +1</button>
+          <input type="text" id="wkTtInput" class="form-input" style="flex:1; padding:7px 10px; font-size:14px;" placeholder="예: 14:00 피아노 / 16:00 태권도" maxlength="30">
+          <button type="button" class="small-btn purple" id="wkTtAddBtn">추가</button>
         </div>
-        <button type="button" class="form-submit purple" id="saveKidNamesBtn">이름 변경 저장</button>
       </div>
-      <p class="hint-text">💡 부모 모드가 켜져 있는 동안 메인 화면에서 아이별 미션을 직접 추가·삭제하고, 달력 일정과 알림장을 관리할 수 있어요.</p>
+
+      <div class="admin-edit-section">
+        <div class="admin-edit-title">
+          <span id="wkTodoTitle">✅ 월요일 할 일 체크리스트</span>
+          <button type="button" class="small-btn blue" id="wkCopyAllDaysBtn">모든 요일에 복사</button>
+        </div>
+        <div class="admin-item-list" id="wkTodoList"></div>
+        <div class="inline-row">
+          <input type="text" id="wkTodoInput" class="form-input" style="flex:1; padding:7px 10px; font-size:14px;" placeholder="예: 📚 책 2권 읽기 / 🪢 줄넘기" maxlength="25">
+          <button type="button" class="small-btn purple" id="wkTodoAddBtn">추가</button>
+        </div>
+      </div>
     </div>
 
-    <!-- 탭 3: 취침 시간 & 부모 계정 비밀번호 변경 -->
+    <!-- 탭 2: 엄마·아빠에게 온 편지 우체통 -->
+    <div class="admin-panel" id="panel-letters">
+      <div id="adminLetterList" style="max-height: 340px; overflow-y: auto;"></div>
+    </div>
+
+    <!-- 탭 3: 아이 독서·일기 기록장 -->
+    <div class="admin-panel" id="panel-logs">
+      <div id="adminLogList" style="max-height: 340px; overflow-y: auto;"></div>
+    </div>
+
+    <!-- 탭 4: 아이 이름·스티커·취침시간·계정 설정 -->
     <div class="admin-panel" id="panel-settings">
+      <div class="admin-edit-section">
+        <div class="inline-row" style="margin-bottom: 8px;">
+          <strong style="width:72px; font-size:13.5px;">🌟 아이 이름</strong>
+          <input type="text" id="adminKidName" class="form-input" style="flex:1; padding:7px 10px;">
+          <button type="button" class="small-btn amber" id="bonusStickerBtn">⭐ 칭찬 스티커 +1</button>
+        </div>
+      </div>
       <div class="form-row">
-        <label for="adminBedTime">🌙 아이들 잠자는 시간</label>
+        <label for="adminBedTime">🌙 아이 잠자는 시간</label>
         <input type="time" id="adminBedTime" class="form-input" value="21:00">
       </div>
       <div class="form-row">
-        <label for="adminNewId">관리자 아이디 변경</label>
+        <label for="adminNewId">관리자 아이디</label>
         <input type="text" id="adminNewId" class="form-input" placeholder="mom">
       </div>
       <div class="form-row">
@@ -1213,66 +1141,64 @@
 <div class="modal-backdrop" id="pokeModal">
   <div class="modal-box">
     <div class="modal-head">
-      <div class="modal-title" id="pokeModalTitle">⚡ 포켓몬을 골라요!</div>
+      <div class="modal-title">⚡ 함께할 포켓몬을 골라요!</div>
       <button class="modal-close" id="closePokeModal" type="button">✕</button>
     </div>
     <div class="poke-grid" id="pokeGrid"></div>
   </div>
 </div>
 
-<!-- 가족 스케줄·할 일 추가 모달 -->
+<!-- 단건 일정 추가 모달 -->
 <div class="modal-backdrop" id="schedModal">
-  <div class="modal-box" style="max-width: 420px;">
+  <div class="modal-box" style="max-width: 400px;">
     <div class="modal-head">
-      <div class="modal-title" id="schedModalTitle">📅 가족 스케줄 추가</div>
+      <div class="modal-title" id="schedModalTitle">📅 일정 추가</div>
       <button class="modal-close" id="closeSchedModal" type="button">✕</button>
     </div>
     <div class="form-row">
-      <label>대상</label>
-      <div class="class-toggle" style="grid-template-columns: 1fr 1fr 1fr;">
-        <button type="button" class="class-btn active-kid1" id="schedTagFamily">🏠 가족</button>
-        <button type="button" class="class-btn" id="schedTagKid1">🌟 첫째 아이</button>
-        <button type="button" class="class-btn" id="schedTagKid2">🌈 둘째 아이</button>
-      </div>
-    </div>
-    <div class="form-row">
-      <label for="schedInput">스케줄 또는 해야 할 일</label>
-      <input type="text" id="schedInput" class="form-input" placeholder="예: 16:00 피아노 학원 / 마트 장보기" maxlength="35">
+      <label for="schedInput">일정 또는 준비물</label>
+      <input type="text" id="schedInput" class="form-input" placeholder="예: 🎒 줄넘기 챙기기 / 15:00 병원" maxlength="35">
     </div>
     <button type="button" class="form-submit" id="saveSchedBtn">달력에 추가하기</button>
   </div>
 </div>
 
-<!-- 알림장 붙여넣기 모달 -->
+<!-- 알림장 캡쳐 사진 올리기 + 글 붙여넣기 모달 -->
 <div class="modal-backdrop" id="noticeModal">
   <div class="modal-box">
     <div class="modal-head">
-      <div class="modal-title">📋 알림장 붙여넣기</div>
+      <div class="modal-title">📸 알림장 사진·글 자동 정리</div>
       <button class="modal-close" id="closeNoticeModal" type="button">✕</button>
     </div>
-    <div class="form-row">
-      <label>어느 아이의 알림장인가요?</label>
-      <div class="class-toggle">
-        <button type="button" class="class-btn active-kid1" id="noticeClassKid1">🌟 첫째 아이</button>
-        <button type="button" class="class-btn" id="noticeClassKid2">🌈 둘째 아이</button>
-      </div>
+
+    <!-- 사진 업로드 OCR -->
+    <div class="ocr-upload-box">
+      <label class="ocr-file-label" for="noticeImageInput">📷 알림장 캡쳐·사진 선택하기</label>
+      <input type="file" id="noticeImageInput" accept="image/*" style="display:none;">
+      <img id="ocrPreviewImg" class="ocr-preview-img" alt="알림장 미리보기">
+      <div class="ocr-status" id="ocrStatus">캡쳐 사진을 올리면 글자를 자동으로 읽어 날짜·준비물을 정리해요!</div>
     </div>
+
     <div class="form-row">
       <label for="noticeDefaultDate">기본 날짜 (글에 날짜가 없을 때 적용)</label>
       <input type="date" id="noticeDefaultDate" class="form-input">
     </div>
+
     <div class="form-row">
-      <label for="noticeTextarea">알림장 내용 붙여넣기</label>
-      <textarea id="noticeTextarea" class="form-textarea" placeholder="학교·유치원 알림장 글을 복사해서 붙여넣으세요!&#10;예)&#10;1. 국어 받아쓰기 연습하기&#10;2. 11/25(수) 줄넘기, 실내화 챙기기"></textarea>
+      <label for="noticeTextarea">인식된 내용 (직접 붙여넣거나 수정할 수 있어요)</label>
+      <textarea id="noticeTextarea" class="form-textarea" placeholder="사진을 올리면 여기에 글자가 자동으로 채워집니다.&#10;또는 알림장 글을 직접 복사해서 붙여넣어도 돼요!"></textarea>
     </div>
+
     <div class="check-row">
       <label class="check-label"><input type="checkbox" id="optAddCalendar" checked> 📅 달력 일정에 등록</label>
-      <label class="check-label"><input type="checkbox" id="optAddMission" checked> ✅ 아이 오늘의 미션에도 추가</label>
+      <label class="check-label"><input type="checkbox" id="optAddMission" checked> ✅ 해당 요일 미션에도 추가</label>
     </div>
+
     <div class="preview-box" id="noticePreviewBox" style="display:none;">
-      <div class="preview-title" id="noticePreviewTitle">자동 추출 미리보기</div>
+      <div class="preview-title" id="noticePreviewTitle">자동 정리 미리보기</div>
       <div id="noticePreviewList"></div>
     </div>
+
     <button type="button" class="form-submit orange" id="applyNoticeBtn">✨ 달력·미션에 한 번에 등록하기</button>
   </div>
 </div>
@@ -1302,6 +1228,9 @@
   const EVO_STAGE2_NEED = 3;
   const EVO_STAGE3_NEED = 7;
 
+  const DOW_ORDER = [1, 2, 3, 4, 5, 6, 0];
+  const DOW_NAMES = ["일", "월", "화", "수", "목", "금", "토"];
+
   const MOODS = [
     { key: "excited", emoji: "😄", label: "신남" },
     { key: "happy",   emoji: "😊", label: "행복" },
@@ -1319,34 +1248,27 @@
     { key: "fuecoco",    stages: [{ id: 909, name: "뜨아거" }, { id: 910, name: "악뜨거" }, { id: 911, name: "라우드본" }] }
   ];
 
-  const DEFAULT_KIDS = {
-    kid1: {
-      label: "첫째 아이",
-      pokeKey: "charmander",
-      todos: [
-        { id: 1, text: "🪥 스스로 양치하기", done: false },
-        { id: 2, text: "📚 책 2권 읽기", done: false },
-        { id: 3, text: "✏️ 오늘 공부하기", done: false },
-        { id: 4, text: "🎒 내일 준비물 챙기기", done: false },
-        { id: 5, text: "🌙 일찍 잠자리 들기", done: false }
-      ],
-      stickers: {},
-      journals: {}
-    },
-    kid2: {
-      label: "둘째 아이",
-      pokeKey: "pichu",
-      todos: [
-        { id: 1, text: "🪥 스스로 양치하기", done: false },
-        { id: 2, text: "📖 그림책 2권 읽기", done: false },
-        { id: 3, text: "🧸 장난감 정리하기", done: false },
-        { id: 4, text: "🍚 밥 골고루 먹기", done: false },
-        { id: 5, text: "🌙 일찍 잠자리 들기", done: false }
-      ],
-      stickers: {},
-      journals: {}
+  function makeWeeklyTodos(baseList) {
+    const obj = {};
+    for (let d = 0; d < 7; d++) {
+      obj[d] = baseList.map((item, idx) => ({ id: d * 100 + idx + 1, text: item.text, done: false }));
     }
-  };
+    return obj;
+  }
+
+  function makeEmptyWeeklyTimetable() {
+    const obj = {};
+    for (let d = 0; d < 7; d++) obj[d] = [];
+    return obj;
+  }
+
+  const DEFAULT_TODOS = [
+    { text: "🪥 스스로 양치하기" },
+    { text: "📚 책 2권 읽기" },
+    { text: "✏️ 오늘 공부하기" },
+    { text: "🎒 내일 준비물 챙기기" },
+    { text: "🌙 일찍 잠자리 들기" }
+  ];
 
   const CHEER_MESSAGES = [
     "최고야! 정말 잘했어! 👏",
@@ -1360,7 +1282,7 @@
   const STICKER_ICONS = ["⭐", "🏆", "👑", "⚡", "🌈", "💎", "🎖️", "🌟", "🔥", "🍀"];
   /* ============================================ */
 
-  const STORAGE_KEY = "family_dash_share_v1";
+  const STORAGE_KEY = "family_dash_share_1kid_v1";
 
   function getPokeImgUrl(id) {
     return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
@@ -1376,23 +1298,42 @@
     return formatDateKey(d);
   }
 
+  function getTodayDow() {
+    return new Date().getDay();
+  }
+
   function loadState() {
     let base = {
       lastDate: getTodayKey(),
       bedtime: "21:00",
       parentAuth: { id: "mom", pin: "1234" },
       schedules: {},
-      kids: JSON.parse(JSON.stringify(DEFAULT_KIDS))
+      kid: {
+        label: "우리 아이",
+        pokeKey: "pichu",
+        weeklyTodos: makeWeeklyTodos(DEFAULT_TODOS),
+        weeklyTimetable: makeEmptyWeeklyTimetable(),
+        stickers: {},
+        journals: {}, // { "YYYY-MM-DD": { mood, book, diary } }
+        letters: {}   // { "YYYY-MM-DD": "편지 내용" }
+      }
     };
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (parsed && parsed.kids && parsed.kids.kid1 && parsed.kids.kid2) {
+        if (parsed && parsed.kid) {
           base = { ...base, ...parsed };
           if (!base.parentAuth) base.parentAuth = { id: "mom", pin: "1234" };
-          if (!base.kids.kid1.journals) base.kids.kid1.journals = {};
-          if (!base.kids.kid2.journals) base.kids.kid2.journals = {};
+          if (!base.kid.journals) base.kid.journals = {};
+          if (!base.kid.letters) base.kid.letters = {};
+          if (!base.kid.stickers) base.kid.stickers = {};
+          if (!base.kid.weeklyTodos) base.kid.weeklyTodos = makeWeeklyTodos(DEFAULT_TODOS);
+          if (!base.kid.weeklyTimetable) base.kid.weeklyTimetable = makeEmptyWeeklyTimetable();
+          for (let d = 0; d < 7; d++) {
+            if (!Array.isArray(base.kid.weeklyTodos[d])) base.kid.weeklyTodos[d] = [];
+            if (!Array.isArray(base.kid.weeklyTimetable[d])) base.kid.weeklyTimetable[d] = [];
+          }
         }
       }
     } catch (e) {}
@@ -1402,7 +1343,7 @@
   let state = loadState();
   let isParentLoggedIn = false;
   let pendingParentAction = null;
-  let editModes = { kid1: false, kid2: false };
+  let editMode = false;
   let selectedDateKey = getTodayKey();
   let calYear = new Date().getFullYear();
   let calMonth = new Date().getMonth();
@@ -1412,22 +1353,47 @@
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
   }
 
+  function getTodayTodos() {
+    const dow = getTodayDow();
+    if (!state.kid.weeklyTodos[dow]) state.kid.weeklyTodos[dow] = [];
+    return state.kid.weeklyTodos[dow];
+  }
+
   function checkDailyReset() {
     const today = getTodayKey();
     if (state.lastDate !== today) {
-      ["kid1", "kid2"].forEach(k => {
-        state.kids[k].todos = state.kids[k].todos.map(t => ({ ...t, done: false }));
-      });
+      for (let d = 0; d < 7; d++) {
+        state.kid.weeklyTodos[d] = (state.kid.weeklyTodos[d] || []).map(t => ({ ...t, done: false }));
+      }
       state.lastDate = today;
       selectedDateKey = today;
       saveState();
-      renderKid("kid1");
-      renderKid("kid2");
-      renderJournal("kid1");
-      renderJournal("kid2");
+      renderKid();
+      renderWeeklyBoard();
+      renderJournalAndLetter();
       renderCalendar();
       renderSchedules();
     }
+  }
+
+  /* ===== 항상 보이는 주간일정표 렌더링 ===== */
+  const weeklyGrid = document.getElementById("weeklyGrid");
+
+  function renderWeeklyBoard() {
+    const todayDow = getTodayDow();
+    weeklyGrid.innerHTML = DOW_ORDER.map(d => {
+      const slots = state.kid.weeklyTimetable[d] || [];
+      const isToday = d === todayDow;
+      const body = slots.length > 0
+        ? slots.map(s => `<div class="weekly-slot">${s}</div>`).join("")
+        : '<div class="weekly-empty">-</div>';
+      return `
+        <div class="weekly-col ${isToday ? "is-today" : ""}">
+          <div class="weekly-day-head">${DOW_NAMES[d]}</div>
+          ${body}
+        </div>
+      `;
+    }).join("");
   }
 
   /* ===== 부모 관리 계정 로그인 & 권한 가드 ===== */
@@ -1443,10 +1409,8 @@
     parentBtn.classList.toggle("parent-on", isParentLoggedIn);
     parentBtn.textContent = isParentLoggedIn ? "🔓 부모모드" : "🔒 부모관리";
     if (!isParentLoggedIn) {
-      editModes.kid1 = false;
-      editModes.kid2 = false;
-      renderKid("kid1");
-      renderKid("kid2");
+      editMode = false;
+      renderKid();
     }
   }
 
@@ -1464,11 +1428,8 @@
   }
 
   parentBtn.addEventListener("click", () => {
-    if (isParentLoggedIn) {
-      openAdminModal();
-    } else {
-      requireParent(openAdminModal);
-    }
+    if (isParentLoggedIn) openAdminModal();
+    else requireParent(openAdminModal);
   });
 
   document.getElementById("closeLoginModal").addEventListener("click", () => {
@@ -1505,15 +1466,17 @@
   document.getElementById("doLoginBtn").addEventListener("click", tryLogin);
   loginPinInput.addEventListener("keydown", (e) => { if (e.key === "Enter") tryLogin(); });
 
-  /* 부모 관리 센터 모달 */
-  let adminLogKid = "kid1";
+  /* ===== 부모 관리 센터 모달 ===== */
+  let adminWkDow = getTodayDow();
 
   function openAdminModal() {
-    document.getElementById("adminKid1Name").value = state.kids.kid1.label;
-    document.getElementById("adminKid2Name").value = state.kids.kid2.label;
+    adminWkDow = getTodayDow();
+    document.getElementById("adminKidName").value = state.kid.label;
     document.getElementById("adminBedTime").value = state.bedtime || "21:00";
     document.getElementById("adminNewId").value = state.parentAuth.id || "mom";
     document.getElementById("adminNewPin").value = "";
+    renderAdminWeekly();
+    renderAdminLetters();
     renderAdminLogs();
     adminModal.classList.add("show");
   }
@@ -1530,23 +1493,135 @@
     });
   });
 
-  const logFilterKid1 = document.getElementById("logFilterKid1");
-  const logFilterKid2 = document.getElementById("logFilterKid2");
-  logFilterKid1.addEventListener("click", () => { adminLogKid = "kid1"; renderAdminLogs(); });
-  logFilterKid2.addEventListener("click", () => { adminLogKid = "kid2"; renderAdminLogs(); });
+  /* 탭 1: 요일별 시간표 & 할 일 편집 */
+  const wkDowTabs = document.getElementById("wkDowTabs");
+  const wkTtTitle = document.getElementById("wkTtTitle");
+  const wkTtList = document.getElementById("wkTtList");
+  const wkTtInput = document.getElementById("wkTtInput");
+  const wkTodoTitle = document.getElementById("wkTodoTitle");
+  const wkTodoList = document.getElementById("wkTodoList");
+  const wkTodoInput = document.getElementById("wkTodoInput");
 
+  function renderAdminWeekly() {
+    wkDowTabs.innerHTML = DOW_ORDER.map(d => `
+      <button type="button" class="dow-tab ${d === adminWkDow ? "active" : ""}" data-dow="${d}">${DOW_NAMES[d]}</button>
+    `).join("");
+    wkDowTabs.querySelectorAll(".dow-tab").forEach(btn => {
+      btn.addEventListener("click", () => {
+        adminWkDow = Number(btn.dataset.dow);
+        renderAdminWeekly();
+      });
+    });
+
+    const dayName = DOW_NAMES[adminWkDow];
+    wkTtTitle.textContent = `🗓️ ${dayName}요일 주간일정표`;
+    wkTodoTitle.textContent = `✅ ${dayName}요일 할 일 체크리스트`;
+
+    const slots = state.kid.weeklyTimetable[adminWkDow] || [];
+    if (slots.length === 0) {
+      wkTtList.innerHTML = '<div class="schedule-empty">등록된 일정이 없어요.</div>';
+    } else {
+      wkTtList.innerHTML = "";
+      slots.forEach((slotText, idx) => {
+        const row = document.createElement("div");
+        row.className = "admin-item-row";
+        row.innerHTML = `<span>📌 ${slotText}</span><button type="button" class="small-btn red">삭제</button>`;
+        row.querySelector("button").addEventListener("click", () => {
+          state.kid.weeklyTimetable[adminWkDow].splice(idx, 1);
+          saveState();
+          renderAdminWeekly();
+          renderWeeklyBoard();
+        });
+        wkTtList.appendChild(row);
+      });
+    }
+
+    const todos = state.kid.weeklyTodos[adminWkDow] || [];
+    if (todos.length === 0) {
+      wkTodoList.innerHTML = '<div class="schedule-empty">등록된 할 일이 없어요.</div>';
+    } else {
+      wkTodoList.innerHTML = "";
+      todos.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "admin-item-row";
+        row.innerHTML = `<span>${item.text}</span><button type="button" class="small-btn red">삭제</button>`;
+        row.querySelector("button").addEventListener("click", () => {
+          state.kid.weeklyTodos[adminWkDow] = state.kid.weeklyTodos[adminWkDow].filter(t => t.id !== item.id);
+          saveState();
+          renderAdminWeekly();
+          renderKid();
+          if (adminWkDow === getTodayDow()) handleKidSticker();
+        });
+        wkTodoList.appendChild(row);
+      });
+    }
+  }
+
+  document.getElementById("wkTtAddBtn").addEventListener("click", () => {
+    const val = wkTtInput.value.trim();
+    if (!val) return;
+    state.kid.weeklyTimetable[adminWkDow].push(val);
+    wkTtInput.value = "";
+    saveState();
+    renderAdminWeekly();
+    renderWeeklyBoard();
+  });
+  wkTtInput.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("wkTtAddBtn").click(); });
+
+  document.getElementById("wkTodoAddBtn").addEventListener("click", () => {
+    const val = wkTodoInput.value.trim();
+    if (!val) return;
+    state.kid.weeklyTodos[adminWkDow].push({ id: Date.now(), text: val, done: false });
+    wkTodoInput.value = "";
+    saveState();
+    renderAdminWeekly();
+    renderKid();
+    if (adminWkDow === getTodayDow()) handleKidSticker();
+  });
+  wkTodoInput.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("wkTodoAddBtn").click(); });
+
+  document.getElementById("wkCopyAllDaysBtn").addEventListener("click", () => {
+    const source = state.kid.weeklyTodos[adminWkDow] || [];
+    for (let d = 0; d < 7; d++) {
+      if (d === adminWkDow) continue;
+      state.kid.weeklyTodos[d] = source.map((t, idx) => ({ id: Date.now() + d * 100 + idx, text: t.text, done: false }));
+    }
+    saveState();
+    renderKid();
+    showCheer(`✅ ${DOW_NAMES[adminWkDow]}요일 할 일을 모든 요일에 복사했어요!`);
+  });
+
+  /* 탭 2: 편지 우체통 */
+  function renderAdminLetters() {
+    const listEl = document.getElementById("adminLetterList");
+    const letters = state.kid.letters || {};
+    const dates = Object.keys(letters).filter(k => letters[k] && letters[k].trim()).sort((a, b) => b.localeCompare(a));
+    if (dates.length === 0) {
+      listEl.innerHTML = '<div class="schedule-empty" style="padding:24px 0;">아직 도착한 편지가 없어요 💌</div>';
+      return;
+    }
+    listEl.innerHTML = dates.map(ds => `
+      <div class="log-card letter-log">
+        <div class="log-card-head">
+          <span>💌 ${ds}</span>
+          <span style="color:#BE185D;">From. ${state.kid.label}</span>
+        </div>
+        <div class="log-card-body">${letters[ds]}</div>
+      </div>
+    `).join("");
+  }
+
+  /* 탭 3: 독서·일기 기록장 */
   function renderAdminLogs() {
-    logFilterKid1.className = "class-btn" + (adminLogKid === "kid1" ? " active-kid1" : "");
-    logFilterKid2.className = "class-btn" + (adminLogKid === "kid2" ? " active-kid2" : "");
-    logFilterKid1.textContent = `🌟 ${state.kids.kid1.label} 기록`;
-    logFilterKid2.textContent = `🌈 ${state.kids.kid2.label} 기록`;
-
     const listEl = document.getElementById("adminLogList");
-    const journals = state.kids[adminLogKid].journals || {};
-    const dates = Object.keys(journals).sort((a, b) => b.localeCompare(a));
+    const journals = state.kid.journals || {};
+    const dates = Object.keys(journals).filter(k => {
+      const j = journals[k];
+      return j && (j.mood || j.book || j.diary);
+    }).sort((a, b) => b.localeCompare(a));
 
     if (dates.length === 0) {
-      listEl.innerHTML = '<div class="schedule-empty" style="padding:24px 0;">아직 작성된 독서·일기 기록이 없어요.</div>';
+      listEl.innerHTML = '<div class="schedule-empty" style="padding:24px 0;">아직 작성된 일기·독서 기록이 없어요.</div>';
       return;
     }
 
@@ -1568,50 +1643,37 @@
     }).join("");
   }
 
-  document.getElementById("saveKidNamesBtn").addEventListener("click", () => {
-    const k1 = document.getElementById("adminKid1Name").value.trim();
-    const k2 = document.getElementById("adminKid2Name").value.trim();
-    if (k1) state.kids.kid1.label = k1;
-    if (k2) state.kids.kid2.label = k2;
-    saveState();
-    renderKid("kid1");
-    renderKid("kid2");
-    renderSchedules();
-    renderAdminLogs();
-    showCheer("아이 이름이 저장되었어요!");
-  });
-
-  function giveBonusSticker(kidKey) {
-    const kid = state.kids[kidKey];
-    const prevCount = Object.keys(kid.stickers).length;
+  /* 탭 4: 설정 */
+  document.getElementById("bonusStickerBtn").addEventListener("click", () => {
+    const prevCount = Object.keys(state.kid.stickers).length;
     const prevStage = getStageIndex(prevCount);
-    const bonusKey = `bonus-${Date.now()}`;
     const icon = STICKER_ICONS[prevCount % STICKER_ICONS.length];
-    kid.stickers[bonusKey] = icon;
+    state.kid.stickers[`bonus-${Date.now()}`] = icon;
     saveState();
-    const newStage = getStageIndex(Object.keys(kid.stickers).length);
-    renderKid(kidKey);
+    const newStage = getStageIndex(Object.keys(state.kid.stickers).length);
+    renderKid();
     if (newStage > prevStage) {
       adminModal.classList.remove("show");
-      showCelebration(kidKey, true, icon);
+      showCelebration(true, icon);
     } else {
-      showCheer(`⭐ ${kid.label}에게 칭찬 스티커 선물!`);
+      showCheer(`⭐ ${state.kid.label}에게 칭찬 스티커 선물!`);
     }
-  }
-  document.getElementById("bonusKid1Btn").addEventListener("click", () => giveBonusSticker("kid1"));
-  document.getElementById("bonusKid2Btn").addEventListener("click", () => giveBonusSticker("kid2"));
+  });
 
   document.getElementById("saveAdminSettingsBtn").addEventListener("click", () => {
+    const name = document.getElementById("adminKidName").value.trim();
     const bed = document.getElementById("adminBedTime").value;
     const newId = document.getElementById("adminNewId").value.trim();
     const newPin = document.getElementById("adminNewPin").value.trim();
+    if (name) state.kid.label = name;
     if (bed) state.bedtime = bed;
     if (newId) state.parentAuth.id = newId;
     if (newPin) state.parentAuth.pin = newPin;
     saveState();
+    renderKid();
     updateClockAndBedtime();
     document.getElementById("adminNewPin").value = "";
-    showCheer("⚙️ 취침 시간 및 계정 설정이 저장되었어요!");
+    showCheer("⚙️ 설정이 저장되었어요!");
   });
 
   document.getElementById("logoutBtn").addEventListener("click", () => {
@@ -1621,7 +1683,7 @@
     showCheer("🔒 부모 모드가 잠겼어요.");
   });
 
-  /* 1. 시계, 잠자는 시간 카운트다운, 야간 모드 */
+  /* 1. 시계, 취침 카운트다운, 야간 모드 */
   const dateText = document.getElementById("dateText");
   const ampmText = document.getElementById("ampmText");
   const timeText = document.getElementById("timeText");
@@ -1639,8 +1701,7 @@
 
   function updateClockAndBedtime() {
     const now = new Date();
-    const days = ["일", "월", "화", "수", "목", "금", "토"];
-    dateText.textContent = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 (${days[now.getDay()]})`;
+    dateText.textContent = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 (${DOW_NAMES[now.getDay()]})`;
 
     const h24 = now.getHours();
     const min = String(now.getMinutes()).padStart(2, "0");
@@ -1697,7 +1758,7 @@
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${LOCATION.lat}&longitude=${LOCATION.lon}&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FSeoul&forecast_days=2`;
     try {
       const res = await fetch(url);
-      if (!res.ok) throw new Error("err");
+      if (!res.ok) throw new Error();
       const data = await res.json();
 
       const [tEmoji, tDesc] = WMO_MAP[data.current.weather_code] || ["🌤️", "흐림"];
@@ -1722,7 +1783,7 @@
     }
   }
 
-  /* 3. 가족 스케줄 & 달력 */
+  /* 3. 달력 & 일정 */
   const calTitle = document.getElementById("calTitle");
   const calGrid = document.getElementById("calGrid");
   const selDateLabel = document.getElementById("selDateLabel");
@@ -1741,8 +1802,7 @@
 
   function renderCalendar() {
     calTitle.textContent = `📅 ${calYear}년 ${calMonth + 1}월`;
-    const dows = ["일", "월", "화", "수", "목", "금", "토"];
-    let html = dows.map(d => `<div class="cal-dow">${d}</div>`).join("");
+    let html = DOW_NAMES.map(d => `<div class="cal-dow">${d}</div>`).join("");
     const firstDay = new Date(calYear, calMonth, 1).getDay();
     const lastDate = new Date(calYear, calMonth + 1, 0).getDate();
     const todayKey = getTodayKey();
@@ -1751,16 +1811,14 @@
     for (let d = 1; d <= lastDate; d++) {
       const ds = `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
       const hasEvent = (state.schedules[ds] && state.schedules[ds].length > 0);
-      const hasKid1 = Boolean(state.kids.kid1.stickers[ds]);
-      const hasKid2 = Boolean(state.kids.kid2.stickers[ds]);
+      const hasSticker = Boolean(state.kid.stickers[ds]);
       const cls = "cal-day" + (ds === todayKey ? " today" : "") + (ds === selectedDateKey ? " selected" : "");
       html += `
         <div class="${cls}" data-date="${ds}">
           <span>${d}</span>
           <div class="cal-dots">
             ${hasEvent ? '<span class="dot-event"></span>' : ''}
-            ${hasKid1 ? '<span class="dot-kid1"></span>' : ''}
-            ${hasKid2 ? '<span class="dot-kid2"></span>' : ''}
+            ${hasSticker ? '<span class="dot-sticker"></span>' : ''}
           </div>
         </div>
       `;
@@ -1775,18 +1833,12 @@
     });
   }
 
-  function getKidTagHtml(kid) {
-    if (kid === "kid1") return `<span class="kid-tag kid1">🌟 ${state.kids.kid1.label}</span>`;
-    if (kid === "kid2") return `<span class="kid-tag kid2">🌈 ${state.kids.kid2.label}</span>`;
-    return '<span class="kid-tag family">🏠 가족</span>';
-  }
-
   function renderSchedules() {
     const todayKey = getTodayKey();
     const [, m, d] = selectedDateKey.split("-");
     selDateLabel.textContent = selectedDateKey === todayKey
-      ? `오늘(${Number(m)}/${Number(d)}) 가족·알림장 일정`
-      : `${Number(m)}월 ${Number(d)}일 가족·알림장 일정`;
+      ? `오늘(${Number(m)}/${Number(d)}) 일정·알림장`
+      : `${Number(m)}월 ${Number(d)}일 일정·알림장`;
 
     const items = state.schedules[selectedDateKey] || [];
     if (items.length === 0) {
@@ -1801,7 +1853,6 @@
       row.innerHTML = `
         <div class="schedule-item-left">
           <span>${ev.done ? "✅" : "📌"}</span>
-          ${getKidTagHtml(ev.kid || "family")}
           <span>${ev.text}</span>
         </div>
         <button type="button" class="schedule-del">삭제</button>
@@ -1823,29 +1874,15 @@
     });
   }
 
-  /* 단건 스케줄 추가 모달 (부모 권한 확인) */
+  /* 단건 일정 추가 모달 */
   const schedModal = document.getElementById("schedModal");
   const schedInput = document.getElementById("schedInput");
   const schedModalTitle = document.getElementById("schedModalTitle");
-  let schedSelectedKid = "family";
-
-  function updateSchedKidBtns() {
-    document.getElementById("schedTagFamily").className = "class-btn" + (schedSelectedKid === "family" ? " active-kid1" : "");
-    document.getElementById("schedTagKid1").className = "class-btn" + (schedSelectedKid === "kid1" ? " active-kid1" : "");
-    document.getElementById("schedTagKid2").className = "class-btn" + (schedSelectedKid === "kid2" ? " active-kid2" : "");
-    document.getElementById("schedTagKid1").textContent = `🌟 ${state.kids.kid1.label}`;
-    document.getElementById("schedTagKid2").textContent = `🌈 ${state.kids.kid2.label}`;
-  }
-  document.getElementById("schedTagFamily").addEventListener("click", () => { schedSelectedKid = "family"; updateSchedKidBtns(); });
-  document.getElementById("schedTagKid1").addEventListener("click", () => { schedSelectedKid = "kid1"; updateSchedKidBtns(); });
-  document.getElementById("schedTagKid2").addEventListener("click", () => { schedSelectedKid = "kid2"; updateSchedKidBtns(); });
 
   document.getElementById("openSchedModalBtn").addEventListener("click", () => {
     requireParent(() => {
       const [, m, d] = selectedDateKey.split("-");
       schedModalTitle.textContent = `📅 ${Number(m)}월 ${Number(d)}일 일정 추가`;
-      schedSelectedKid = "family";
-      updateSchedKidBtns();
       schedInput.value = "";
       schedModal.classList.add("show");
       setTimeout(() => schedInput.focus(), 100);
@@ -1857,7 +1894,7 @@
     const text = schedInput.value.trim();
     if (!text) return;
     if (!state.schedules[selectedDateKey]) state.schedules[selectedDateKey] = [];
-    state.schedules[selectedDateKey].push({ id: Date.now(), text, done: false, kid: schedSelectedKid });
+    state.schedules[selectedDateKey].push({ id: Date.now(), text, done: false });
     saveState();
     renderCalendar();
     renderSchedules();
@@ -1867,10 +1904,11 @@
     if (e.key === "Enter") document.getElementById("saveSchedBtn").click();
   });
 
-  /* 3-2. 알림장 붙여넣기 (부모 권한 확인) */
+  /* 3-2. 알림장 캡쳐 사진 OCR + 텍스트 자동 정리 */
   const noticeModal = document.getElementById("noticeModal");
-  const noticeClassKid1Btn = document.getElementById("noticeClassKid1");
-  const noticeClassKid2Btn = document.getElementById("noticeClassKid2");
+  const noticeImageInput = document.getElementById("noticeImageInput");
+  const ocrPreviewImg = document.getElementById("ocrPreviewImg");
+  const ocrStatus = document.getElementById("ocrStatus");
   const noticeDefaultDate = document.getElementById("noticeDefaultDate");
   const noticeTextarea = document.getElementById("noticeTextarea");
   const noticePreviewBox = document.getElementById("noticePreviewBox");
@@ -1879,30 +1917,55 @@
   const optAddCalendar = document.getElementById("optAddCalendar");
   const optAddMission = document.getElementById("optAddMission");
 
-  let noticeTargetKid = "kid1";
-
-  function updateNoticeClassUI() {
-    noticeClassKid1Btn.className = "class-btn" + (noticeTargetKid === "kid1" ? " active-kid1" : "");
-    noticeClassKid2Btn.className = "class-btn" + (noticeTargetKid === "kid2" ? " active-kid2" : "");
-    noticeClassKid1Btn.textContent = `🌟 ${state.kids.kid1.label}`;
-    noticeClassKid2Btn.textContent = `🌈 ${state.kids.kid2.label}`;
-  }
-
-  noticeClassKid1Btn.addEventListener("click", () => { noticeTargetKid = "kid1"; updateNoticeClassUI(); updateNoticePreview(); });
-  noticeClassKid2Btn.addEventListener("click", () => { noticeTargetKid = "kid2"; updateNoticeClassUI(); updateNoticePreview(); });
-
   document.getElementById("openNoticeModalBtn").addEventListener("click", () => {
     requireParent(() => {
       noticeDefaultDate.value = selectedDateKey;
       noticeTextarea.value = "";
+      noticeImageInput.value = "";
+      ocrPreviewImg.style.display = "none";
+      ocrStatus.textContent = "캡쳐 사진을 올리면 글자를 자동으로 읽어 날짜·준비물을 정리해요!";
       noticePreviewBox.style.display = "none";
-      updateNoticeClassUI();
       noticeModal.classList.add("show");
-      setTimeout(() => noticeTextarea.focus(), 100);
     });
   });
   document.getElementById("closeNoticeModal").addEventListener("click", () => noticeModal.classList.remove("show"));
   noticeModal.addEventListener("click", (e) => { if (e.target === noticeModal) noticeModal.classList.remove("show"); });
+
+  /* 사진 업로드 시 Tesseract.js로 한국어/영어 OCR 실행 */
+  noticeImageInput.addEventListener("change", async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    ocrPreviewImg.src = url;
+    ocrPreviewImg.style.display = "block";
+
+    if (typeof Tesseract === "undefined") {
+      ocrStatus.textContent = "⚠️ 사진 인식 모듈을 불러오는 중입니다. 잠시 후 다시 시도하거나 글을 붙여넣어 주세요.";
+      return;
+    }
+
+    ocrStatus.textContent = "🔍 알림장 사진에서 글자를 읽는 중... (10~20초 정도 걸릴 수 있어요)";
+    try {
+      const result = await Tesseract.recognize(file, "kor+eng", {
+        logger: m => {
+          if (m.status === "recognizing text" && typeof m.progress === "number") {
+            ocrStatus.textContent = `🔍 글자 인식 중... ${Math.round(m.progress * 100)}%`;
+          }
+        }
+      });
+      const extracted = (result.data && result.data.text ? result.data.text : "").trim();
+      if (extracted) {
+        noticeTextarea.value = extracted;
+        ocrStatus.textContent = "✅ 글자 인식 완료! 아래 내용을 확인·수정하고 등록 버튼을 누르세요.";
+        updateNoticePreview();
+      } else {
+        ocrStatus.textContent = "⚠️ 글자를 찾지 못했어요. 더 선명한 사진으로 시도하거나 직접 입력해 주세요.";
+      }
+    } catch (err) {
+      ocrStatus.textContent = "⚠️ 사진 인식 중 오류가 발생했어요. 알림장 글을 직접 붙여넣어 주세요.";
+    }
+  });
 
   function detectIcon(text) {
     if (/숙제|풀기|익힘|받아쓰기|일기|독서|읽기|연습|공부|단원/.test(text)) return "📝";
@@ -1938,6 +2001,7 @@
     const results = [];
 
     for (const rawLine of lines) {
+      if (rawLine.length < 2) continue;
       if (/^[-=_~*#]{3,}$/.test(rawLine)) continue;
       if (/^(안녕하세요|감사합니다|고맙습니다|사랑합니다|좋은\s*하루)/.test(rawLine)) continue;
 
@@ -1963,15 +2027,13 @@
   }
 
   function updateNoticePreview() {
-    const raw = noticeTextarea.value;
-    const items = parseNoticeText(raw, noticeDefaultDate.value || selectedDateKey);
+    const items = parseNoticeText(noticeTextarea.value, noticeDefaultDate.value || selectedDateKey);
     if (items.length === 0) {
       noticePreviewBox.style.display = "none";
       return;
     }
 
-    const label = noticeTargetKid === "kid1" ? `🌟 ${state.kids.kid1.label}` : `🌈 ${state.kids.kid2.label}`;
-    noticePreviewTitle.textContent = `자동 추출 ${items.length}건 → ${label}`;
+    noticePreviewTitle.textContent = `자동 정리 ${items.length}건`;
     noticePreviewList.innerHTML = items.map(it => {
       const [, m, d] = it.date.split("-");
       return `<div class="preview-item"><span class="preview-date">${Number(m)}/${Number(d)}</span><span>${it.icon} ${it.text}</span></div>`;
@@ -1984,23 +2046,25 @@
 
   document.getElementById("applyNoticeBtn").addEventListener("click", () => {
     const items = parseNoticeText(noticeTextarea.value, noticeDefaultDate.value || selectedDateKey);
-    if (items.length === 0) { showCheer("알림장 내용을 먼저 붙여넣어 주세요!"); return; }
+    if (items.length === 0) { showCheer("알림장 사진이나 내용을 먼저 입력해 주세요!"); return; }
 
     const addCal = optAddCalendar.checked;
     const addMis = optAddMission.checked;
-    const kid = state.kids[noticeTargetKid];
 
     items.forEach((it, idx) => {
       const fullText = `${it.icon} ${it.text}`;
       if (addCal) {
         if (!state.schedules[it.date]) state.schedules[it.date] = [];
-        if (!state.schedules[it.date].some(x => x.text === it.text && x.kid === noticeTargetKid)) {
-          state.schedules[it.date].push({ id: Date.now() + idx, text: it.text, done: false, kid: noticeTargetKid });
+        if (!state.schedules[it.date].some(x => x.text === it.text)) {
+          state.schedules[it.date].push({ id: Date.now() + idx, text: it.text, done: false });
         }
       }
       if (addMis) {
-        if (!kid.todos.some(t => t.text === fullText || t.text === it.text)) {
-          kid.todos.push({ id: Date.now() + 1000 + idx, text: fullText, done: false });
+        const [yy, mm, dd] = it.date.split("-").map(Number);
+        const dow = new Date(yy, mm - 1, dd).getDay();
+        const dayList = state.kid.weeklyTodos[dow] || [];
+        if (!dayList.some(t => t.text === fullText || t.text === it.text)) {
+          dayList.push({ id: Date.now() + 1000 + idx, text: fullText, done: false });
         }
       }
     });
@@ -2013,33 +2077,37 @@
     saveState();
     renderCalendar();
     renderSchedules();
-    renderKid(noticeTargetKid);
+    renderKid();
     noticeModal.classList.remove("show");
-    showCheer(`📋 ${kid.label} 알림장 ${items.length}건 등록 완료!`);
+    showCheer(`📸 알림장 ${items.length}건이 달력·미션에 정리되었어요!`);
   });
 
-  /* 4. 아이별 오늘의 기록 (기분 · 읽은 책 · 일기) */
-  const journalTimers = { kid1: null, kid2: null };
+  /* 4. 일기 공간 2개 (1. 오늘의 기분·독서·일기 / 2. 엄마·아빠에게 보내는 편지) */
+  let diaryTimer = null;
+  let letterTimer = null;
 
-  function showJournalSaved(kidKey) {
-    const badge = document.getElementById(`${kidKey}JournalSaved`);
-    badge.classList.add("show");
-    clearTimeout(journalTimers[kidKey]);
-    journalTimers[kidKey] = setTimeout(() => badge.classList.remove("show"), 1400);
-  }
-
-  function getTodayJournal(kidKey) {
-    const today = getTodayKey();
-    if (!state.kids[kidKey].journals) state.kids[kidKey].journals = {};
-    if (!state.kids[kidKey].journals[today]) {
-      state.kids[kidKey].journals[today] = { mood: "", book: "", diary: "" };
+  function showSavedBadge(elId, isLetter) {
+    const el = document.getElementById(elId);
+    el.classList.add("show");
+    if (isLetter) {
+      clearTimeout(letterTimer);
+      letterTimer = setTimeout(() => el.classList.remove("show"), 1500);
+    } else {
+      clearTimeout(diaryTimer);
+      diaryTimer = setTimeout(() => el.classList.remove("show"), 1500);
     }
-    return state.kids[kidKey].journals[today];
   }
 
-  function renderJournal(kidKey) {
-    const j = getTodayJournal(kidKey);
-    const moodRow = document.getElementById(`${kidKey}MoodRow`);
+  function getTodayJournal() {
+    const today = getTodayKey();
+    if (!state.kid.journals[today]) state.kid.journals[today] = { mood: "", book: "", diary: "" };
+    return state.kid.journals[today];
+  }
+
+  function renderJournalAndLetter() {
+    const today = getTodayKey();
+    const j = getTodayJournal();
+    const moodRow = document.getElementById("moodRow");
     moodRow.innerHTML = MOODS.map(m => `
       <button type="button" class="mood-btn ${j.mood === m.key ? "selected" : ""}" data-mood="${m.key}">
         <span class="mood-emoji">${m.emoji}</span>
@@ -2049,36 +2117,54 @@
 
     moodRow.querySelectorAll(".mood-btn").forEach(btn => {
       btn.addEventListener("click", () => {
-        const cur = getTodayJournal(kidKey);
-        cur.mood = btn.dataset.mood;
+        getTodayJournal().mood = btn.dataset.mood;
         saveState();
-        renderJournal(kidKey);
-        showJournalSaved(kidKey);
-        const mObj = MOODS.find(m => m.key === cur.mood);
-        if (mObj) showCheer(`${state.kids[kidKey].label} 오늘 기분: ${mObj.emoji} ${mObj.label}!`);
+        renderJournalAndLetter();
+        showSavedBadge("diarySaved", false);
+        const mObj = MOODS.find(m => m.key === btn.dataset.mood);
+        if (mObj) showCheer(`오늘 기분: ${mObj.emoji} ${mObj.label}!`);
       });
     });
 
-    const bookEl = document.getElementById(`${kidKey}BookInput`);
-    const diaryEl = document.getElementById(`${kidKey}DiaryInput`);
+    const bookEl = document.getElementById("bookInput");
+    const diaryEl = document.getElementById("diaryInput");
+    const letterEl = document.getElementById("letterInput");
     if (document.activeElement !== bookEl) bookEl.value = j.book || "";
     if (document.activeElement !== diaryEl) diaryEl.value = j.diary || "";
+    if (document.activeElement !== letterEl) letterEl.value = state.kid.letters[today] || "";
   }
 
-  ["kid1", "kid2"].forEach(kidKey => {
-    document.getElementById(`${kidKey}BookInput`).addEventListener("input", (e) => {
-      getTodayJournal(kidKey).book = e.target.value;
-      saveState();
-      showJournalSaved(kidKey);
-    });
-    document.getElementById(`${kidKey}DiaryInput`).addEventListener("input", (e) => {
-      getTodayJournal(kidKey).diary = e.target.value;
-      saveState();
-      showJournalSaved(kidKey);
-    });
+  document.getElementById("bookInput").addEventListener("input", (e) => {
+    getTodayJournal().book = e.target.value;
+    saveState();
+    showSavedBadge("diarySaved", false);
   });
 
-  /* 5. 아이별 포켓몬 & 미션 렌더링 */
+  document.getElementById("diaryInput").addEventListener("input", (e) => {
+    getTodayJournal().diary = e.target.value;
+    saveState();
+    showSavedBadge("diarySaved", false);
+  });
+
+  document.getElementById("letterInput").addEventListener("input", (e) => {
+    state.kid.letters[getTodayKey()] = e.target.value;
+    saveState();
+    showSavedBadge("letterSaved", true);
+  });
+
+  document.getElementById("sendLetterBtn").addEventListener("click", () => {
+    const val = document.getElementById("letterInput").value.trim();
+    if (!val) {
+      showCheer("편지 내용을 먼저 적어주세요! 💌");
+      return;
+    }
+    state.kid.letters[getTodayKey()] = val;
+    saveState();
+    showSavedBadge("letterSaved", true);
+    showCheer("💌 엄마·아빠 우체통에 편지가 쏙 들어갔어요!");
+  });
+
+  /* 5. 포켓몬 & 오늘의 미션 */
   const cheerToast = document.getElementById("cheerToast");
   let cheerTimer = null;
   function showCheer(msg) {
@@ -2094,10 +2180,9 @@
     return 0;
   }
 
-  function getKidPoke(kidKey) {
-    const kid = state.kids[kidKey];
-    const line = POKEMON_LINES.find(p => p.key === kid.pokeKey) || POKEMON_LINES[0];
-    const count = Object.keys(kid.stickers).length;
+  function getKidPoke() {
+    const line = POKEMON_LINES.find(p => p.key === state.kid.pokeKey) || POKEMON_LINES[0];
+    const count = Object.keys(state.kid.stickers).length;
     const stageIdx = getStageIndex(count);
     return { line, stageIdx, poke: line.stages[stageIdx], count };
   }
@@ -2108,62 +2193,65 @@
   const celebDesc = document.getElementById("celebDesc");
   document.getElementById("closeCelebModal").addEventListener("click", () => celebModal.classList.remove("show"));
 
-  function showCelebration(kidKey, evolved, icon) {
-    const kid = state.kids[kidKey];
-    const { poke } = getKidPoke(kidKey);
+  function showCelebration(evolved, icon) {
+    const { poke } = getKidPoke();
     celebImg.src = getPokeImgUrl(poke.id);
     if (evolved) {
-      celebTitle.textContent = `✨ ${kid.label}의 ${poke.name} 진화!`;
+      celebTitle.textContent = `✨ 우와! ${poke.name}(으)로 진화했어요!`;
       celebDesc.textContent = `매일 미션을 멋지게 해내서 진화했어요!\n달력에 ${icon} 스티커도 꾹 붙었어요!`;
     } else {
-      celebTitle.textContent = `🎉 ${kid.label} 미션 올클리어!`;
+      celebTitle.textContent = `🎉 오늘 미션 모두 완료!`;
       celebDesc.textContent = `${poke.name}도 박수 치고 있어요!\n달력에 반짝이는 ${icon} 스티커가 붙었어요!`;
     }
     celebModal.classList.add("show");
   }
 
-  function handleKidSticker(kidKey) {
+  function handleKidSticker() {
     const today = getTodayKey();
-    const kid = state.kids[kidKey];
-    const allDone = kid.todos.length > 0 && kid.todos.every(t => t.done);
-    const prevCount = Object.keys(kid.stickers).length;
+    const todayTodos = getTodayTodos();
+    const allDone = todayTodos.length > 0 && todayTodos.every(t => t.done);
+    const prevCount = Object.keys(state.kid.stickers).length;
     const prevStage = getStageIndex(prevCount);
 
-    if (allDone && !kid.stickers[today]) {
+    if (allDone && !state.kid.stickers[today]) {
       const icon = STICKER_ICONS[prevCount % STICKER_ICONS.length];
-      kid.stickers[today] = icon;
+      state.kid.stickers[today] = icon;
       saveState();
-      const newStage = getStageIndex(Object.keys(kid.stickers).length);
-      renderKid(kidKey);
+      const newStage = getStageIndex(Object.keys(state.kid.stickers).length);
+      renderKid();
       renderCalendar();
-      showCelebration(kidKey, newStage > prevStage, icon);
-    } else if (!allDone && kid.stickers[today]) {
-      delete kid.stickers[today];
+      showCelebration(newStage > prevStage, icon);
+    } else if (!allDone && state.kid.stickers[today]) {
+      delete state.kid.stickers[today];
       saveState();
-      renderKid(kidKey);
+      renderKid();
       renderCalendar();
     }
   }
 
-  function renderKid(kidKey) {
-    const kid = state.kids[kidKey];
-    const { stageIdx, poke, count } = getKidPoke(kidKey);
+  function renderKid() {
+    const { stageIdx, poke, count } = getKidPoke();
+    const todayDow = getTodayDow();
+    const dayName = DOW_NAMES[todayDow];
 
-    document.getElementById(`${kidKey}TitleLabel`).textContent = `${kidKey === "kid1" ? "🌟" : "🌈"} ${kid.label}`;
-    document.getElementById(`${kidKey}PokeImg`).src = getPokeImgUrl(poke.id);
-    document.getElementById(`${kidKey}PokeName`).textContent = `${poke.name} (${stageIdx + 1}단계)`;
-    document.getElementById(`${kidKey}StickerCnt`).textContent = `⭐ ${count}개`;
+    document.getElementById("kidTitleLabel").textContent = `🌟 ${state.kid.label}`;
+    document.getElementById("kidPokeImg").src = getPokeImgUrl(poke.id);
+    document.getElementById("kidPokeName").textContent = `${poke.name} (${stageIdx + 1}단계)`;
+    document.getElementById("kidStickerCnt").textContent = `⭐ 모은 스티커 ${count}개`;
 
     let pct = 100;
     if (stageIdx === 0) pct = Math.min(100, (count / EVO_STAGE2_NEED) * 100);
     else if (stageIdx === 1) pct = Math.min(100, ((count - EVO_STAGE2_NEED) / (EVO_STAGE3_NEED - EVO_STAGE2_NEED)) * 100);
-    document.getElementById(`${kidKey}EvoFill`).style.width = `${pct}%`;
+    document.getElementById("kidEvoFill").style.width = `${pct}%`;
 
-    const listEl = document.getElementById(`${kidKey}TodoList`);
+    document.getElementById("kidMissionLabel").textContent = `🚀 오늘(${dayName})의 미션`;
+
+    const todos = getTodayTodos();
+    const listEl = document.getElementById("kidTodoList");
     listEl.innerHTML = "";
     let doneCount = 0;
 
-    kid.todos.forEach(item => {
+    todos.forEach(item => {
       if (item.done) doneCount++;
       const row = document.createElement("div");
       row.className = "todo-item" + (item.done ? " done" : "");
@@ -2176,83 +2264,71 @@
       `;
       row.addEventListener("click", (e) => {
         if (e.target.classList.contains("del-btn")) {
-          kid.todos = kid.todos.filter(t => t.id !== item.id);
+          state.kid.weeklyTodos[todayDow] = todos.filter(t => t.id !== item.id);
           saveState();
-          renderKid(kidKey);
-          handleKidSticker(kidKey);
+          renderKid();
+          handleKidSticker();
           return;
         }
-        if (editModes[kidKey]) return;
+        if (editMode) return;
         item.done = !item.done;
         saveState();
-        if (item.done) showCheer(`${kid.label}! ${CHEER_MESSAGES[Math.floor(Math.random() * CHEER_MESSAGES.length)]}`);
-        renderKid(kidKey);
-        handleKidSticker(kidKey);
+        if (item.done) showCheer();
+        renderKid();
+        handleKidSticker();
       });
       listEl.appendChild(row);
     });
 
-    document.getElementById(`${kidKey}Prog`).textContent = `${doneCount} / ${kid.todos.length}`;
-    document.getElementById(`${kidKey}Card`).classList.toggle("edit-mode", editModes[kidKey]);
-    const editBtn = document.getElementById(`${kidKey}EditBtn`);
-    editBtn.classList.toggle("active", editModes[kidKey]);
-    editBtn.textContent = editModes[kidKey] ? "완료" : "삭제";
+    document.getElementById("kidProg").textContent = `${doneCount} / ${todos.length}`;
+    document.getElementById("kidCard").classList.toggle("edit-mode", editMode);
+    const editBtn = document.getElementById("kidEditBtn");
+    editBtn.classList.toggle("active", editMode);
+    editBtn.textContent = editMode ? "완료" : "삭제";
   }
 
-  ["kid1", "kid2"].forEach(kidKey => {
-    const input = document.getElementById(`${kidKey}Input`);
-    const addBtn = document.getElementById(`${kidKey}AddBtn`);
-    const editBtn = document.getElementById(`${kidKey}EditBtn`);
-
-    addBtn.addEventListener("click", () => {
-      const text = input.value.trim();
-      if (!text) return;
-      state.kids[kidKey].todos.push({ id: Date.now(), text, done: false });
-      input.value = "";
-      saveState();
-      renderKid(kidKey);
-      handleKidSticker(kidKey);
-    });
-    input.addEventListener("keydown", (e) => { if (e.key === "Enter") addBtn.click(); });
-    editBtn.addEventListener("click", () => {
-      editModes[kidKey] = !editModes[kidKey];
-      renderKid(kidKey);
-    });
-    document.getElementById(`${kidKey}Avatar`).addEventListener("click", () => openPokeModal(kidKey));
+  const kidInput = document.getElementById("kidInput");
+  document.getElementById("kidAddBtn").addEventListener("click", () => {
+    const text = kidInput.value.trim();
+    if (!text) return;
+    getTodayTodos().push({ id: Date.now(), text, done: false });
+    kidInput.value = "";
+    saveState();
+    renderKid();
+    handleKidSticker();
+  });
+  kidInput.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("kidAddBtn").click(); });
+  document.getElementById("kidEditBtn").addEventListener("click", () => {
+    editMode = !editMode;
+    renderKid();
   });
 
   /* 포켓몬 선택 모달 */
   const pokeModal = document.getElementById("pokeModal");
   const pokeGrid = document.getElementById("pokeGrid");
-  const pokeModalTitle = document.getElementById("pokeModalTitle");
-
-  document.querySelectorAll(".poke-change-btn").forEach(btn => {
-    btn.addEventListener("click", () => openPokeModal(btn.dataset.kid));
-  });
+  document.getElementById("openPokeBtn").addEventListener("click", openPokeModal);
+  document.getElementById("kidAvatar").addEventListener("click", openPokeModal);
   document.getElementById("closePokeModal").addEventListener("click", () => pokeModal.classList.remove("show"));
   pokeModal.addEventListener("click", (e) => { if (e.target === pokeModal) pokeModal.classList.remove("show"); });
 
-  function openPokeModal(kidKey) {
-    const kid = state.kids[kidKey];
-    const stageIdx = getStageIndex(Object.keys(kid.stickers).length);
-    pokeModalTitle.textContent = `⚡ ${kid.label}의 포켓몬 고르기`;
+  function openPokeModal() {
+    const stageIdx = getStageIndex(Object.keys(state.kid.stickers).length);
     pokeGrid.innerHTML = "";
-
     POKEMON_LINES.forEach(line => {
       const cur = line.stages[stageIdx];
       const div = document.createElement("div");
-      div.className = "poke-option" + (line.key === kid.pokeKey ? " selected" : "");
+      div.className = "poke-option" + (line.key === state.kid.pokeKey ? " selected" : "");
       div.innerHTML = `
         <img src="${getPokeImgUrl(cur.id)}" alt="${cur.name}">
         <div class="poke-opt-name">${cur.name}</div>
         <div class="poke-opt-evo">${line.stages.map(s => s.name).join(" → ")}</div>
       `;
       div.addEventListener("click", () => {
-        kid.pokeKey = line.key;
+        state.kid.pokeKey = line.key;
         saveState();
-        renderKid(kidKey);
+        renderKid();
         pokeModal.classList.remove("show");
-        showCheer(`⚡ ${kid.label}, ${cur.name}(와)과 함께 출발!`);
+        showCheer(`⚡ ${cur.name}(와)과 함께 출발!`);
       });
       pokeGrid.appendChild(div);
     });
@@ -2284,10 +2360,9 @@
 
   /* 초기화 */
   updateParentModeUI();
-  renderKid("kid1");
-  renderKid("kid2");
-  renderJournal("kid1");
-  renderJournal("kid2");
+  renderKid();
+  renderWeeklyBoard();
+  renderJournalAndLetter();
   renderCalendar();
   renderSchedules();
   updateClockAndBedtime();
