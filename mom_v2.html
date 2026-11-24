@@ -907,7 +907,7 @@
       <div class="legend-row">
         <span class="legend-item"><span class="dot dot-mom"></span>엄마</span>
         <span class="legend-item"><span class="dot dot-house"></span>주부</span>
-        <span class="legend-item"><span class="dot dot-work"></span>회사원</span>
+        <span class="legend-item"><span class="dot dot-work"></span>일</span>
         <span class="legend-item"><span class="dot dot-growth"></span>자기개발</span>
         <span class="legend-item"><span class="dot dot-invest"></span>재테크</span>
       </div>
@@ -937,7 +937,7 @@
         <select class="role-select" id="newTodoRole">
           <option value="mom">👩‍👧‍👦 엄마</option>
           <option value="house">🏠 주부</option>
-          <option value="work">💼 회사원</option>
+          <option value="work">💼 일</option>
           <option value="growth">🌱 자기개발</option>
           <option value="invest">📈 재테크</option>
         </select>
@@ -1044,7 +1044,7 @@
   const ROLES = [
     { key: "mom",    label: "엄마",     emoji: "👩‍👧‍👦", color: "#EC4899" },
     { key: "house",  label: "주부",     emoji: "🏠",   color: "#F59E0B" },
-    { key: "work",   label: "회사원",   emoji: "💼",   color: "#3B82F6" },
+    { key: "work",   label: "일",       emoji: "💼",   color: "#3B82F6" },
     { key: "growth", label: "자기개발", emoji: "🌱",   color: "#8B5CF6" },
     { key: "invest", label: "재테크",   emoji: "📈",   color: "#10B981" }
   ];
@@ -1074,7 +1074,7 @@
     let base = {
       lastDate: getTodayKey(),
       todos: JSON.parse(JSON.stringify(DEFAULT_TODOS)),
-      unresolved: [], // [{ id, role, text, date }]
+      unresolved: [],
       pinnedMemo: "✨ 오늘도 완벽하지 않아도 괜찮아. 하나씩 차분하게 해내면 충분해!",
       schedules: {},
       memos: {}
@@ -1104,7 +1104,6 @@
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
   }
 
-  /* 날짜가 바뀌면 어제 못 끝낸 할 일을 자동으로 '못 해결한 할 일'로 이월 */
   function checkDailyReset() {
     const today = getTodayKey();
     if (state.lastDate !== today) {
