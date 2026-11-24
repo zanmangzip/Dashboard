@@ -393,7 +393,7 @@
     background: #FFFFFF;
     box-shadow: var(--shadow);
     padding: 12px 14px;
-    gap: 9px;
+    gap: 8px;
   }
 
   .kid-col.girl {
@@ -409,9 +409,9 @@
   .kid-header { display: flex; align-items: center; gap: 10px; }
 
   .poke-avatar {
-    width: 62px;
-    height: 62px;
-    border-radius: 18px;
+    width: 58px;
+    height: 58px;
+    border-radius: 16px;
     background: #FFFFFF;
     border: 3px solid #FDE68A;
     display: flex;
@@ -424,20 +424,25 @@
 
   .kid-col.girl .poke-avatar { border-color: #F9A8D4; }
   .kid-col.boy .poke-avatar { border-color: #7DD3FC; }
-  .poke-avatar img { width: 54px; height: 54px; object-fit: contain; }
+  .poke-avatar img { width: 50px; height: 50px; object-fit: contain; }
 
   .kid-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-  .kid-title-row { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
-  .kid-name { font-size: clamp(17px, 1.7vw, 21px); font-weight: 900; }
+  .kid-title-row { display: flex; justify-content: space-between; align-items: center; gap: 5px; }
+  .kid-name { font-size: clamp(16px, 1.65vw, 20px); font-weight: 900; }
   .kid-col.girl .kid-name { color: #BE185D; }
   .kid-col.boy .kid-name { color: #0369A1; }
+
+  .kid-header-btns {
+    display: flex;
+    gap: 4px;
+  }
 
   .poke-change-btn {
     border: none;
     border-radius: 9px;
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 800;
-    padding: 4px 8px;
+    padding: 4px 7px;
     cursor: pointer;
     white-space: nowrap;
   }
@@ -445,15 +450,75 @@
   .kid-col.girl .poke-change-btn { background: #FCE7F3; color: #BE185D; }
   .kid-col.boy .poke-change-btn { background: #E0F2FE; color: #0369A1; }
 
-  .poke-sub-row { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 800; color: var(--muted); }
-  .evo-bar { width: 100%; height: 9px; background: #F1F5F9; border-radius: 999px; overflow: hidden; }
+  .tt-open-btn {
+    border: none;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 7px;
+    cursor: pointer;
+    white-space: nowrap;
+    background: #FEF3C7;
+    color: #B45309;
+  }
+
+  .poke-sub-row { display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--muted); }
+  .evo-bar { width: 100%; height: 8px; background: #F1F5F9; border-radius: 999px; overflow: hidden; }
   .evo-fill { height: 100%; width: 0%; border-radius: 999px; transition: width 0.35s ease; }
   .kid-col.girl .evo-fill { background: linear-gradient(90deg, #F472B6, #EC4899); }
   .kid-col.boy .evo-fill { background: linear-gradient(90deg, #38BDF8, #0284C7); }
 
+  /* 주간 시간표 미니 요약 스트립 (누르면 일주일 전체 시간표 팝업) */
+  .tt-strip {
+    background: #FFFBEB;
+    border: 2px solid #FDE68A;
+    border-radius: 13px;
+    padding: 6px 9px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .tt-strip-left {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .tt-today-badge {
+    font-size: 11px;
+    font-weight: 900;
+    background: #F59E0B;
+    color: #FFFFFF;
+    padding: 2px 6px;
+    border-radius: 7px;
+    flex-shrink: 0;
+  }
+
+  .tt-today-text {
+    font-size: 12px;
+    font-weight: 800;
+    color: #92400E;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tt-strip-more {
+    font-size: 11px;
+    font-weight: 900;
+    color: #B45309;
+    flex-shrink: 0;
+  }
+
   .mission-head { display: flex; justify-content: space-between; align-items: center; }
-  .mission-label { font-size: 15px; font-weight: 900; color: var(--ink); }
-  .mission-prog { font-size: 13px; font-weight: 800; padding: 3px 10px; border-radius: 999px; }
+  .mission-label { font-size: 14.5px; font-weight: 900; color: var(--ink); }
+  .mission-prog { font-size: 12.5px; font-weight: 800; padding: 3px 9px; border-radius: 999px; }
   .kid-col.girl .mission-prog { background: #FCE7F3; color: #BE185D; }
   .kid-col.boy .mission-prog { background: #E0F2FE; color: #0369A1; }
 
@@ -472,8 +537,8 @@
     align-items: center;
     justify-content: space-between;
     gap: 9px;
-    padding: 9px 11px;
-    border-radius: 14px;
+    padding: 8px 11px;
+    border-radius: 13px;
     background: #FAFBFD;
     border: 2px solid #E8EEF5;
     cursor: pointer;
@@ -485,22 +550,22 @@
   .todo-left { display: flex; align-items: center; gap: 9px; min-width: 0; }
 
   .checkbox {
-    width: 26px;
-    height: 26px;
+    width: 25px;
+    height: 25px;
     border-radius: 8px;
     border: 2.5px solid #B8C7D9;
     background: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 900;
     color: #FFFFFF;
     flex-shrink: 0;
   }
 
   .todo-item.done .checkbox { background: var(--green); border-color: var(--green); }
-  .todo-text { font-size: clamp(14.5px, 1.45vw, 18px); font-weight: 800; color: var(--ink); word-break: keep-all; }
+  .todo-text { font-size: clamp(14px, 1.4vw, 17.5px); font-weight: 800; color: var(--ink); word-break: keep-all; }
   .todo-item.done .todo-text { color: #047857; text-decoration: line-through; }
 
   .del-btn {
@@ -558,85 +623,57 @@
   .btn-edit { background: #EEF2F7; color: var(--muted); }
   .btn-edit.active { background: #EF4444; color: #FFFFFF; }
 
-  /* NEW: 아이별 오늘의 기록 (기분 이모지 + 읽은 책 + 오늘의 일기) */
+  /* 아이별 오늘의 기록 (기분 이모지 + 읽은 책 + 오늘의 일기) */
   .journal-box {
     background: #FFFDF7;
     border: 2px solid #FDE68A;
-    border-radius: 16px;
-    padding: 10px 11px;
+    border-radius: 15px;
+    padding: 9px 10px;
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 6px;
     flex-shrink: 0;
   }
 
   .kid-col.girl .journal-box { background: #FFF8FB; border-color: #FBCFE8; }
   .kid-col.boy .journal-box { background: #F7FCFF; border-color: #BAE6FD; }
 
-  .journal-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .journal-title {
-    font-size: 13.5px;
-    font-weight: 900;
-    color: var(--ink);
-  }
-
-  .journal-saved {
-    font-size: 11px;
-    font-weight: 800;
-    color: #10B981;
-    opacity: 0;
-    transition: opacity 0.25s ease;
-  }
-
+  .journal-head { display: flex; justify-content: space-between; align-items: center; }
+  .journal-title { font-size: 13px; font-weight: 900; color: var(--ink); }
+  .journal-saved { font-size: 11px; font-weight: 800; color: #10B981; opacity: 0; transition: opacity 0.25s ease; }
   .journal-saved.show { opacity: 1; }
 
-  .mood-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 5px;
-  }
+  .mood-row { display: flex; justify-content: space-between; gap: 4px; }
 
   .mood-btn {
     flex: 1;
     border: 2px solid transparent;
     background: #FFFFFF;
-    border-radius: 11px;
-    padding: 5px 2px;
+    border-radius: 10px;
+    padding: 4px 2px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1px;
     cursor: pointer;
-    transition: transform 0.1s ease, border-color 0.15s ease, background 0.15s ease;
   }
 
   .mood-btn:active { transform: scale(0.95); }
-  .mood-emoji { font-size: 20px; line-height: 1.1; }
+  .mood-emoji { font-size: 19px; line-height: 1.1; }
   .mood-label { font-size: 10px; font-weight: 800; color: var(--muted); }
 
-  .kid-col.girl .mood-btn.selected {
-    background: #FCE7F3;
-    border-color: #EC4899;
-  }
-  .kid-col.boy .mood-btn.selected {
-    background: #E0F2FE;
-    border-color: #0284C7;
-  }
+  .kid-col.girl .mood-btn.selected { background: #FCE7F3; border-color: #EC4899; }
+  .kid-col.boy .mood-btn.selected { background: #E0F2FE; border-color: #0284C7; }
   .mood-btn.selected .mood-label { color: var(--ink); }
 
   .journal-input {
     width: 100%;
-    font-size: 13.5px;
+    font-size: 13px;
     font-weight: 700;
     font-family: inherit;
-    padding: 7px 10px;
+    padding: 6px 9px;
     border: 2px solid #E2E8F0;
-    border-radius: 10px;
+    border-radius: 9px;
     background: #FFFFFF;
     outline: none;
     user-select: text;
@@ -644,24 +681,22 @@
 
   .journal-textarea {
     width: 100%;
-    min-height: 52px;
-    max-height: 76px;
+    min-height: 46px;
+    max-height: 68px;
     resize: none;
-    font-size: 13.5px;
+    font-size: 13px;
     font-weight: 700;
     font-family: inherit;
-    padding: 7px 10px;
+    padding: 6px 9px;
     border: 2px solid #E2E8F0;
-    border-radius: 10px;
+    border-radius: 9px;
     background: #FFFFFF;
     outline: none;
-    line-height: 1.4;
+    line-height: 1.35;
     user-select: text;
   }
 
-  .journal-input:focus, .journal-textarea:focus {
-    border-color: var(--blue);
-  }
+  .journal-input:focus, .journal-textarea:focus { border-color: var(--blue); }
 
   /* 칭찬 토스트 */
   .cheer-toast {
@@ -694,7 +729,7 @@
     align-items: center;
     justify-content: center;
     z-index: 3000;
-    padding: 18px;
+    padding: 16px;
   }
 
   .modal-backdrop.show { display: flex; }
@@ -704,7 +739,7 @@
     border-radius: 24px;
     border: 4px solid #FFE49E;
     width: 100%;
-    max-width: 600px;
+    max-width: 620px;
     max-height: 92vh;
     overflow-y: auto;
     padding: 20px 22px;
@@ -731,6 +766,70 @@
     cursor: pointer;
   }
 
+  /* 일주일 전체 시간표 모달 (7열) */
+  .weekly-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+  }
+
+  .weekly-col {
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 220px;
+  }
+
+  .weekly-col.is-today {
+    background: #FFFBEB;
+    border-color: #F59E0B;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.16);
+  }
+
+  .weekly-day-head {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 900;
+    padding-bottom: 6px;
+    border-bottom: 2px dashed #E2E8F0;
+    color: #334155;
+  }
+
+  .weekly-col.is-today .weekly-day-head {
+    color: #D97706;
+    border-bottom-color: #FDE68A;
+  }
+
+  .weekly-slot {
+    background: #FFFFFF;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 7px 6px;
+    font-size: 12.5px;
+    font-weight: 800;
+    color: var(--ink);
+    text-align: center;
+    word-break: keep-all;
+    line-height: 1.3;
+  }
+
+  .weekly-col.is-today .weekly-slot {
+    border-color: #FCD34D;
+  }
+
+  .weekly-empty {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #94A3B8;
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  /* 포켓몬 선택 */
   .poke-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
   .poke-option {
     background: #FFFDF7;
@@ -755,7 +854,7 @@
     font-size: 15px;
     font-weight: 700;
     font-family: inherit;
-    padding: 10px 12px;
+    padding: 9px 12px;
     border: 2.5px solid #CBD5E1;
     border-radius: 12px;
     outline: none;
@@ -769,7 +868,7 @@
     border: 2.5px solid #E2E8F0;
     background: #F8FAFC;
     border-radius: 12px;
-    padding: 9px;
+    padding: 8px;
     font-size: 13.5px;
     font-weight: 900;
     cursor: pointer;
@@ -779,6 +878,32 @@
   .class-btn.active-boy { background: #E0F2FE; border-color: #0284C7; color: #0369A1; }
   .class-btn.active-girl { background: #FCE7F3; border-color: #EC4899; color: #BE185D; }
   .class-btn.active-purple { background: #F5F3FF; border-color: #7C3AED; color: #6D28D9; }
+
+  /* 요일 선택 탭 (월~일) */
+  .dow-tabs {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-bottom: 12px;
+  }
+
+  .dow-tab {
+    border: 2px solid #E2E8F0;
+    background: #F8FAFC;
+    color: #475569;
+    font-size: 13.5px;
+    font-weight: 900;
+    padding: 8px 4px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .dow-tab.active {
+    background: var(--purple);
+    border-color: var(--purple);
+    color: #FFFFFF;
+  }
 
   .check-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
   .check-label { display: flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 800; cursor: pointer; }
@@ -819,7 +944,7 @@
     border: none;
     background: #2563EB;
     color: #FFFFFF;
-    font-size: 15.5px;
+    font-size: 15px;
     font-weight: 900;
     padding: 11px;
     border-radius: 12px;
@@ -829,10 +954,10 @@
   .form-submit.purple { background: linear-gradient(135deg, #7C3AED, #6D28D9); }
   .form-submit.gray { background: #E2E8F0; color: #334155; }
 
-  /* 부모 관리 모달 탭 & 기록 리스트 */
+  /* 부모 관리 모달 4탭 */
   .admin-tabs {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 6px;
     margin-bottom: 14px;
   }
@@ -841,9 +966,9 @@
     border: 2px solid #E2E8F0;
     background: #F8FAFC;
     color: #475569;
-    font-size: 13.5px;
+    font-size: 12.5px;
     font-weight: 900;
-    padding: 9px 6px;
+    padding: 9px 4px;
     border-radius: 12px;
     cursor: pointer;
   }
@@ -856,6 +981,46 @@
 
   .admin-panel { display: none; }
   .admin-panel.active { display: block; }
+
+  .admin-edit-section {
+    background: #F8FAFC;
+    border: 2px solid #E2E8F0;
+    border-radius: 14px;
+    padding: 11px 12px;
+    margin-bottom: 10px;
+  }
+
+  .admin-edit-title {
+    font-size: 13.5px;
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .admin-item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 8px;
+    max-height: 150px;
+    overflow-y: auto;
+  }
+
+  .admin-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #FFFFFF;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 9px;
+    padding: 6px 9px;
+    font-size: 13px;
+    font-weight: 800;
+    gap: 8px;
+  }
 
   .log-card {
     background: #F8FAFC;
@@ -895,18 +1060,14 @@
     gap: 8px;
   }
 
-  .inline-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
+  .inline-row { display: flex; gap: 6px; align-items: center; }
 
   .small-btn {
     border: none;
-    border-radius: 10px;
-    font-size: 13px;
+    border-radius: 9px;
+    font-size: 12.5px;
     font-weight: 800;
-    padding: 8px 12px;
+    padding: 7px 11px;
     cursor: pointer;
     white-space: nowrap;
   }
@@ -914,13 +1075,9 @@
   .small-btn.purple { background: var(--purple); color: #FFFFFF; }
   .small-btn.amber { background: #FEF3C7; color: #B45309; }
   .small-btn.red { background: #FEE2E2; color: #DC2626; }
+  .small-btn.blue { background: #DBEAFE; color: #1D4ED8; }
 
-  .hint-text {
-    font-size: 12px;
-    font-weight: 700;
-    color: #64748B;
-    line-height: 1.4;
-  }
+  .hint-text { font-size: 12px; font-weight: 700; color: #64748B; line-height: 1.4; }
 
   /* 축하 / 진화 모달 */
   .celeb-box { text-align: center; max-width: 430px; }
@@ -965,6 +1122,9 @@
   @media (orientation: portrait) {
     html, body { overflow: auto; }
     .dashboard { grid-template-columns: 1fr; height: auto; min-height: 100%; }
+    .weekly-grid { grid-template-columns: 1fr; }
+    .weekly-col { min-height: auto; }
+    .admin-tabs { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 </head>
@@ -976,7 +1136,7 @@
     <section class="card clock-card">
       <div class="clock-top">
         <div class="clock-left">
-          <div class="date-text" id="dateText">2026년 11월 23일 (월)</div>
+          <div class="date-text" id="dateText">2026년 11월 24일 (화)</div>
           <div class="time-wrap">
             <span class="ampm" id="ampmText">오후</span>
             <span class="time-text" id="timeText">00:00</span>
@@ -1051,7 +1211,10 @@
       <div class="kid-meta">
         <div class="kid-title-row">
           <span class="kid-name" id="girlTitleLabel">👧 6세 여아</span>
-          <button type="button" class="poke-change-btn" data-kid="girl">⚡ 포켓몬</button>
+          <div class="kid-header-btns">
+            <button type="button" class="tt-open-btn" data-kid="girl">🗓️ 주간시간표</button>
+            <button type="button" class="poke-change-btn" data-kid="girl">⚡ 포켓몬</button>
+          </div>
         </div>
         <div class="poke-sub-row">
           <span id="girlPokeName">피츄 (1단계)</span>
@@ -1061,18 +1224,26 @@
       </div>
     </div>
 
+    <!-- 오늘 시간표 요약 & 일주일 전체 보기 -->
+    <div class="tt-strip" id="girlTtStrip">
+      <div class="tt-strip-left">
+        <span class="tt-today-badge" id="girlTtBadge">화 시간표</span>
+        <span class="tt-today-text" id="girlTtSummary">등록된 시간표가 없어요</span>
+      </div>
+      <span class="tt-strip-more">전체보기 ▸</span>
+    </div>
+
     <div class="mission-head">
-      <span class="mission-label">🎀 오늘의 미션</span>
+      <span class="mission-label" id="girlMissionLabel">🎀 오늘(화)의 미션</span>
       <span class="mission-prog" id="girlProg">0 / 0</span>
     </div>
     <div class="todo-list" id="girlTodoList"></div>
     <div class="todo-footer">
-      <input type="text" class="todo-input" id="girlInput" placeholder="새 미션 추가" maxlength="25">
+      <input type="text" class="todo-input" id="girlInput" placeholder="오늘 요일 미션 추가" maxlength="25">
       <button type="button" class="btn btn-add" id="girlAddBtn">추가</button>
       <button type="button" class="btn btn-edit" id="girlEditBtn">삭제</button>
     </div>
 
-    <!-- 6세 여아 오늘의 기록 (기분 · 읽은 책 · 일기) -->
     <div class="journal-box">
       <div class="journal-head">
         <span class="journal-title">📖 오늘의 기분 · 독서 · 일기</span>
@@ -1093,7 +1264,10 @@
       <div class="kid-meta">
         <div class="kid-title-row">
           <span class="kid-name" id="boyTitleLabel">👦 8세 남아</span>
-          <button type="button" class="poke-change-btn" data-kid="boy">⚡ 포켓몬</button>
+          <div class="kid-header-btns">
+            <button type="button" class="tt-open-btn" data-kid="boy">🗓️ 주간시간표</button>
+            <button type="button" class="poke-change-btn" data-kid="boy">⚡ 포켓몬</button>
+          </div>
         </div>
         <div class="poke-sub-row">
           <span id="boyPokeName">파이리 (1단계)</span>
@@ -1103,18 +1277,26 @@
       </div>
     </div>
 
+    <!-- 오늘 시간표 요약 & 일주일 전체 보기 -->
+    <div class="tt-strip" id="boyTtStrip">
+      <div class="tt-strip-left">
+        <span class="tt-today-badge" id="boyTtBadge">화 시간표</span>
+        <span class="tt-today-text" id="boyTtSummary">등록된 시간표가 없어요</span>
+      </div>
+      <span class="tt-strip-more">전체보기 ▸</span>
+    </div>
+
     <div class="mission-head">
-      <span class="mission-label">🚀 오늘의 미션</span>
+      <span class="mission-label" id="boyMissionLabel">🚀 오늘(화)의 미션</span>
       <span class="mission-prog" id="boyProg">0 / 0</span>
     </div>
     <div class="todo-list" id="boyTodoList"></div>
     <div class="todo-footer">
-      <input type="text" class="todo-input" id="boyInput" placeholder="새 미션 추가" maxlength="25">
+      <input type="text" class="todo-input" id="boyInput" placeholder="오늘 요일 미션 추가" maxlength="25">
       <button type="button" class="btn btn-add" id="boyAddBtn">추가</button>
       <button type="button" class="btn btn-edit" id="boyEditBtn">삭제</button>
     </div>
 
-    <!-- 8세 남아 오늘의 기록 (기분 · 읽은 책 · 일기) -->
     <div class="journal-box">
       <div class="journal-head">
         <span class="journal-title">📖 오늘의 기분 · 독서 · 일기</span>
@@ -1129,6 +1311,17 @@
 
 <!-- 칭찬 토스트 -->
 <div class="cheer-toast" id="cheerToast"></div>
+
+<!-- 일주일 한꺼번에 보는 시간표 모달 (아이용) -->
+<div class="modal-backdrop" id="timetableModal">
+  <div class="modal-box" style="max-width: 920px;">
+    <div class="modal-head">
+      <div class="modal-title" id="ttModalTitle">🗓️ 일주일 시간표</div>
+      <button class="modal-close" id="closeTtModal" type="button">✕</button>
+    </div>
+    <div class="weekly-grid" id="weeklyGrid"></div>
+  </div>
+</div>
 
 <!-- 부모 로그인 모달 -->
 <div class="modal-backdrop" id="loginModal">
@@ -1152,20 +1345,56 @@
 
 <!-- 부모 관리 센터 모달 -->
 <div class="modal-backdrop" id="adminModal">
-  <div class="modal-box" style="max-width: 640px;">
+  <div class="modal-box" style="max-width: 680px;">
     <div class="modal-head">
       <div class="modal-title">👩‍👧‍👦 엄마 관리 센터</div>
       <button class="modal-close" id="closeAdminModal" type="button">✕</button>
     </div>
 
     <div class="admin-tabs">
-      <button type="button" class="admin-tab active" data-tab="logs">📖 독서·일기 기록장</button>
-      <button type="button" class="admin-tab" data-tab="kids">⭐ 아이·스티커 관리</button>
-      <button type="button" class="admin-tab" data-tab="settings">⚙️ 취침·계정 설정</button>
+      <button type="button" class="admin-tab active" data-tab="weekly">🗓️ 요일별 시간표·할일</button>
+      <button type="button" class="admin-tab" data-tab="logs">📖 독서·일기장</button>
+      <button type="button" class="admin-tab" data-tab="kids">⭐ 아이·스티커</button>
+      <button type="button" class="admin-tab" data-tab="settings">⚙️ 취침·계정</button>
     </div>
 
-    <!-- 탭 1: 아이별 독서/일기/기분 기록장 -->
-    <div class="admin-panel active" id="panel-logs">
+    <!-- 탭 1: 요일별 시간표 & 할 일 세팅 -->
+    <div class="admin-panel active" id="panel-weekly">
+      <div class="class-toggle" style="margin-bottom: 10px;">
+        <button type="button" class="class-btn active-girl" id="wkKidGirl">👧 6세 여아</button>
+        <button type="button" class="class-btn" id="wkKidBoy">👦 8세 남아</button>
+      </div>
+      <div class="dow-tabs" id="wkDowTabs"></div>
+
+      <!-- 선택 요일 시간표 편집 -->
+      <div class="admin-edit-section">
+        <div class="admin-edit-title">
+          <span id="wkTtTitle">🗓️ 월요일 시간표</span>
+          <span class="hint-text">아이 화면에는 일주일 전체가 한꺼번에 보여요</span>
+        </div>
+        <div class="admin-item-list" id="wkTtList"></div>
+        <div class="inline-row">
+          <input type="text" id="wkTtInput" class="form-input" style="flex:1; padding:7px 10px; font-size:14px;" placeholder="예: 14:00 피아노 / 16:00 태권도" maxlength="30">
+          <button type="button" class="small-btn purple" id="wkTtAddBtn">추가</button>
+        </div>
+      </div>
+
+      <!-- 선택 요일 할 일 체크리스트 편집 -->
+      <div class="admin-edit-section">
+        <div class="admin-edit-title">
+          <span id="wkTodoTitle">✅ 월요일 할 일 체크리스트</span>
+          <button type="button" class="small-btn blue" id="wkCopyAllDaysBtn">모든 요일에 복사</button>
+        </div>
+        <div class="admin-item-list" id="wkTodoList"></div>
+        <div class="inline-row">
+          <input type="text" id="wkTodoInput" class="form-input" style="flex:1; padding:7px 10px; font-size:14px;" placeholder="예: 📚 책 2권 읽기 / 🪢 줄넘기 100개" maxlength="25">
+          <button type="button" class="small-btn purple" id="wkTodoAddBtn">추가</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 탭 2: 아이별 독서/일기/기분 기록장 -->
+    <div class="admin-panel" id="panel-logs">
       <div class="class-toggle" style="margin-bottom: 10px;">
         <button type="button" class="class-btn active-girl" id="logFilterGirl">👧 6세 여아 기록</button>
         <button type="button" class="class-btn" id="logFilterBoy">👦 8세 남아 기록</button>
@@ -1173,7 +1402,7 @@
       <div id="adminLogList" style="max-height: 320px; overflow-y: auto;"></div>
     </div>
 
-    <!-- 탭 2: 아이 이름 & 스티커 관리 -->
+    <!-- 탭 3: 아이 이름 & 스티커 관리 -->
     <div class="admin-panel" id="panel-kids">
       <div class="admin-kid-row">
         <div class="inline-row">
@@ -1188,10 +1417,10 @@
         </div>
         <button type="button" class="form-submit purple" id="saveKidNamesBtn">이름 변경 저장</button>
       </div>
-      <p class="hint-text">💡 엄마 모드가 켜져 있는 동안 메인 화면에서 아이별 미션을 직접 추가·삭제하고, 달력 일정과 이알리미 알림장을 관리할 수 있어요.</p>
+      <p class="hint-text">💡 엄마 모드가 켜져 있는 동안 메인 화면에서 오늘 요일 미션을 바로 추가·삭제할 수도 있어요.</p>
     </div>
 
-    <!-- 탭 3: 취침 시간 & 부모 계정 비밀번호 변경 -->
+    <!-- 탭 4: 취침 시간 & 부모 계정 비밀번호 변경 -->
     <div class="admin-panel" id="panel-settings">
       <div class="form-row">
         <label for="adminBedTime">🌙 아이들 잠자는 시간</label>
@@ -1269,7 +1498,7 @@
     </div>
     <div class="check-row">
       <label class="check-label"><input type="checkbox" id="optAddCalendar" checked> 📅 달력 일정에 등록</label>
-      <label class="check-label"><input type="checkbox" id="optAddMission" checked> ✅ 아이 오늘의 미션에도 추가</label>
+      <label class="check-label"><input type="checkbox" id="optAddMission" checked> ✅ 해당 요일 미션에도 추가</label>
     </div>
     <div class="preview-box" id="noticePreviewBox" style="display:none;">
       <div class="preview-title" id="noticePreviewTitle">자동 추출 미리보기</div>
@@ -1304,6 +1533,10 @@
   const EVO_STAGE2_NEED = 3;
   const EVO_STAGE3_NEED = 7;
 
+  // 요일 순서: 월(1)~일(0) 표시용
+  const DOW_ORDER = [1, 2, 3, 4, 5, 6, 0];
+  const DOW_NAMES = ["일", "월", "화", "수", "목", "금", "토"];
+
   const MOODS = [
     { key: "excited", emoji: "😄", label: "신남" },
     { key: "happy",   emoji: "😊", label: "행복" },
@@ -1321,30 +1554,58 @@
     { key: "fuecoco",    stages: [{ id: 909, name: "뜨아거" }, { id: 910, name: "악뜨거" }, { id: 911, name: "라우드본" }] }
   ];
 
+  function makeWeeklyTodos(baseList) {
+    const obj = {};
+    for (let d = 0; d < 7; d++) {
+      obj[d] = baseList.map((item, idx) => ({ id: d * 100 + idx + 1, text: item.text, done: false }));
+    }
+    return obj;
+  }
+
+  function makeEmptyWeeklyTimetable(sample) {
+    const obj = {};
+    for (let d = 0; d < 7; d++) obj[d] = sample && sample[d] ? [...sample[d]] : [];
+    return obj;
+  }
+
+  const DEFAULT_GIRL_TODOS = [
+    { text: "🪥 스스로 양치하기" },
+    { text: "📖 그림책 2권 읽기" },
+    { text: "🧸 장난감 정리하기" },
+    { text: "🍚 밥 골고루 먹기" },
+    { text: "🌙 일찍 잠자리 들기" }
+  ];
+
+  const DEFAULT_BOY_TODOS = [
+    { text: "🪢 줄넘기 연습하기" },
+    { text: "🔢 수학 문제 풀기" },
+    { text: "📚 책 2권 읽기" },
+    { text: "🎒 내일 준비물 챙기기" },
+    { text: "🌙 일찍 잠자리 들기" }
+  ];
+
   const DEFAULT_KIDS = {
     girl: {
       label: "6세 여아",
       pokeKey: "pichu",
-      todos: [
-        { id: 1, text: "🪥 스스로 양치하기", done: false },
-        { id: 2, text: "📖 그림책 2권 읽기", done: false },
-        { id: 3, text: "🧸 장난감 정리하기", done: false },
-        { id: 4, text: "🍚 밥 골고루 먹기", done: false },
-        { id: 5, text: "🌙 일찍 잠자리 들기", done: false }
-      ],
+      weeklyTodos: makeWeeklyTodos(DEFAULT_GIRL_TODOS),
+      weeklyTimetable: makeEmptyWeeklyTimetable({
+        1: ["15:00 미술"],
+        3: ["13:30 생명과학", "17:00 피아노"],
+        5: ["17:00 피아노"]
+      }),
       stickers: {},
       journals: {}
     },
     boy: {
       label: "8세 남아",
       pokeKey: "charmander",
-      todos: [
-        { id: 1, text: "🪢 줄넘기 연습하기", done: false },
-        { id: 2, text: "🔢 수학 문제 풀기", done: false },
-        { id: 3, text: "📚 책 2권 읽기", done: false },
-        { id: 4, text: "🎒 내일 준비물 챙기기", done: false },
-        { id: 5, text: "🌙 일찍 잠자리 들기", done: false }
-      ],
+      weeklyTodos: makeWeeklyTodos(DEFAULT_BOY_TODOS),
+      weeklyTimetable: makeEmptyWeeklyTimetable({
+        1: ["16:00 태권도"],
+        3: ["16:00 태권도"],
+        5: ["14:30 로봇과학B", "17:00 피아노"]
+      }),
       stickers: {},
       journals: {}
     }
@@ -1378,6 +1639,10 @@
     return formatDateKey(d);
   }
 
+  function getTodayDow() {
+    return new Date().getDay(); // 0=일 ~ 6=토
+  }
+
   function loadState() {
     let base = {
       lastDate: getTodayKey(),
@@ -1393,8 +1658,28 @@
         if (parsed && parsed.kids && parsed.kids.girl && parsed.kids.boy) {
           base = { ...base, ...parsed };
           if (!base.parentAuth) base.parentAuth = { id: "mom", pin: "1234" };
-          if (!base.kids.girl.journals) base.kids.girl.journals = {};
-          if (!base.kids.boy.journals) base.kids.boy.journals = {};
+          ["girl", "boy"].forEach(k => {
+            const kid = base.kids[k];
+            if (!kid.journals) kid.journals = {};
+            if (!kid.stickers) kid.stickers = {};
+            // 기존 단일 todos -> 요일별 weeklyTodos로 자동 마이그레이션
+            if (!kid.weeklyTodos) {
+              const src = (kid.todos && kid.todos.length > 0) ? kid.todos : (k === "girl" ? DEFAULT_GIRL_TODOS : DEFAULT_BOY_TODOS);
+              kid.weeklyTodos = makeWeeklyTodos(src);
+              if (kid.todos) {
+                kid.weeklyTodos[getTodayDow()] = kid.todos.map(t => ({ ...t }));
+              }
+            }
+            for (let d = 0; d < 7; d++) {
+              if (!Array.isArray(kid.weeklyTodos[d])) kid.weeklyTodos[d] = [];
+            }
+            if (!kid.weeklyTimetable) {
+              kid.weeklyTimetable = JSON.parse(JSON.stringify(DEFAULT_KIDS[k].weeklyTimetable));
+            }
+            for (let d = 0; d < 7; d++) {
+              if (!Array.isArray(kid.weeklyTimetable[d])) kid.weeklyTimetable[d] = [];
+            }
+          });
         }
       }
     } catch (e) {}
@@ -1414,11 +1699,19 @@
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
   }
 
+  function getTodayTodos(kidKey) {
+    const dow = getTodayDow();
+    if (!state.kids[kidKey].weeklyTodos[dow]) state.kids[kidKey].weeklyTodos[dow] = [];
+    return state.kids[kidKey].weeklyTodos[dow];
+  }
+
   function checkDailyReset() {
     const today = getTodayKey();
     if (state.lastDate !== today) {
       ["girl", "boy"].forEach(k => {
-        state.kids[k].todos = state.kids[k].todos.map(t => ({ ...t, done: false }));
+        for (let d = 0; d < 7; d++) {
+          state.kids[k].weeklyTodos[d] = (state.kids[k].weeklyTodos[d] || []).map(t => ({ ...t, done: false }));
+        }
       });
       state.lastDate = today;
       selectedDateKey = today;
@@ -1431,6 +1724,39 @@
       renderSchedules();
     }
   }
+
+  /* ===== 일주일 전체 시간표 모달 (아이용) ===== */
+  const timetableModal = document.getElementById("timetableModal");
+  const ttModalTitle = document.getElementById("ttModalTitle");
+  const weeklyGrid = document.getElementById("weeklyGrid");
+
+  function openTimetableModal(kidKey) {
+    const kid = state.kids[kidKey];
+    const todayDow = getTodayDow();
+    ttModalTitle.textContent = `🗓️ ${kid.label} 일주일 시간표`;
+    weeklyGrid.innerHTML = DOW_ORDER.map(d => {
+      const slots = kid.weeklyTimetable[d] || [];
+      const isToday = d === todayDow;
+      const body = slots.length > 0
+        ? slots.map(s => `<div class="weekly-slot">${s}</div>`).join("")
+        : '<div class="weekly-empty">쉬는 날 😊</div>';
+      return `
+        <div class="weekly-col ${isToday ? "is-today" : ""}">
+          <div class="weekly-day-head">${DOW_NAMES[d]}${isToday ? " (오늘)" : ""}</div>
+          ${body}
+        </div>
+      `;
+    }).join("");
+    timetableModal.classList.add("show");
+  }
+
+  document.querySelectorAll(".tt-open-btn").forEach(btn => {
+    btn.addEventListener("click", () => openTimetableModal(btn.dataset.kid));
+  });
+  document.getElementById("girlTtStrip").addEventListener("click", () => openTimetableModal("girl"));
+  document.getElementById("boyTtStrip").addEventListener("click", () => openTimetableModal("boy"));
+  document.getElementById("closeTtModal").addEventListener("click", () => timetableModal.classList.remove("show"));
+  timetableModal.addEventListener("click", (e) => { if (e.target === timetableModal) timetableModal.classList.remove("show"); });
 
   /* ===== 부모 관리 계정 로그인 & 권한 가드 ===== */
   const parentBtn = document.getElementById("parentBtn");
@@ -1466,11 +1792,8 @@
   }
 
   parentBtn.addEventListener("click", () => {
-    if (isParentLoggedIn) {
-      openAdminModal();
-    } else {
-      requireParent(openAdminModal);
-    }
+    if (isParentLoggedIn) openAdminModal();
+    else requireParent(openAdminModal);
   });
 
   document.getElementById("closeLoginModal").addEventListener("click", () => {
@@ -1507,15 +1830,19 @@
   document.getElementById("doLoginBtn").addEventListener("click", tryLogin);
   loginPinInput.addEventListener("keydown", (e) => { if (e.key === "Enter") tryLogin(); });
 
-  /* 엄마 관리 센터 모달 */
+  /* ===== 엄마 관리 센터 모달 ===== */
+  let adminWkKid = "girl";
+  let adminWkDow = getTodayDow();
   let adminLogKid = "girl";
 
   function openAdminModal() {
+    adminWkDow = getTodayDow();
     document.getElementById("adminGirlName").value = state.kids.girl.label;
     document.getElementById("adminBoyName").value = state.kids.boy.label;
     document.getElementById("adminBedTime").value = state.bedtime || "21:00";
     document.getElementById("adminNewId").value = state.parentAuth.id || "mom";
     document.getElementById("adminNewPin").value = "";
+    renderAdminWeekly();
     renderAdminLogs();
     adminModal.classList.add("show");
   }
@@ -1532,6 +1859,119 @@
     });
   });
 
+  /* 탭 1: 요일별 시간표 & 할 일 편집 */
+  const wkKidGirlBtn = document.getElementById("wkKidGirl");
+  const wkKidBoyBtn = document.getElementById("wkKidBoy");
+  const wkDowTabs = document.getElementById("wkDowTabs");
+  const wkTtTitle = document.getElementById("wkTtTitle");
+  const wkTtList = document.getElementById("wkTtList");
+  const wkTtInput = document.getElementById("wkTtInput");
+  const wkTodoTitle = document.getElementById("wkTodoTitle");
+  const wkTodoList = document.getElementById("wkTodoList");
+  const wkTodoInput = document.getElementById("wkTodoInput");
+
+  wkKidGirlBtn.addEventListener("click", () => { adminWkKid = "girl"; renderAdminWeekly(); });
+  wkKidBoyBtn.addEventListener("click", () => { adminWkKid = "boy"; renderAdminWeekly(); });
+
+  function renderAdminWeekly() {
+    wkKidGirlBtn.className = "class-btn" + (adminWkKid === "girl" ? " active-girl" : "");
+    wkKidBoyBtn.className = "class-btn" + (adminWkKid === "boy" ? " active-boy" : "");
+    wkKidGirlBtn.textContent = `👧 ${state.kids.girl.label}`;
+    wkKidBoyBtn.textContent = `👦 ${state.kids.boy.label}`;
+
+    wkDowTabs.innerHTML = DOW_ORDER.map(d => `
+      <button type="button" class="dow-tab ${d === adminWkDow ? "active" : ""}" data-dow="${d}">${DOW_NAMES[d]}</button>
+    `).join("");
+    wkDowTabs.querySelectorAll(".dow-tab").forEach(btn => {
+      btn.addEventListener("click", () => {
+        adminWkDow = Number(btn.dataset.dow);
+        renderAdminWeekly();
+      });
+    });
+
+    const kid = state.kids[adminWkKid];
+    const dayName = DOW_NAMES[adminWkDow];
+    wkTtTitle.textContent = `🗓️ ${kid.label} · ${dayName}요일 시간표`;
+    wkTodoTitle.textContent = `✅ ${kid.label} · ${dayName}요일 할 일 체크리스트`;
+
+    // 시간표 리스트
+    const slots = kid.weeklyTimetable[adminWkDow] || [];
+    if (slots.length === 0) {
+      wkTtList.innerHTML = '<div class="schedule-empty">등록된 시간표가 없어요.</div>';
+    } else {
+      wkTtList.innerHTML = "";
+      slots.forEach((slotText, idx) => {
+        const row = document.createElement("div");
+        row.className = "admin-item-row";
+        row.innerHTML = `<span>📌 ${slotText}</span><button type="button" class="small-btn red">삭제</button>`;
+        row.querySelector("button").addEventListener("click", () => {
+          kid.weeklyTimetable[adminWkDow].splice(idx, 1);
+          saveState();
+          renderAdminWeekly();
+          renderKid(adminWkKid);
+        });
+        wkTtList.appendChild(row);
+      });
+    }
+
+    // 요일별 할 일 리스트
+    const todos = kid.weeklyTodos[adminWkDow] || [];
+    if (todos.length === 0) {
+      wkTodoList.innerHTML = '<div class="schedule-empty">등록된 할 일이 없어요.</div>';
+    } else {
+      wkTodoList.innerHTML = "";
+      todos.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "admin-item-row";
+        row.innerHTML = `<span>${item.text}</span><button type="button" class="small-btn red">삭제</button>`;
+        row.querySelector("button").addEventListener("click", () => {
+          kid.weeklyTodos[adminWkDow] = kid.weeklyTodos[adminWkDow].filter(t => t.id !== item.id);
+          saveState();
+          renderAdminWeekly();
+          renderKid(adminWkKid);
+          if (adminWkDow === getTodayDow()) handleKidSticker(adminWkKid);
+        });
+        wkTodoList.appendChild(row);
+      });
+    }
+  }
+
+  document.getElementById("wkTtAddBtn").addEventListener("click", () => {
+    const val = wkTtInput.value.trim();
+    if (!val) return;
+    state.kids[adminWkKid].weeklyTimetable[adminWkDow].push(val);
+    wkTtInput.value = "";
+    saveState();
+    renderAdminWeekly();
+    renderKid(adminWkKid);
+  });
+  wkTtInput.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("wkTtAddBtn").click(); });
+
+  document.getElementById("wkTodoAddBtn").addEventListener("click", () => {
+    const val = wkTodoInput.value.trim();
+    if (!val) return;
+    state.kids[adminWkKid].weeklyTodos[adminWkDow].push({ id: Date.now(), text: val, done: false });
+    wkTodoInput.value = "";
+    saveState();
+    renderAdminWeekly();
+    renderKid(adminWkKid);
+    if (adminWkDow === getTodayDow()) handleKidSticker(adminWkKid);
+  });
+  wkTodoInput.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("wkTodoAddBtn").click(); });
+
+  document.getElementById("wkCopyAllDaysBtn").addEventListener("click", () => {
+    const kid = state.kids[adminWkKid];
+    const source = kid.weeklyTodos[adminWkDow] || [];
+    for (let d = 0; d < 7; d++) {
+      if (d === adminWkDow) continue;
+      kid.weeklyTodos[d] = source.map((t, idx) => ({ id: Date.now() + d * 100 + idx, text: t.text, done: false }));
+    }
+    saveState();
+    renderKid(adminWkKid);
+    showCheer(`✅ ${DOW_NAMES[adminWkDow]}요일 할 일을 모든 요일에 복사했어요!`);
+  });
+
+  /* 탭 2: 독서·일기 기록장 */
   const logFilterGirl = document.getElementById("logFilterGirl");
   const logFilterBoy = document.getElementById("logFilterBoy");
   logFilterGirl.addEventListener("click", () => { adminLogKid = "girl"; renderAdminLogs(); });
@@ -1570,6 +2010,7 @@
     }).join("");
   }
 
+  /* 탭 3: 아이 이름 & 스티커 */
   document.getElementById("saveKidNamesBtn").addEventListener("click", () => {
     const g = document.getElementById("adminGirlName").value.trim();
     const b = document.getElementById("adminBoyName").value.trim();
@@ -1579,6 +2020,7 @@
     renderKid("girl");
     renderKid("boy");
     renderSchedules();
+    renderAdminWeekly();
     renderAdminLogs();
     showCheer("아이 이름이 저장되었어요!");
   });
@@ -1603,6 +2045,7 @@
   document.getElementById("bonusGirlBtn").addEventListener("click", () => giveBonusSticker("girl"));
   document.getElementById("bonusBoyBtn").addEventListener("click", () => giveBonusSticker("boy"));
 
+  /* 탭 4: 취침 시간 & 계정 설정 */
   document.getElementById("saveAdminSettingsBtn").addEventListener("click", () => {
     const bed = document.getElementById("adminBedTime").value;
     const newId = document.getElementById("adminNewId").value.trim();
@@ -1641,8 +2084,7 @@
 
   function updateClockAndBedtime() {
     const now = new Date();
-    const days = ["일", "월", "화", "수", "목", "금", "토"];
-    dateText.textContent = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 (${days[now.getDay()]})`;
+    dateText.textContent = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 (${DOW_NAMES[now.getDay()]})`;
 
     const h24 = now.getHours();
     const min = String(now.getMinutes()).padStart(2, "0");
@@ -1743,8 +2185,7 @@
 
   function renderCalendar() {
     calTitle.textContent = `📅 ${calYear}년 ${calMonth + 1}월`;
-    const dows = ["일", "월", "화", "수", "목", "금", "토"];
-    let html = dows.map(d => `<div class="cal-dow">${d}</div>`).join("");
+    let html = DOW_NAMES.map(d => `<div class="cal-dow">${d}</div>`).join("");
     const firstDay = new Date(calYear, calMonth, 1).getDay();
     const lastDate = new Date(calYear, calMonth + 1, 0).getDate();
     const todayKey = getTodayKey();
@@ -1825,7 +2266,7 @@
     });
   }
 
-  /* 단건 스케줄 추가 모달 (부모 권한 확인) */
+  /* 단건 스케줄 추가 모달 */
   const schedModal = document.getElementById("schedModal");
   const schedInput = document.getElementById("schedInput");
   const schedModalTitle = document.getElementById("schedModalTitle");
@@ -1869,7 +2310,7 @@
     if (e.key === "Enter") document.getElementById("saveSchedBtn").click();
   });
 
-  /* 3-2. 이알리미 알림장 붙여넣기 (부모 권한 확인) */
+  /* 3-2. 이알리미 알림장 붙여넣기 */
   const noticeModal = document.getElementById("noticeModal");
   const noticeClassBoyBtn = document.getElementById("noticeClassBoy");
   const noticeClassGirlBtn = document.getElementById("noticeClassGirl");
@@ -2009,8 +2450,11 @@
         }
       }
       if (addMis) {
-        if (!kid.todos.some(t => t.text === fullText || t.text === it.text)) {
-          kid.todos.push({ id: Date.now() + 1000 + idx, text: fullText, done: false });
+        const [yy, mm, dd] = it.date.split("-").map(Number);
+        const dow = new Date(yy, mm - 1, dd).getDay();
+        const dayList = kid.weeklyTodos[dow] || [];
+        if (!dayList.some(t => t.text === fullText || t.text === it.text)) {
+          dayList.push({ id: Date.now() + 1000 + idx, text: fullText, done: false });
         }
       }
     });
@@ -2088,7 +2532,7 @@
     });
   });
 
-  /* 5. 아이별 포켓몬 & 미션 렌더링 */
+  /* 5. 아이별 포켓몬 & 요일별 미션 렌더링 */
   const cheerToast = document.getElementById("cheerToast");
   let cheerTimer = null;
   function showCheer(msg) {
@@ -2135,7 +2579,8 @@
   function handleKidSticker(kidKey) {
     const today = getTodayKey();
     const kid = state.kids[kidKey];
-    const allDone = kid.todos.length > 0 && kid.todos.every(t => t.done);
+    const todayTodos = getTodayTodos(kidKey);
+    const allDone = todayTodos.length > 0 && todayTodos.every(t => t.done);
     const prevCount = Object.keys(kid.stickers).length;
     const prevStage = getStageIndex(prevCount);
 
@@ -2158,6 +2603,8 @@
   function renderKid(kidKey) {
     const kid = state.kids[kidKey];
     const { stageIdx, poke, count } = getKidPoke(kidKey);
+    const todayDow = getTodayDow();
+    const dayName = DOW_NAMES[todayDow];
 
     document.getElementById(`${kidKey}TitleLabel`).textContent = `${kidKey === "girl" ? "👧" : "👦"} ${kid.label}`;
     document.getElementById(`${kidKey}PokeImg`).src = getPokeImgUrl(poke.id);
@@ -2169,11 +2616,23 @@
     else if (stageIdx === 1) pct = Math.min(100, ((count - EVO_STAGE2_NEED) / (EVO_STAGE3_NEED - EVO_STAGE2_NEED)) * 100);
     document.getElementById(`${kidKey}EvoFill`).style.width = `${pct}%`;
 
+    // 오늘 시간표 요약 스트립 업데이트
+    const todaySlots = kid.weeklyTimetable[todayDow] || [];
+    document.getElementById(`${kidKey}TtBadge`).textContent = `${dayName} 시간표`;
+    document.getElementById(`${kidKey}TtSummary`).textContent = todaySlots.length > 0
+      ? todaySlots.join(" · ")
+      : "오늘은 학원/방과후 쉬는 날 😊";
+
+    // 오늘 요일 미션 제목
+    document.getElementById(`${kidKey}MissionLabel`).textContent =
+      `${kidKey === "girl" ? "🎀" : "🚀"} 오늘(${dayName})의 미션`;
+
+    const todos = getTodayTodos(kidKey);
     const listEl = document.getElementById(`${kidKey}TodoList`);
     listEl.innerHTML = "";
     let doneCount = 0;
 
-    kid.todos.forEach(item => {
+    todos.forEach(item => {
       if (item.done) doneCount++;
       const row = document.createElement("div");
       row.className = "todo-item" + (item.done ? " done" : "");
@@ -2186,7 +2645,7 @@
       `;
       row.addEventListener("click", (e) => {
         if (e.target.classList.contains("del-btn")) {
-          kid.todos = kid.todos.filter(t => t.id !== item.id);
+          kid.weeklyTodos[todayDow] = todos.filter(t => t.id !== item.id);
           saveState();
           renderKid(kidKey);
           handleKidSticker(kidKey);
@@ -2202,7 +2661,7 @@
       listEl.appendChild(row);
     });
 
-    document.getElementById(`${kidKey}Prog`).textContent = `${doneCount} / ${kid.todos.length}`;
+    document.getElementById(`${kidKey}Prog`).textContent = `${doneCount} / ${todos.length}`;
     document.getElementById(`${kidKey}Card`).classList.toggle("edit-mode", editModes[kidKey]);
     const editBtn = document.getElementById(`${kidKey}EditBtn`);
     editBtn.classList.toggle("active", editModes[kidKey]);
@@ -2217,7 +2676,7 @@
     addBtn.addEventListener("click", () => {
       const text = input.value.trim();
       if (!text) return;
-      state.kids[kidKey].todos.push({ id: Date.now(), text, done: false });
+      getTodayTodos(kidKey).push({ id: Date.now(), text, done: false });
       input.value = "";
       saveState();
       renderKid(kidKey);
