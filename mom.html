@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F8F7F4">
+<title>엄마의 하루 대시보드</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    --bg: #F6F5F0;
+    --card: #FFFFFF;
+    --ink: #1F2937;
+    --muted: #6B7280;
+    --line: #E7E5DF;
+    --shadow: 0 6px 20px rgba(31, 41, 55, 0.05);
+
+    /* 5개 역할 컬러 */
+    --mom: #EC4899;       --mom-bg: #FDF2F8;       --mom-bd: #FBCFE8;
+    --house: #F59E0B;     --house-bg: #FFFBEB;     --house-bd: #FDE68A;
+    --work: #3B82F6;      --work-bg: #EFF6FF;      --work-bd: #BFDBFE;
+    --growth: #8B5CF6;    --growth-bg: #F5F3FF;    --growth-bd: #DDD6FE;
+    --invest: #10B981;    --invest-bg: #ECFDF5;    --invest-bd: #A7F3D0;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  }
+
+  /* 3단 레이아웃 */
+  .dashboard {
+    display: grid;
+    grid-template-columns: 1.02fr 1.06fr 0.96fr;
+    gap: 14px;
+    width: 100%;
+    height: 100%;
+    padding: 14px 16px;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 14px 16px;
+  }
+
+  /* ===== 왼쪽 상단: 날짜·시계·날씨·오늘 달성률 ===== */
+  .hero-card {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FAF8F2 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .hero-date {
+    font-size: 13px;
+    font-weight: 800;
+    color: #9A6B2F;
+  }
+
+  .hero-time {
+    font-size: clamp(24px, 2.6vw, 32px);
+    font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .weather-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #F0F7FF;
+    border: 1.5px solid #D6E9FF;
+    border-radius: 14px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 800;
+    color: #1E40AF;
+    white-space: nowrap;
+  }
+
+  .prog-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .prog-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--muted);
+  }
+
+  .prog-bar {
+    width: 100%;
+    height: 8px;
+    background: #EFECE6;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .prog-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #EC4899, #8B5CF6, #10B981);
+    border-radius: 999px;
+    transition: width 0.35s ease;
+  }
+
+  /* ===== 왼쪽 하단: 역할 색깔 구분 달력 + 일정 ===== */
+  .cal-card {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .cal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cal-title {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--ink);
+  }
+
+  .cal-nav {
+    display: flex;
+    gap: 4px;
+  }
+
+  .cal-nav button {
+    border: 1.5px solid var(--line);
+    background: #FAF9F6;
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 900;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--muted);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  .dot-mom { background: var(--mom); }
+  .dot-house { background: var(--house); }
+  .dot-work { background: var(--work); }
+  .dot-growth { background: var(--growth); }
+  .dot-invest { background: var(--invest); }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+    text-align: center;
+  }
+
+  .cal-dow {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--muted);
+    padding-bottom: 2px;
+  }
+
+  .cal-day {
+    height: 36px;
+    border-radius: 9px;
+    background: #FAF9F6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: #374151;
+    cursor: pointer;
+  }
+
+  .cal-day.empty { background: transparent; cursor: default; }
+  .cal-day.today { border: 2px solid #1F2937; background: #FFFFFF; }
+  .cal-day.selected { background: #1F2937; color: #FFFFFF; border: 2px solid #1F2937; }
+
+  .cal-dots {
+    display: flex;
+    gap: 2px;
+    margin-top: 2px;
+    height: 6px;
+    align-items: center;
+  }
+
+  .schedule-box {
+    flex: 1;
+    min-height: 0;
+    background: #FAF9F6;
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 9px 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .schedule-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .schedule-date-label {
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--ink);
+  }
+
+  .btn-sm {
+    border: none;
+    background: #1F2937;
+    color: #FFFFFF;
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 5px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .schedule-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .schedule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #FFFFFF;
+    border: 1.5px solid var(--line);
+    border-left-width: 4px;
+    border-radius: 10px;
+    padding: 6px 9px;
+    font-size: 12.5px;
+    font-weight: 800;
+    gap: 6px;
+  }
+
+  .schedule-item.done {
+    opacity: 0.6;
+    text-decoration: line-through;
+  }
+
+  .schedule-item-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    flex: 1;
+    min-width: 0;
+    word-break: keep-all;
+  }
+
+  .role-badge {
+    font-size: 10px;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+
+  .role-mom    { background: var(--mom-bg);    color: var(--mom);    border-color: var(--mom); }
+  .role-house  { background: var(--house-bg);  color: #B45309;       border-color: var(--house); }
+  .role-work   { background: var(--work-bg);   color: #1D4ED8;       border-color: var(--work); }
+  .role-growth { background: var(--growth-bg); color: #6D28D9;       border-color: var(--growth); }
+  .role-invest { background: var(--invest-bg); color: #047857;       border-color: var(--invest); }
+
+  .del-x {
+    border: none;
+    background: #FEE2E2;
+    color: #DC2626;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 7px;
+    border-radius: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .empty-msg {
+    font-size: 12px;
+    font-weight: 700;
+    color: #9CA3AF;
+    text-align: center;
+    padding: 12px 0;
+  }
+
+  /* ===== 가운데 열: 역할별 할 일 체크리스트 ===== */
+  .todo-card {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title {
+    font-size: 16.5px;
+    font-weight: 900;
+    color: var(--ink);
+  }
+
+  .role-tabs {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .role-tab {
+    border: 1.5px solid var(--line);
+    background: #FAF9F6;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    padding: 6px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .role-tab.active-all    { background: #1F2937; color: #FFFFFF; border-color: #1F2937; }
+  .role-tab.active-mom    { background: var(--mom);    color: #FFFFFF; border-color: var(--mom); }
+  .role-tab.active-house  { background: var(--house);  color: #FFFFFF; border-color: var(--house); }
+  .role-tab.active-work   { background: var(--work);   color: #FFFFFF; border-color: var(--work); }
+  .role-tab.active-growth { background: var(--growth); color: #FFFFFF; border-color: var(--growth); }
+  .role-tab.active-invest { background: var(--invest); color: #FFFFFF; border-color: var(--invest); }
+
+  .todo-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding-right: 2px;
+  }
+
+  .todo-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: #FAF9F6;
+    border: 1.5px solid var(--line);
+    border-left-width: 5px;
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.15s ease;
+  }
+
+  .todo-item:active { transform: scale(0.99); }
+  .todo-item.done { background: #F3F4F6; opacity: 0.72; }
+
+  .todo-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .checkbox {
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    border: 2px solid #CBD5E1;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 900;
+    color: #FFFFFF;
+    flex-shrink: 0;
+  }
+
+  .todo-item.done .checkbox {
+    background: #10B981;
+    border-color: #10B981;
+  }
+
+  .todo-text {
+    font-size: 14.5px;
+    font-weight: 800;
+    color: var(--ink);
+    word-break: keep-all;
+  }
+
+  .todo-item.done .todo-text {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+
+  .todo-add-bar {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding-top: 4px;
+    border-top: 1.5px solid var(--line);
+  }
+
+  .role-select {
+    font-size: 12.5px;
+    font-weight: 800;
+    font-family: inherit;
+    padding: 8px 8px;
+    border: 1.5px solid #D1D5DB;
+    border-radius: 10px;
+    background: #FFFFFF;
+    color: var(--ink);
+    outline: none;
+  }
+
+  .text-input {
+    flex: 1;
+    min-width: 0;
+    font-size: 13.5px;
+    font-weight: 700;
+    font-family: inherit;
+    padding: 8px 11px;
+    border: 1.5px solid #D1D5DB;
+    border-radius: 10px;
+    outline: none;
+  }
+
+  .text-input:focus, .role-select:focus { border-color: #1F2937; }
+
+  /* ===== 오른쪽 상단: 미국주식 이슈 & 바로가기 ===== */
+  .stock-card {
+    flex: 1.05;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: linear-gradient(180deg, #F4FBF7 0%, #FFFFFF 90px);
+    border-color: #D1FAE5;
+  }
+
+  .stock-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .stock-link-btn {
+    text-decoration: none;
+    background: #ECFDF5;
+    border: 1.5px solid #A7F3D0;
+    color: #065F46;
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 5px 9px;
+    border-radius: 9px;
+    transition: background 0.15s ease;
+  }
+
+  .stock-link-btn:hover { background: #D1FAE5; }
+
+  .news-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-right: 2px;
+  }
+
+  .news-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-decoration: none;
+    background: #FFFFFF;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 11px;
+    padding: 8px 10px;
+    transition: border-color 0.15s ease, transform 0.1s ease;
+  }
+
+  .news-item:hover { border-color: var(--invest); }
+  .news-item:active { transform: scale(0.99); }
+
+  .news-title {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .news-meta {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ===== 오른쪽 하단: 하루 생각·느낌 메모 ===== */
+  .memo-card {
+    flex: 0.95;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: linear-gradient(180deg, #FDF8F6 0%, #FFFFFF 80px);
+    border-color: #F3E5DF;
+  }
+
+  .memo-saved {
+    font-size: 11px;
+    font-weight: 800;
+    color: #10B981;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .memo-saved.show { opacity: 1; }
+
+  .mood-row {
+    display: flex;
+    gap: 5px;
+  }
+
+  .mood-btn {
+    flex: 1;
+    border: 1.5px solid var(--line);
+    background: #FFFFFF;
+    border-radius: 10px;
+    padding: 5px 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    cursor: pointer;
+  }
+
+  .mood-btn.selected {
+    background: #FDF2F8;
+    border-color: #EC4899;
+  }
+
+  .mood-emoji { font-size: 17px; line-height: 1.1; }
+  .mood-label { font-size: 10px; font-weight: 800; color: var(--muted); }
+  .mood-btn.selected .mood-label { color: #BE185D; }
+
+  .memo-textarea {
+    flex: 1;
+    min-height: 80px;
+    width: 100%;
+    resize: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 10px 12px;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 12px;
+    background: #FFFFFF;
+    line-height: 1.55;
+    outline: none;
+  }
+
+  .memo-textarea:focus { border-color: #EC4899; }
+
+  /* 모달 */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    padding: 18px;
+  }
+
+  .modal-backdrop.show { display: flex; }
+
+  .modal-box {
+    background: #FFFFFF;
+    border-radius: 22px;
+    width: 100%;
+    max-width: 460px;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 20px 22px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  }
+
+  .modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .modal-title { font-size: 18px; font-weight: 900; }
+
+  .modal-close {
+    border: none;
+    background: #F3F4F6;
+    color: #4B5563;
+    font-size: 15px;
+    font-weight: 900;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .form-row label { font-size: 13px; font-weight: 800; color: var(--ink); }
+
+  .role-pick-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+  }
+
+  .role-pick-btn {
+    border: 1.5px solid var(--line);
+    background: #FAF9F6;
+    border-radius: 10px;
+    padding: 7px 4px;
+    font-size: 11.5px;
+    font-weight: 800;
+    cursor: pointer;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .role-pick-btn.sel-mom    { background: var(--mom-bg);    border-color: var(--mom);    color: var(--mom); }
+  .role-pick-btn.sel-house  { background: var(--house-bg);  border-color: var(--house);  color: #B45309; }
+  .role-pick-btn.sel-work   { background: var(--work-bg);   border-color: var(--work);   color: #1D4ED8; }
+  .role-pick-btn.sel-growth { background: var(--growth-bg); border-color: var(--growth); color: #6D28D9; }
+  .role-pick-btn.sel-invest { background: var(--invest-bg); border-color: var(--invest); color: #047857; }
+
+  .btn-submit {
+    width: 100%;
+    border: none;
+    background: #1F2937;
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 900;
+    padding: 11px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
+  .archive-item {
+    background: #FAF9F6;
+    border: 1.5px solid var(--line);
+    border-radius: 13px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+
+  .archive-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+    font-weight: 900;
+    margin-bottom: 4px;
+  }
+
+  .archive-body {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+
+  @media (max-width: 1024px), (orientation: portrait) {
+    html, body { overflow: auto; }
+    .dashboard {
+      grid-template-columns: 1fr;
+      height: auto;
+      min-height: 100%;
+    }
+    .todo-card, .cal-card, .stock-card, .memo-card { min-height: 320px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="dashboard">
+  <!-- 왼쪽 열: 시계·날씨 + 역할 색깔 달력 -->
+  <div class="col">
+    <section class="card hero-card">
+      <div class="hero-top">
+        <div>
+          <div class="hero-date" id="dateText">2026년 11월 24일 (화)</div>
+          <div class="hero-time" id="timeText">오후 00:00</div>
+        </div>
+        <div class="weather-pill" id="weatherPill">📍 용인 수지 · --°</div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-meta">
+          <span>오늘 나의 5가지 역할 달성률</span>
+          <span id="totalProgText">0 / 0 (0%)</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" id="totalProgFill"></div></div>
+      </div>
+    </section>
+
+    <section class="card cal-card">
+      <div class="cal-head">
+        <span class="cal-title" id="calTitle">📅 2026년 11월</span>
+        <div class="cal-nav">
+          <button type="button" id="calPrev">◀</button>
+          <button type="button" id="calNext">▶</button>
+        </div>
+      </div>
+      <div class="legend-row">
+        <span class="legend-item"><span class="dot dot-mom"></span>엄마</span>
+        <span class="legend-item"><span class="dot dot-house"></span>주부</span>
+        <span class="legend-item"><span class="dot dot-work"></span>회사원</span>
+        <span class="legend-item"><span class="dot dot-growth"></span>자기개발</span>
+        <span class="legend-item"><span class="dot dot-invest"></span>재테크</span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="schedule-box">
+        <div class="schedule-head">
+          <span class="schedule-date-label" id="selDateLabel">오늘 일정</span>
+          <button type="button" class="btn-sm" id="openSchedModalBtn">+ 일정 추가</button>
+        </div>
+        <div class="schedule-list" id="scheduleList"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 가운데 열: 역할별 할 일 체크리스트 -->
+  <section class="card todo-card">
+    <div class="section-head">
+      <span class="section-title">✅ 역할별 오늘 할 일</span>
+      <button type="button" class="btn-sm" id="resetDoneBtn" style="background:#F3F4F6; color:#4B5563;">체크 초기화</button>
+    </div>
+
+    <div class="role-tabs" id="roleTabs"></div>
+    <div class="todo-list" id="todoList"></div>
+
+    <div class="todo-add-bar">
+      <select class="role-select" id="newTodoRole">
+        <option value="mom">👩‍👧‍👦 엄마</option>
+        <option value="house">🏠 주부</option>
+        <option value="work">💼 회사원</option>
+        <option value="growth">🌱 자기개발</option>
+        <option value="invest">📈 재테크</option>
+      </select>
+      <input type="text" class="text-input" id="newTodoInput" placeholder="새 할 일 추가..." maxlength="40">
+      <button type="button" class="btn-sm" id="addTodoBtn">추가</button>
+    </div>
+  </section>
+
+  <!-- 오른쪽 열: 미국주식 이슈 & 바로가기 + 하루 생각·느낌 메모 -->
+  <div class="col">
+    <section class="card stock-card">
+      <div class="section-head">
+        <span class="section-title">🇺🇸 미국주식 이슈 & 바로가기</span>
+        <button type="button" class="btn-sm" id="refreshNewsBtn" style="background:#ECFDF5; color:#047857;">🔄 새로고침</button>
+      </div>
+
+      <div class="stock-links">
+        <a class="stock-link-btn" href="https://kr.investing.com/indices/us-spx-500" target="_blank" rel="noopener">인베스팅닷컴</a>
+        <a class="stock-link-btn" href="https://finance.yahoo.com/" target="_blank" rel="noopener">야후 파이낸스</a>
+        <a class="stock-link-btn" href="https://finviz.com/map.ashx" target="_blank" rel="noopener">핀비즈 맵</a>
+        <a class="stock-link-btn" href="https://edition.cnn.com/markets/fear-and-greed" target="_blank" rel="noopener">공포·탐욕지수</a>
+        <a class="stock-link-btn" href="https://m.stock.naver.com/worldstock/index/.IXIC/total" target="_blank" rel="noopener">네이버 해외증시</a>
+        <a class="stock-link-btn" href="https://kr.investing.com/economic-calendar/" target="_blank" rel="noopener">경제캘린더</a>
+      </div>
+
+      <div class="news-list" id="newsList">
+        <div class="empty-msg">미국주식 최신 이슈를 불러오는 중...</div>
+      </div>
+    </section>
+
+    <section class="card memo-card">
+      <div class="section-head">
+        <div>
+          <span class="section-title" id="memoTitle">📝 오늘의 생각 · 느낌</span>
+          <span class="memo-saved" id="memoSaved">저장됨 ✓</span>
+        </div>
+        <button type="button" class="btn-sm" id="openArchiveBtn" style="background:#FDF2F8; color:#BE185D;">📖 지난 메모</button>
+      </div>
+
+      <div class="mood-row" id="moodRow"></div>
+      <textarea class="memo-textarea" id="memoTextarea" placeholder="오늘 하루 일정 속에서 느낀 점, 감사한 일, 내일을 위한 아이디어를 자유롭게 적어보세요."></textarea>
+    </section>
+  </div>
+</div>
+
+<!-- 일정 추가 모달 -->
+<div class="modal-backdrop" id="schedModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title" id="schedModalTitle">📅 일정 추가</div>
+      <button class="modal-close" id="closeSchedModal" type="button">✕</button>
+    </div>
+    <div class="form-row">
+      <label>역할 선택 (달력에 색깔로 표시돼요)</label>
+      <div class="role-pick-grid" id="schedRoleGrid"></div>
+    </div>
+    <div class="form-row">
+      <label for="schedInput">일정 내용</label>
+      <input type="text" id="schedInput" class="text-input" placeholder="예: 14:00 팀 미팅 / 아이 학원 픽업 / FOMC 발표" maxlength="40">
+    </div>
+    <button type="button" class="btn-submit" id="saveSchedBtn">달력에 저장하기</button>
+  </div>
+</div>
+
+<!-- 지난 메모 모아보기 모달 -->
+<div class="modal-backdrop" id="archiveModal">
+  <div class="modal-box" style="max-width: 520px;">
+    <div class="modal-head">
+      <div class="modal-title">📖 나의 하루 메모 기록</div>
+      <button class="modal-close" id="closeArchiveModal" type="button">✕</button>
+    </div>
+    <div id="archiveList"></div>
+  </div>
+</div>
+
+<script>
+  const LOCATION = { name: "용인 수지", lat: 37.3221, lon: 127.0977 };
+  const STORAGE_KEY = "mom_dashboard_v1";
+
+  const ROLES = [
+    { key: "mom",    label: "엄마",     emoji: "👩‍👧‍👦", color: "#EC4899" },
+    { key: "house",  label: "주부",     emoji: "🏠",   color: "#F59E0B" },
+    { key: "work",   label: "회사원",   emoji: "💼",   color: "#3B82F6" },
+    { key: "growth", label: "자기개발", emoji: "🌱",   color: "#8B5CF6" },
+    { key: "invest", label: "재테크",   emoji: "📈",   color: "#10B981" }
+  ];
+
+  const MOODS = [
+    { key: "great", emoji: "✨", label: "충만" },
+    { key: "calm",  emoji: "😊", label: "평온" },
+    { key: "focus", emoji: "🔥", label: "집중" },
+    { key: "tired", emoji: "😮‍💨", label: "피곤" },
+    { key: "think", emoji: "💭", label: "복잡" }
+  ];
+
+  const DEFAULT_TODOS = [
+    { id: 1, role: "mom",    text: "아이들 알림장·준비물 확인하기", done: false },
+    { id: 2, role: "house",  text: "저녁 식단 확인 및 장보기 체크", done: false },
+    { id: 3, role: "work",   text: "오늘 핵심 업무 및 마감 일정 체크", done: false },
+    { id: 4, role: "growth", text: "영어 회화 연습 / 독서 20분", done: false },
+    { id: 5, role: "invest", text: "미국 증시 마감·주요 지표(VIX/RSI) 점검", done: false }
+  ];
+
+  function getTodayKey() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.todos)) return parsed;
+      }
+    } catch (e) {}
+    return {
+      lastDate: getTodayKey(),
+      todos: JSON.parse(JSON.stringify(DEFAULT_TODOS)),
+      schedules: {}, // { "YYYY-MM-DD": [{ id, role, text, done }] }
+      memos: {}      // { "YYYY-MM-DD": { mood, text } }
+    };
+  }
+
+  let state = loadState();
+  let activeRoleFilter = "all";
+  let selectedDateKey = getTodayKey();
+  let calYear = new Date().getFullYear();
+  let calMonth = new Date().getMonth();
+  let schedRole = "mom";
+
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function checkDailyReset() {
+    const today = getTodayKey();
+    if (state.lastDate !== today) {
+      state.todos = state.todos.map(t => ({ ...t, done: false }));
+      state.lastDate = today;
+      selectedDateKey = today;
+      saveState();
+      renderTodos();
+      renderCalendar();
+      renderSchedules();
+      renderMemo();
+    }
+  }
+
+  /* 1. 시계 & 날씨 */
+  function updateClock() {
+    const now = new Date();
+    const days = ["일", "월", "화", "수", "목", "금", "토"];
+    document.getElementById("dateText").textContent =
+      `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 (${days[now.getDay()]})`;
+    const h24 = now.getHours();
+    const min = String(now.getMinutes()).padStart(2, "0");
+    const period = h24 >= 12 ? "오후" : "오전";
+    const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+    document.getElementById("timeText").textContent = `${period} ${String(h12).padStart(2, "0")}:${min}`;
+    checkDailyReset();
+  }
+
+  const WMO_EMOJI = {
+    0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️", 45: "🌫️", 48: "🌫️",
+    51: "🌦️", 53: "🌦️", 55: "🌧️", 61: "🌧️", 63: "🌧️", 65: "🌧️",
+    71: "🌨️", 73: "❄️", 75: "❄️", 80: "🌦️", 81: "🌧️", 82: "⛈️", 95: "⛈️"
+  };
+
+  async function fetchWeather() {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${LOCATION.lat}&longitude=${LOCATION.lon}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FSeoul&forecast_days=1`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      const emoji = WMO_EMOJI[data.current.weather_code] || "🌤️";
+      const cur = Math.round(data.current.temperature_2m);
+      const hi = Math.round(data.daily.temperature_2m_max[0]);
+      const lo = Math.round(data.daily.temperature_2m_min[0]);
+      document.getElementById("weatherPill").textContent = `📍 ${LOCATION.name} ${emoji} ${cur}° (${lo}°/${hi}°)`;
+    } catch (e) {
+      document.getElementById("weatherPill").textContent = `📍 ${LOCATION.name}`;
+    }
+  }
+
+  /* 2. 역할별 할 일 체크리스트 */
+  const roleTabsEl = document.getElementById("roleTabs");
+  const todoListEl = document.getElementById("todoList");
+  const newTodoRole = document.getElementById("newTodoRole");
+  const newTodoInput = document.getElementById("newTodoInput");
+
+  function getRoleObj(key) {
+    return ROLES.find(r => r.key === key) || ROLES[0];
+  }
+
+  function renderRoleTabs() {
+    const allCount = state.todos.length;
+    const allDone = state.todos.filter(t => t.done).length;
+    let html = `<button type="button" class="role-tab ${activeRoleFilter === "all" ? "active-all" : ""}" data-role="all">전체 (${allDone}/${allCount})</button>`;
+    ROLES.forEach(r => {
+      const list = state.todos.filter(t => t.role === r.key);
+      const done = list.filter(t => t.done).length;
+      html += `<button type="button" class="role-tab ${activeRoleFilter === r.key ? "active-" + r.key : ""}" data-role="${r.key}">${r.emoji} ${r.label} (${done}/${list.length})</button>`;
+    });
+    roleTabsEl.innerHTML = html;
+    roleTabsEl.querySelectorAll(".role-tab").forEach(btn => {
+      btn.addEventListener("click", () => {
+        activeRoleFilter = btn.dataset.role;
+        if (activeRoleFilter !== "all") newTodoRole.value = activeRoleFilter;
+        renderTodos();
+      });
+    });
+
+    const pct = allCount > 0 ? Math.round((allDone / allCount) * 100) : 0;
+    document.getElementById("totalProgText").textContent = `${allDone} / ${allCount} (${pct}%)`;
+    document.getElementById("totalProgFill").style.width = `${pct}%`;
+  }
+
+  function renderTodos() {
+    renderRoleTabs();
+    const filtered = activeRoleFilter === "all"
+      ? state.todos
+      : state.todos.filter(t => t.role === activeRoleFilter);
+
+    if (filtered.length === 0) {
+      todoListEl.innerHTML = '<div class="empty-msg">등록된 할 일이 없어요. 아래에서 추가해 보세요!</div>';
+      return;
+    }
+
+    todoListEl.innerHTML = "";
+    filtered.forEach(item => {
+      const r = getRoleObj(item.role);
+      const row = document.createElement("div");
+      row.className = "todo-item" + (item.done ? " done" : "");
+      row.style.borderLeftColor = r.color;
+      row.innerHTML = `
+        <div class="todo-left">
+          <div class="checkbox">${item.done ? "✓" : ""}</div>
+          <span class="role-badge role-${r.key}">${r.label}</span>
+          <span class="todo-text">${item.text}</span>
+        </div>
+        <button type="button" class="del-x">삭제</button>
+      `;
+      row.querySelector(".todo-left").addEventListener("click", () => {
+        item.done = !item.done;
+        saveState();
+        renderTodos();
+      });
+      row.querySelector(".del-x").addEventListener("click", () => {
+        state.todos = state.todos.filter(t => t.id !== item.id);
+        saveState();
+        renderTodos();
+      });
+      todoListEl.appendChild(row);
+    });
+  }
+
+  document.getElementById("addTodoBtn").addEventListener("click", () => {
+    const text = newTodoInput.value.trim();
+    if (!text) return;
+    state.todos.push({ id: Date.now(), role: newTodoRole.value, text, done: false });
+    newTodoInput.value = "";
+    saveState();
+    renderTodos();
+  });
+  newTodoInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") document.getElementById("addTodoBtn").click();
+  });
+  document.getElementById("resetDoneBtn").addEventListener("click", () => {
+    state.todos = state.todos.map(t => ({ ...t, done: false }));
+    saveState();
+    renderTodos();
+  });
+
+  /* 3. 역할 색깔 구분 달력 & 일정 */
+  const calTitle = document.getElementById("calTitle");
+  const calGrid = document.getElementById("calGrid");
+  const selDateLabel = document.getElementById("selDateLabel");
+  const scheduleList = document.getElementById("scheduleList");
+
+  document.getElementById("calPrev").addEventListener("click", () => {
+    calMonth--;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    renderCalendar();
+  });
+  document.getElementById("calNext").addEventListener("click", () => {
+    calMonth++;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    renderCalendar();
+  });
+
+  function renderCalendar() {
+    calTitle.textContent = `📅 ${calYear}년 ${calMonth + 1}월`;
+    const dows = ["일", "월", "화", "수", "목", "금", "토"];
+    let html = dows.map(d => `<div class="cal-dow">${d}</div>`).join("");
+    const firstDay = new Date(calYear, calMonth, 1).getDay();
+    const lastDate = new Date(calYear, calMonth + 1, 0).getDate();
+    const todayKey = getTodayKey();
+
+    for (let i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
+    for (let d = 1; d <= lastDate; d++) {
+      const ds = `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+      const evs = state.schedules[ds] || [];
+      const uniqueRoles = [...new Set(evs.map(e => e.role))];
+      const dotsHtml = uniqueRoles.slice(0, 5).map(rk => `<span class="dot dot-${rk}"></span>`).join("");
+      const cls = "cal-day" + (ds === todayKey ? " today" : "") + (ds === selectedDateKey ? " selected" : "");
+      html += `
+        <div class="${cls}" data-date="${ds}">
+          <span>${d}</span>
+          <div class="cal-dots">${dotsHtml}</div>
+        </div>
+      `;
+    }
+    calGrid.innerHTML = html;
+    calGrid.querySelectorAll(".cal-day[data-date]").forEach(el => {
+      el.addEventListener("click", () => {
+        selectedDateKey = el.dataset.date;
+        renderCalendar();
+        renderSchedules();
+        renderMemo();
+      });
+    });
+  }
+
+  function renderSchedules() {
+    const todayKey = getTodayKey();
+    const [, m, d] = selectedDateKey.split("-");
+    selDateLabel.textContent = selectedDateKey === todayKey
+      ? `오늘(${Number(m)}/${Number(d)}) 일정`
+      : `${Number(m)}월 ${Number(d)}일 일정`;
+
+    const items = state.schedules[selectedDateKey] || [];
+    if (items.length === 0) {
+      scheduleList.innerHTML = '<div class="empty-msg">등록된 일정이 없어요.</div>';
+      return;
+    }
+
+    scheduleList.innerHTML = "";
+    items.forEach(ev => {
+      const r = getRoleObj(ev.role);
+      const row = document.createElement("div");
+      row.className = "schedule-item" + (ev.done ? " done" : "");
+      row.style.borderLeftColor = r.color;
+      row.innerHTML = `
+        <div class="schedule-item-left">
+          <span>${ev.done ? "✅" : "📌"}</span>
+          <span class="role-badge role-${r.key}">${r.label}</span>
+          <span>${ev.text}</span>
+        </div>
+        <button type="button" class="del-x">삭제</button>
+      `;
+      row.querySelector(".schedule-item-left").addEventListener("click", () => {
+        ev.done = !ev.done;
+        saveState();
+        renderSchedules();
+      });
+      row.querySelector(".del-x").addEventListener("click", () => {
+        state.schedules[selectedDateKey] = items.filter(x => x.id !== ev.id);
+        saveState();
+        renderCalendar();
+        renderSchedules();
+      });
+      scheduleList.appendChild(row);
+    });
+  }
+
+  /* 일정 추가 모달 */
+  const schedModal = document.getElementById("schedModal");
+  const schedRoleGrid = document.getElementById("schedRoleGrid");
+  const schedInput = document.getElementById("schedInput");
+
+  function renderSchedRolePicker() {
+    schedRoleGrid.innerHTML = ROLES.map(r => `
+      <button type="button" class="role-pick-btn ${schedRole === r.key ? "sel-" + r.key : ""}" data-role="${r.key}">
+        ${r.emoji}<br>${r.label}
+      </button>
+    `).join("");
+    schedRoleGrid.querySelectorAll(".role-pick-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        schedRole = btn.dataset.role;
+        renderSchedRolePicker();
+      });
+    });
+  }
+
+  document.getElementById("openSchedModalBtn").addEventListener("click", () => {
+    const [, m, d] = selectedDateKey.split("-");
+    document.getElementById("schedModalTitle").textContent = `📅 ${Number(m)}월 ${Number(d)}일 일정 추가`;
+    schedInput.value = "";
+    renderSchedRolePicker();
+    schedModal.classList.add("show");
+    setTimeout(() => schedInput.focus(), 100);
+  });
+  document.getElementById("closeSchedModal").addEventListener("click", () => schedModal.classList.remove("show"));
+  schedModal.addEventListener("click", (e) => { if (e.target === schedModal) schedModal.classList.remove("show"); });
+  document.getElementById("saveSchedBtn").addEventListener("click", () => {
+    const text = schedInput.value.trim();
+    if (!text) return;
+    if (!state.schedules[selectedDateKey]) state.schedules[selectedDateKey] = [];
+    state.schedules[selectedDateKey].push({ id: Date.now(), role: schedRole, text, done: false });
+    saveState();
+    renderCalendar();
+    renderSchedules();
+    schedModal.classList.remove("show");
+  });
+  schedInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") document.getElementById("saveSchedBtn").click();
+  });
+
+  /* 4. 미국주식 최신 이슈 자동 업데이트 */
+  const newsListEl = document.getElementById("newsList");
+
+  async function fetchUSStockNews() {
+    newsListEl.innerHTML = '<div class="empty-msg">미국주식 최신 이슈를 불러오는 중...</div>';
+    const rssUrl = encodeURIComponent("https://news.google.com/rss/search?q=미국주식+OR+나스닥+OR+테슬라+OR+엔비디아&hl=ko&gl=KR&ceid=KR:ko");
+    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`;
+
+    try {
+      const res = await fetch(apiUrl);
+      if (!res.ok) throw new Error("fetch failed");
+      const data = await res.json();
+      if (!data.items || data.items.length === 0) throw new Error("empty");
+
+      newsListEl.innerHTML = data.items.slice(0, 8).map(item => {
+        const dt = new Date(item.pubDate.replace(" ", "T") + "Z");
+        const timeStr = isNaN(dt) ? "" : `${dt.getMonth() + 1}/${dt.getDate()} ${String(dt.getHours()).padStart(2, "0")}:${String(dt.getMinutes()).padStart(2, "0")}`;
+        const cleanTitle = (item.title || "").replace(/\s*-\s*[^-]+$/, "");
+        const source = item.author || (item.title.includes(" - ") ? item.title.split(" - ").pop() : "Google News");
+        return `
+          <a class="news-item" href="${item.link}" target="_blank" rel="noopener">
+            <div class="news-title">${cleanTitle}</div>
+            <div class="news-meta"><span>${source}</span><span>${timeStr} ↗</span></div>
+          </a>
+        `;
+      }).join("");
+    } catch (e) {
+      newsListEl.innerHTML = `
+        <div class="empty-msg" style="padding:18px 8px;">
+          실시간 뉴스를 불러오지 못했어요.<br>
+          위의 바로가기 버튼이나 아래 링크에서 바로 확인해 보세요.
+        </div>
+        <a class="news-item" href="https://news.google.com/search?q=%EB%AF%B8%EA%B5%AD%EC%A3%BC%EC%8B%9D&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener">
+          <div class="news-title">📰 구글 뉴스에서 미국주식 최신 이슈 바로 보기</div>
+          <div class="news-meta"><span>Google News</span><span>바로가기 ↗</span></div>
+        </a>
+      `;
+    }
+  }
+
+  document.getElementById("refreshNewsBtn").addEventListener("click", fetchUSStockNews);
+
+  /* 5. 하루 일정 생각·느낌 메모 */
+  const memoTitle = document.getElementById("memoTitle");
+  const memoSaved = document.getElementById("memoSaved");
+  const moodRow = document.getElementById("moodRow");
+  const memoTextarea = document.getElementById("memoTextarea");
+  let memoTimer = null;
+
+  function showMemoSaved() {
+    memoSaved.classList.add("show");
+    clearTimeout(memoTimer);
+    memoTimer = setTimeout(() => memoSaved.classList.remove("show"), 1300);
+  }
+
+  function getMemoObj(dateKey) {
+    if (!state.memos) state.memos = {};
+    if (!state.memos[dateKey]) state.memos[dateKey] = { mood: "", text: "" };
+    return state.memos[dateKey];
+  }
+
+  function renderMemo() {
+    const todayKey = getTodayKey();
+    const [, m, d] = selectedDateKey.split("-");
+    memoTitle.textContent = selectedDateKey === todayKey
+      ? "📝 오늘의 생각 · 느낌"
+      : `📝 ${Number(m)}월 ${Number(d)}일의 생각 · 느낌`;
+
+    const obj = getMemoObj(selectedDateKey);
+    moodRow.innerHTML = MOODS.map(md => `
+      <button type="button" class="mood-btn ${obj.mood === md.key ? "selected" : ""}" data-mood="${md.key}">
+        <span class="mood-emoji">${md.emoji}</span>
+        <span class="mood-label">${md.label}</span>
+      </button>
+    `).join("");
+
+    moodRow.querySelectorAll(".mood-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        getMemoObj(selectedDateKey).mood = btn.dataset.mood;
+        saveState();
+        renderMemo();
+        showMemoSaved();
+      });
+    });
+
+    if (document.activeElement !== memoTextarea) {
+      memoTextarea.value = obj.text || "";
+    }
+  }
+
+  memoTextarea.addEventListener("input", (e) => {
+    getMemoObj(selectedDateKey).text = e.target.value;
+    saveState();
+    showMemoSaved();
+  });
+
+  /* 지난 메모 모아보기 모달 */
+  const archiveModal = document.getElementById("archiveModal");
+  const archiveList = document.getElementById("archiveList");
+
+  document.getElementById("openArchiveBtn").addEventListener("click", () => {
+    const keys = Object.keys(state.memos || {})
+      .filter(k => state.memos[k].text || state.memos[k].mood)
+      .sort((a, b) => b.localeCompare(a));
+
+    if (keys.length === 0) {
+      archiveList.innerHTML = '<div class="empty-msg" style="padding:24px 0;">아직 저장된 메모가 없어요.</div>';
+    } else {
+      archiveList.innerHTML = keys.map(k => {
+        const m = state.memos[k];
+        const md = MOODS.find(x => x.key === m.mood);
+        return `
+          <div class="archive-item">
+            <div class="archive-head">
+              <span>📅 ${k}</span>
+              <span>${md ? md.emoji + " " + md.label : ""}</span>
+            </div>
+            <div class="archive-body">${m.text || "(기분만 기록됨)"}</div>
+          </div>
+        `;
+      }).join("");
+    }
+    archiveModal.classList.add("show");
+  });
+  document.getElementById("closeArchiveModal").addEventListener("click", () => archiveModal.classList.remove("show"));
+  archiveModal.addEventListener("click", (e) => { if (e.target === archiveModal) archiveModal.classList.remove("show"); });
+
+  /* 초기화 */
+  updateClock();
+  fetchWeather();
+  renderTodos();
+  renderCalendar();
+  renderSchedules();
+  renderMemo();
+  fetchUSStockNews();
+
+  setInterval(updateClock, 1000);
+  setInterval(fetchWeather, 30 * 60 * 1000);
+  setInterval(fetchUSStockNews, 30 * 60 * 1000);
+</script>
+</body>
+</html>
