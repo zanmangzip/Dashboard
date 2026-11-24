@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F6F5F0">
+<title>엄마의 하루 대시보드</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    --bg: #F6F5F0;
+    --card: #FFFFFF;
+    --ink: #1F2937;
+    --muted: #6B7280;
+    --line: #E7E5DF;
+    --shadow: 0 6px 20px rgba(31, 41, 55, 0.05);
+
+    /* 5개 역할 컬러 */
+    --mom: #EC4899;       --mom-bg: #FDF2F8;       --mom-bd: #FBCFE8;
+    --house: #F59E0B;     --house-bg: #FFFBEB;     --house-bd: #FDE68A;
+    --work: #3B82F6;      --work-bg: #EFF6FF;      --work-bd: #BFDBFE;
+    --growth: #8B5CF6;    --growth-bg: #F5F3FF;    --growth-bd: #DDD6FE;
+    --invest: #10B981;    --invest-bg: #ECFDF5;    --invest-bd: #A7F3D0;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  }
+
+  /* 3단 레이아웃 */
+  .dashboard {
+    display: grid;
+    grid-template-columns: 1.04fr 1.04fr 0.96fr;
+    gap: 12px;
+    width: 100%;
+    height: 100%;
+    padding: 12px 14px;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 12px 14px;
+  }
+
+  /* ===== 왼쪽 상단: 시계 + 타이머 + 날씨 위젯 ===== */
+  .hero-card {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FAF8F2 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    flex-shrink: 0;
+  }
+
+  .hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-date {
+    font-size: 12px;
+    font-weight: 800;
+    color: #9A6B2F;
+  }
+
+  .hero-time {
+    font-size: clamp(22px, 2.3vw, 29px);
+    font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .prog-mini {
+    text-align: right;
+    min-width: 110px;
+  }
+
+  .prog-mini-text {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .prog-bar {
+    width: 100%;
+    height: 7px;
+    background: #EFECE6;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .prog-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #EC4899, #8B5CF6, #10B981);
+    border-radius: 999px;
+    transition: width 0.35s ease;
+  }
+
+  /* 설정시간 타이머 박스 */
+  .timer-box {
+    background: #FFFFFF;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 13px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .timer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .timer-label {
+    font-size: 12px;
+    font-weight: 900;
+    color: #4B5563;
+  }
+
+  .timer-display {
+    font-size: 22px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    color: #1F2937;
+    letter-spacing: -0.5px;
+  }
+
+  .timer-display.running { color: #2563EB; }
+  .timer-display.done { color: #DC2626; animation: pulse 0.8s infinite alternate; }
+  @keyframes pulse { from { opacity: 1; } to { opacity: 0.45; } }
+
+  .timer-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .t-preset {
+    border: 1px solid #E5E7EB;
+    background: #F9FAFB;
+    color: #374151;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 7px;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+
+  .t-preset:hover { background: #EFF6FF; border-color: #BFDBFE; color: #1D4ED8; }
+
+  .t-min-input {
+    width: 46px;
+    font-size: 11.5px;
+    font-weight: 800;
+    font-family: inherit;
+    padding: 4px 5px;
+    border: 1px solid #D1D5DB;
+    border-radius: 7px;
+    text-align: center;
+    outline: none;
+  }
+
+  .t-btn {
+    border: none;
+    border-radius: 7px;
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 4px 9px;
+    cursor: pointer;
+    margin-left: auto;
+  }
+
+  .t-btn-start { background: #2563EB; color: #FFFFFF; }
+  .t-btn-start.pause { background: #F59E0B; color: #FFFFFF; }
+  .t-btn-reset { background: #F3F4F6; color: #4B5563; margin-left: 0; }
+
+  /* 날씨·온도 위젯 */
+  .weather-widget {
+    background: linear-gradient(135deg, #F0F7FF 0%, #E6F2FF 100%);
+    border: 1.5px solid #CFE3FC;
+    border-radius: 13px;
+    padding: 8px 11px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .weather-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .w-emoji { font-size: 28px; line-height: 1; }
+  .w-temp { font-size: 20px; font-weight: 900; color: #1E3A8A; line-height: 1.1; }
+  .w-loc { font-size: 11px; font-weight: 800; color: #3B82F6; }
+
+  .weather-right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px 10px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #334155;
+    text-align: right;
+  }
+
+  /* ===== 왼쪽 하단: 역할 색깔 구분 달력 + 일정 ===== */
+  .cal-card {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .cal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .cal-title { font-size: 15px; font-weight: 900; color: var(--ink); }
+
+  .cal-nav { display: flex; gap: 4px; }
+  .cal-nav button {
+    border: 1.5px solid var(--line);
+    background: #FAF9F6;
+    color: var(--ink);
+    font-size: 11.5px;
+    font-weight: 900;
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+
+  .legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--muted);
+  }
+
+  .legend-item { display: flex; align-items: center; gap: 3px; }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  .dot-mom { background: var(--mom); }
+  .dot-house { background: var(--house); }
+  .dot-work { background: var(--work); }
+  .dot-growth { background: var(--growth); }
+  .dot-invest { background: var(--invest); }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    text-align: center;
+  }
+
+  .cal-dow { font-size: 10.5px; font-weight: 800; color: var(--muted); padding-bottom: 1px; }
+
+  .cal-day {
+    height: 30px;
+    border-radius: 8px;
+    background: #FAF9F6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #374151;
+    cursor: pointer;
+  }
+
+  .cal-day.empty { background: transparent; cursor: default; }
+  .cal-day.today { border: 2px solid #1F2937; background: #FFFFFF; }
+  .cal-day.selected { background: #1F2937; color: #FFFFFF; border: 2px solid #1F2937; }
+  .cal-dots { display: flex; gap: 2px; margin-top: 1px; height: 5px; align-items: center; }
+
+  .schedule-box {
+    flex: 1;
+    min-height: 0;
+    background: #FAF9F6;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .schedule-head { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+  .schedule-date-label { font-size: 12.5px; font-weight: 900; color: var(--ink); }
+
+  .btn-sm {
+    border: none;
+    background: #1F2937;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 9px;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .schedule-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+
+  .schedule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #FFFFFF;
+    border: 1.5px solid var(--line);
+    border-left-width: 4px;
+    border-radius: 9px;
+    padding: 5px 8px;
+    font-size: 12px;
+    font-weight: 800;
+    gap: 5px;
+  }
+
+  .schedule-item.done { opacity: 0.6; text-decoration: line-through; }
+  .schedule-item-left { display: flex; align-items: center; gap: 5px; cursor: pointer; flex: 1; min-width: 0; word-break: keep-all; }
+
+  .role-badge {
+    font-size: 9.5px;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+
+  .role-mom    { background: var(--mom-bg);    color: var(--mom); }
+  .role-house  { background: var(--house-bg);  color: #B45309; }
+  .role-work   { background: var(--work-bg);   color: #1D4ED8; }
+  .role-growth { background: var(--growth-bg); color: #6D28D9; }
+  .role-invest { background: var(--invest-bg); color: #047857; }
+
+  .del-x {
+    border: none;
+    background: #FEE2E2;
+    color: #DC2626;
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 3px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .stash-btn {
+    border: none;
+    background: #FEF3C7;
+    color: #B45309;
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 3px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .empty-msg { font-size: 12px; font-weight: 700; color: #9CA3AF; text-align: center; padding: 10px 0; }
+
+  /* ===== 가운데 열: 역할별 오늘 할 일 + 못 해결한 할 일 ===== */
+  .todo-card {
+    flex: 1.35;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .section-head { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+  .section-title { font-size: 15px; font-weight: 900; color: var(--ink); }
+
+  .role-tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  .role-tab {
+    border: 1.5px solid var(--line);
+    background: #FAF9F6;
+    color: var(--muted);
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 5px 8px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .role-tab.active-all    { background: #1F2937; color: #FFFFFF; border-color: #1F2937; }
+  .role-tab.active-mom    { background: var(--mom);    color: #FFFFFF; border-color: var(--mom); }
+  .role-tab.active-house  { background: var(--house);  color: #FFFFFF; border-color: var(--house); }
+  .role-tab.active-work   { background: var(--work);   color: #FFFFFF; border-color: var(--work); }
+  .role-tab.active-growth { background: var(--growth); color: #FFFFFF; border-color: var(--growth); }
+  .role-tab.active-invest { background: var(--invest); color: #FFFFFF; border-color: var(--invest); }
+
+  .todo-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-right: 2px;
+  }
+
+  .todo-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 7px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: #FAF9F6;
+    border: 1.5px solid var(--line);
+    border-left-width: 5px;
+    cursor: pointer;
+  }
+
+  .todo-item.done { background: #F3F4F6; opacity: 0.7; }
+  .todo-left { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
+
+  .checkbox {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid #CBD5E1;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 900;
+    color: #FFFFFF;
+    flex-shrink: 0;
+  }
+
+  .todo-item.done .checkbox { background: #10B981; border-color: #10B981; }
+  .todo-text { font-size: 13.5px; font-weight: 800; color: var(--ink); word-break: keep-all; }
+  .todo-item.done .todo-text { text-decoration: line-through; color: var(--muted); }
+
+  .item-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+  .todo-add-bar {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding-top: 4px;
+    border-top: 1.5px solid var(--line);
+  }
+
+  .role-select {
+    font-size: 12px;
+    font-weight: 800;
+    font-family: inherit;
+    padding: 7px 6px;
+    border: 1.5px solid #D1D5DB;
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: var(--ink);
+    outline: none;
+  }
+
+  .text-input {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    padding: 7px 10px;
+    border: 1.5px solid #D1D5DB;
+    border-radius: 9px;
+    outline: none;
+  }
+
+  .text-input:focus, .role-select:focus { border-color: #1F2937; }
+
+  /* NEW: 못 해결한 할 일 모아보기 카드 */
+  .unresolved-card {
+    flex: 0.72;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    background: linear-gradient(180deg, #FFF7ED 0%, #FFFFFF 70px);
+    border-color: #FED7AA;
+  }
+
+  .unresolved-badge {
+    font-size: 11px;
+    font-weight: 900;
+    background: #FFEDD5;
+    color: #C2410C;
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-left: 4px;
+  }
+
+  .unresolved-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .unresolved-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    background: #FFFFFF;
+    border: 1.5px solid #FED7AA;
+    border-left-width: 4px;
+    border-radius: 10px;
+    padding: 6px 9px;
+    font-size: 12.5px;
+    font-weight: 800;
+  }
+
+  .unresolved-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+    word-break: keep-all;
+  }
+
+  .u-date {
+    font-size: 10px;
+    font-weight: 800;
+    color: #9A3412;
+    background: #FFEDD5;
+    padding: 2px 5px;
+    border-radius: 5px;
+    flex-shrink: 0;
+  }
+
+  .btn-resolve {
+    border: none;
+    background: #DCFCE7;
+    color: #15803D;
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 3px 7px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .btn-totoday {
+    border: none;
+    background: #DBEAFE;
+    color: #1D4ED8;
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 3px 7px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* ===== 오른쪽 상단: 고정 메모보드 (항상 기억할 일·좋은 글귀) ===== */
+  .pin-card {
+    flex: 0.72;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: linear-gradient(135deg, #FFFDF0 0%, #FEF9C3 100%);
+    border-color: #FDE047;
+  }
+
+  .pin-textarea {
+    flex: 1;
+    min-height: 60px;
+    width: 100%;
+    resize: none;
+    border: 1.5px solid #FDE68A;
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.85);
+    padding: 8px 10px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    color: #713F12;
+    line-height: 1.5;
+    outline: none;
+  }
+
+  .pin-textarea:focus { border-color: #EAB308; background: #FFFFFF; }
+
+  /* ===== 오른쪽 중간: 미국주식 이슈 & 바로가기 ===== */
+  .stock-card {
+    flex: 1.05;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    background: linear-gradient(180deg, #F4FBF7 0%, #FFFFFF 80px);
+    border-color: #D1FAE5;
+  }
+
+  .stock-links { display: flex; flex-wrap: wrap; gap: 4px; }
+
+  .stock-link-btn {
+    text-decoration: none;
+    background: #ECFDF5;
+    border: 1.5px solid #A7F3D0;
+    color: #065F46;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 8px;
+  }
+
+  .stock-link-btn:hover { background: #D1FAE5; }
+
+  .news-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
+
+  .news-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-decoration: none;
+    background: #FFFFFF;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 10px;
+    padding: 7px 9px;
+  }
+
+  .news-item:hover { border-color: var(--invest); }
+
+  .news-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .news-meta { font-size: 10px; font-weight: 700; color: var(--muted); display: flex; justify-content: space-between; }
+
+  /* ===== 오른쪽 하단: 하루 생각·느낌 메모 ===== */
+  .memo-card {
+    flex: 0.9;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: linear-gradient(180deg, #FDF8F6 0%, #FFFFFF 70px);
+    border-color: #F3E5DF;
+  }
+
+  .save-badge {
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #10B981;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    margin-left: 5px;
+  }
+
+  .save-badge.show { opacity: 1; }
+
+  .mood-row { display: flex; gap: 4px; }
+
+  .mood-btn {
+    flex: 1;
+    border: 1.5px solid var(--line);
+    background: #FFFFFF;
+    border-radius: 9px;
+    padding: 4px 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    cursor: pointer;
+  }
+
+  .mood-btn.selected { background: #FDF2F8; border-color: #EC4899; }
+  .mood-emoji { font-size: 16px; line-height: 1.1; }
+  .mood-label { font-size: 9.5px; font-weight: 800; color: var(--muted); }
+  .mood-btn.selected .mood-label { color: #BE185D; }
+
+  .memo-textarea {
+    flex: 1;
+    min-height: 60px;
+    width: 100%;
+    resize: none;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 8px 10px;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 11px;
+    background: #FFFFFF;
+    line-height: 1.5;
+    outline: none;
+  }
+
+  .memo-textarea:focus { border-color: #EC4899; }
+
+  /* 모달 */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    padding: 18px;
+  }
+
+  .modal-backdrop.show { display: flex; }
+
+  .modal-box {
+    background: #FFFFFF;
+    border-radius: 22px;
+    width: 100%;
+    max-width: 460px;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 20px 22px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  }
+
+  .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .modal-title { font-size: 18px; font-weight: 900; }
+
+  .modal-close {
+    border: none;
+    background: #F3F4F6;
+    color: #4B5563;
+    font-size: 15px;
+    font-weight: 900;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .form-row label { font-size: 13px; font-weight: 800; color: var(--ink); }
+
+  .role-pick-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+
+  .role-pick-btn {
+    border: 1.5px solid var(--line);
+    background: #FAF9F6;
+    border-radius: 10px;
+    padding: 7px 4px;
+    font-size: 11.5px;
+    font-weight: 800;
+    cursor: pointer;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .role-pick-btn.sel-mom    { background: var(--mom-bg);    border-color: var(--mom);    color: var(--mom); }
+  .role-pick-btn.sel-house  { background: var(--house-bg);  border-color: var(--house);  color: #B45309; }
+  .role-pick-btn.sel-work   { background: var(--work-bg);   border-color: var(--work);   color: #1D4ED8; }
+  .role-pick-btn.sel-growth { background: var(--growth-bg); border-color: var(--growth); color: #6D28D9; }
+  .role-pick-btn.sel-invest { background: var(--invest-bg); border-color: var(--invest); color: #047857; }
+
+  .btn-submit {
+    width: 100%;
+    border: none;
+    background: #1F2937;
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 900;
+    padding: 11px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
+  .archive-item {
+    background: #FAF9F6;
+    border: 1.5px solid var(--line);
+    border-radius: 13px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+
+  .archive-head { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 900; margin-bottom: 4px; }
+  .archive-body { font-size: 13px; font-weight: 600; color: #374151; line-height: 1.5; white-space: pre-wrap; }
+
+  @media (max-width: 1024px), (orientation: portrait) {
+    html, body { overflow: auto; }
+    .dashboard { grid-template-columns: 1fr; height: auto; min-height: 100%; }
+    .todo-card, .cal-card, .stock-card, .memo-card, .unresolved-card, .pin-card { min-height: 240px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="dashboard">
+  <!-- 왼쪽 열: 시계 + 타이머 + 날씨 위젯 + 역할 색깔 달력 -->
+  <div class="col">
+    <section class="card hero-card">
+      <div class="hero-top">
+        <div>
+          <div class="hero-date" id="dateText">2026년 11월 24일 (화)</div>
+          <div class="hero-time" id="timeText">오후 00:00</div>
+        </div>
+        <div class="prog-mini">
+          <div class="prog-mini-text" id="totalProgText">달성 0 / 0 (0%)</div>
+          <div class="prog-bar"><div class="prog-fill" id="totalProgFill"></div></div>
+        </div>
+      </div>
+
+      <!-- 설정시간 타이머 -->
+      <div class="timer-box">
+        <div class="timer-top">
+          <span class="timer-label">⏱️ 집중 타이머</span>
+          <span class="timer-display" id="timerDisplay">25:00</span>
+        </div>
+        <div class="timer-controls">
+          <button type="button" class="t-preset" data-min="5">5분</button>
+          <button type="button" class="t-preset" data-min="15">15분</button>
+          <button type="button" class="t-preset" data-min="25">25분</button>
+          <button type="button" class="t-preset" data-min="60">60분</button>
+          <input type="number" class="t-min-input" id="customMinInput" min="1" max="180" value="25" title="분 입력">
+          <button type="button" class="t-btn t-btn-start" id="timerStartBtn">시작</button>
+          <button type="button" class="t-btn t-btn-reset" id="timerResetBtn">초기화</button>
+        </div>
+      </div>
+
+      <!-- 날씨·온도 위젯 -->
+      <div class="weather-widget">
+        <div class="weather-left">
+          <span class="w-emoji" id="wEmoji">🌤️</span>
+          <div>
+            <div class="w-temp" id="wTemp">--°</div>
+            <div class="w-loc" id="wLocDesc">📍 용인 수지 · 불러오는 중</div>
+          </div>
+        </div>
+        <div class="weather-right">
+          <span id="wFeels">체감 --°</span>
+          <span id="wMinMax">최저/최고 --°</span>
+          <span id="wRain">강수 --%</span>
+          <span id="wHumid">습도 --%</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card cal-card">
+      <div class="cal-head">
+        <span class="cal-title" id="calTitle">📅 2026년 11월</span>
+        <div class="cal-nav">
+          <button type="button" id="calPrev">◀</button>
+          <button type="button" id="calNext">▶</button>
+        </div>
+      </div>
+      <div class="legend-row">
+        <span class="legend-item"><span class="dot dot-mom"></span>엄마</span>
+        <span class="legend-item"><span class="dot dot-house"></span>주부</span>
+        <span class="legend-item"><span class="dot dot-work"></span>일</span>
+        <span class="legend-item"><span class="dot dot-growth"></span>자기개발</span>
+        <span class="legend-item"><span class="dot dot-invest"></span>재테크</span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="schedule-box">
+        <div class="schedule-head">
+          <span class="schedule-date-label" id="selDateLabel">오늘 일정</span>
+          <button type="button" class="btn-sm" id="openSchedModalBtn">+ 일정 추가</button>
+        </div>
+        <div class="schedule-list" id="scheduleList"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 가운데 열: 역할별 오늘 할 일 + 못 해결한 할 일 -->
+  <div class="col">
+    <section class="card todo-card">
+      <div class="section-head">
+        <span class="section-title">✅ 역할별 오늘 할 일</span>
+        <button type="button" class="btn-sm" id="resetDoneBtn" style="background:#F3F4F6; color:#4B5563;">체크 초기화</button>
+      </div>
+
+      <div class="role-tabs" id="roleTabs"></div>
+      <div class="todo-list" id="todoList"></div>
+
+      <div class="todo-add-bar">
+        <select class="role-select" id="newTodoRole">
+          <option value="mom">👩‍👧‍👦 엄마</option>
+          <option value="house">🏠 주부</option>
+          <option value="work">💼 일</option>
+          <option value="growth">🌱 자기개발</option>
+          <option value="invest">📈 재테크</option>
+        </select>
+        <input type="text" class="text-input" id="newTodoInput" placeholder="새 할 일 추가..." maxlength="40">
+        <button type="button" class="btn-sm" id="addTodoBtn">추가</button>
+      </div>
+    </section>
+
+    <!-- 못 해결한 할 일 모아보기 -->
+    <section class="card unresolved-card">
+      <div class="section-head">
+        <span class="section-title">⏳ 못 해결한 할 일 <span class="unresolved-badge" id="unresolvedCount">0</span></span>
+        <button type="button" class="btn-sm" id="stashAllBtn" style="background:#FFEDD5; color:#C2410C;">오늘 미완료 담기</button>
+      </div>
+      <div class="unresolved-list" id="unresolvedList"></div>
+    </section>
+  </div>
+
+  <!-- 오른쪽 열: 고정 메모보드 + 미국주식 이슈 + 하루 생각·느낌 메모 -->
+  <div class="col">
+    <!-- 항상 기억할 일 / 좋은 글귀 고정 메모보드 -->
+    <section class="card pin-card">
+      <div class="section-head">
+        <div>
+          <span class="section-title">📌 고정 메모보드</span>
+          <span class="save-badge" id="pinSaved">저장됨 ✓</span>
+        </div>
+        <span style="font-size:11px; font-weight:800; color:#A16207;">항상 기억할 일 · 좋은 글귀</span>
+      </div>
+      <textarea class="pin-textarea" id="pinTextarea" placeholder="항상 기억해야 할 중요한 일이나, 마음을 다잡아 주는 좋은 글귀를 적어두세요. (매일 초기화되지 않고 고정됩니다)"></textarea>
+    </section>
+
+    <!-- 미국주식 이슈 & 바로가기 -->
+    <section class="card stock-card">
+      <div class="section-head">
+        <span class="section-title">🇺🇸 미국주식 이슈 & 바로가기</span>
+        <button type="button" class="btn-sm" id="refreshNewsBtn" style="background:#ECFDF5; color:#047857;">🔄 새로고침</button>
+      </div>
+
+      <div class="stock-links">
+        <a class="stock-link-btn" href="https://kr.investing.com/indices/us-spx-500" target="_blank" rel="noopener">인베스팅닷컴</a>
+        <a class="stock-link-btn" href="https://finance.yahoo.com/" target="_blank" rel="noopener">야후 파이낸스</a>
+        <a class="stock-link-btn" href="https://finviz.com/map.ashx" target="_blank" rel="noopener">핀비즈 맵</a>
+        <a class="stock-link-btn" href="https://edition.cnn.com/markets/fear-and-greed" target="_blank" rel="noopener">공포·탐욕지수</a>
+        <a class="stock-link-btn" href="https://m.stock.naver.com/worldstock/index/.IXIC/total" target="_blank" rel="noopener">네이버 해외증시</a>
+        <a class="stock-link-btn" href="https://kr.investing.com/economic-calendar/" target="_blank" rel="noopener">경제캘린더</a>
+      </div>
+
+      <div class="news-list" id="newsList">
+        <div class="empty-msg">미국주식 최신 이슈를 불러오는 중...</div>
+      </div>
+    </section>
+
+    <!-- 하루 생각·느낌 메모 -->
+    <section class="card memo-card">
+      <div class="section-head">
+        <div>
+          <span class="section-title" id="memoTitle">📝 오늘의 생각 · 느낌</span>
+          <span class="save-badge" id="memoSaved">저장됨 ✓</span>
+        </div>
+        <button type="button" class="btn-sm" id="openArchiveBtn" style="background:#FDF2F8; color:#BE185D;">📖 지난 메모</button>
+      </div>
+
+      <div class="mood-row" id="moodRow"></div>
+      <textarea class="memo-textarea" id="memoTextarea" placeholder="오늘 하루 일정 속에서 느낀 점, 감사한 일, 내일을 위한 아이디어를 자유롭게 적어보세요."></textarea>
+    </section>
+  </div>
+</div>
+
+<!-- 일정 추가 모달 -->
+<div class="modal-backdrop" id="schedModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title" id="schedModalTitle">📅 일정 추가</div>
+      <button class="modal-close" id="closeSchedModal" type="button">✕</button>
+    </div>
+    <div class="form-row">
+      <label>역할 선택 (달력에 색깔로 표시돼요)</label>
+      <div class="role-pick-grid" id="schedRoleGrid"></div>
+    </div>
+    <div class="form-row">
+      <label for="schedInput">일정 내용</label>
+      <input type="text" id="schedInput" class="text-input" placeholder="예: 14:00 팀 미팅 / 아이 학원 픽업 / FOMC 발표" maxlength="40">
+    </div>
+    <button type="button" class="btn-submit" id="saveSchedBtn">달력에 저장하기</button>
+  </div>
+</div>
+
+<!-- 지난 메모 모아보기 모달 -->
+<div class="modal-backdrop" id="archiveModal">
+  <div class="modal-box" style="max-width: 520px;">
+    <div class="modal-head">
+      <div class="modal-title">📖 나의 하루 메모 기록</div>
+      <button class="modal-close" id="closeArchiveModal" type="button">✕</button>
+    </div>
+    <div id="archiveList"></div>
+  </div>
+</div>
+
+<script>
+  const LOCATION = { name: "용인 수지", lat: 37.3221, lon: 127.0977 };
+  const STORAGE_KEY = "mom_dashboard_v1";
+
+  const ROLES = [
+    { key: "mom",    label: "엄마",     emoji: "👩‍👧‍👦", color: "#EC4899" },
+    { key: "house",  label: "주부",     emoji: "🏠",   color: "#F59E0B" },
+    { key: "work",   label: "일",       emoji: "💼",   color: "#3B82F6" },
+    { key: "growth", label: "자기개발", emoji: "🌱",   color: "#8B5CF6" },
+    { key: "invest", label: "재테크",   emoji: "📈",   color: "#10B981" }
+  ];
+
+  const MOODS = [
+    { key: "great", emoji: "✨", label: "충만" },
+    { key: "calm",  emoji: "😊", label: "평온" },
+    { key: "focus", emoji: "🔥", label: "집중" },
+    { key: "tired", emoji: "😮‍💨", label: "피곤" },
+    { key: "think", emoji: "💭", label: "복잡" }
+  ];
+
+  const DEFAULT_TODOS = [
+    { id: 1, role: "mom",    text: "아이들 알림장·준비물 확인하기", done: false },
+    { id: 2, role: "house",  text: "저녁 식단 확인 및 장보기 체크", done: false },
+    { id: 3, role: "work",   text: "오늘 핵심 업무 및 마감 일정 체크", done: false },
+    { id: 4, role: "growth", text: "영어 회화 연습 / 독서 20분", done: false },
+    { id: 5, role: "invest", text: "미국 증시 마감·주요 지표(VIX/RSI) 점검", done: false }
+  ];
+
+  function getTodayKey() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  }
+
+  function loadState() {
+    let base = {
+      lastDate: getTodayKey(),
+      todos: JSON.parse(JSON.stringify(DEFAULT_TODOS)),
+      unresolved: [],
+      pinnedMemo: "✨ 오늘도 완벽하지 않아도 괜찮아. 하나씩 차분하게 해내면 충분해!",
+      schedules: {},
+      memos: {}
+    };
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.todos)) {
+          base = { ...base, ...parsed };
+          if (!Array.isArray(base.unresolved)) base.unresolved = [];
+          if (typeof base.pinnedMemo !== "string") base.pinnedMemo = "";
+        }
+      }
+    } catch (e) {}
+    return base;
+  }
+
+  let state = loadState();
+  let activeRoleFilter = "all";
+  let selectedDateKey = getTodayKey();
+  let calYear = new Date().getFullYear();
+  let calMonth = new Date().getMonth();
+  let schedRole = "mom";
+
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function checkDailyReset() {
+    const today = getTodayKey();
+    if (state.lastDate !== today) {
+      const prevDate = state.lastDate || today;
+      state.todos.forEach((t, idx) => {
+        if (!t.done) {
+          const exists = state.unresolved.some(u => u.text === t.text && u.role === t.role);
+          if (!exists) {
+            state.unresolved.unshift({ id: Date.now() + idx, role: t.role, text: t.text, date: prevDate });
+          }
+        }
+      });
+      state.todos = state.todos.map(t => ({ ...t, done: false }));
+      state.lastDate = today;
+      selectedDateKey = today;
+      saveState();
+      renderTodos();
+      renderUnresolved();
+      renderCalendar();
+      renderSchedules();
+      renderMemo();
+    }
+  }
+
+  /* 1. 시계 */
+  function updateClock() {
+    const now = new Date();
+    const days = ["일", "월", "화", "수", "목", "금", "토"];
+    document.getElementById("dateText").textContent =
+      `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 (${days[now.getDay()]})`;
+    const h24 = now.getHours();
+    const min = String(now.getMinutes()).padStart(2, "0");
+    const period = h24 >= 12 ? "오후" : "오전";
+    const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+    document.getElementById("timeText").textContent = `${period} ${String(h12).padStart(2, "0")}:${min}`;
+    checkDailyReset();
+  }
+
+  /* 1-2. 설정시간 타이머 */
+  const timerDisplay = document.getElementById("timerDisplay");
+  const customMinInput = document.getElementById("customMinInput");
+  const timerStartBtn = document.getElementById("timerStartBtn");
+  const timerResetBtn = document.getElementById("timerResetBtn");
+
+  let timerTotalSec = 25 * 60;
+  let timerRemainSec = 25 * 60;
+  let timerInterval = null;
+
+  function renderTimer() {
+    const m = Math.floor(timerRemainSec / 60);
+    const s = timerRemainSec % 60;
+    timerDisplay.textContent = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+    timerDisplay.classList.toggle("running", Boolean(timerInterval));
+    timerDisplay.classList.toggle("done", timerRemainSec === 0);
+    timerStartBtn.textContent = timerInterval ? "일시정지" : "시작";
+    timerStartBtn.classList.toggle("pause", Boolean(timerInterval));
+  }
+
+  function playTimerBeep() {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      [0, 0.25, 0.5].forEach(delay => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.15, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.2);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + 0.2);
+      });
+    } catch (e) {}
+  }
+
+  function setTimerMinutes(mins) {
+    const val = Math.max(1, Math.min(180, Number(mins) || 25));
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerTotalSec = val * 60;
+    timerRemainSec = timerTotalSec;
+    customMinInput.value = val;
+    renderTimer();
+  }
+
+  document.querySelectorAll(".t-preset").forEach(btn => {
+    btn.addEventListener("click", () => setTimerMinutes(btn.dataset.min));
+  });
+
+  customMinInput.addEventListener("change", () => setTimerMinutes(customMinInput.value));
+
+  timerStartBtn.addEventListener("click", () => {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      renderTimer();
+      return;
+    }
+    if (timerRemainSec === 0) timerRemainSec = timerTotalSec;
+    timerInterval = setInterval(() => {
+      if (timerRemainSec > 0) {
+        timerRemainSec--;
+        renderTimer();
+        if (timerRemainSec === 0) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          renderTimer();
+          playTimerBeep();
+        }
+      }
+    }, 1000);
+    renderTimer();
+  });
+
+  timerResetBtn.addEventListener("click", () => {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerRemainSec = timerTotalSec;
+    renderTimer();
+  });
+
+  /* 1-3. 날씨·온도 위젯 */
+  const WMO_MAP = {
+    0: ["☀️", "맑음"], 1: ["🌤️", "대체로 맑음"], 2: ["⛅", "구름 조금"], 3: ["☁️", "흐림"],
+    45: ["🌫️", "안개"], 48: ["🌫️", "짙은 안개"],
+    51: ["🌦️", "이슬비"], 53: ["🌦️", "이슬비"], 55: ["🌧️", "강한 이슬비"],
+    61: ["🌧️", "약한 비"], 63: ["🌧️", "비"], 65: ["🌧️", "강한 비"],
+    71: ["🌨️", "약한 눈"], 73: ["❄️", "눈"], 75: ["❄️", "많은 눈"],
+    80: ["🌦️", "소나기"], 81: ["🌧️", "강한 소나기"], 82: ["⛈️", "폭우"], 95: ["⛈️", "천둥번개"]
+  };
+
+  async function fetchWeather() {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${LOCATION.lat}&longitude=${LOCATION.lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FSeoul&forecast_days=1`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      const [emoji, desc] = WMO_MAP[data.current.weather_code] || ["🌤️", "흐림"];
+      const cur = Math.round(data.current.temperature_2m);
+      const feels = Math.round(data.current.apparent_temperature);
+      const humid = Math.round(data.current.relative_humidity_2m);
+      const hi = Math.round(data.daily.temperature_2m_max[0]);
+      const lo = Math.round(data.daily.temperature_2m_min[0]);
+      const rain = data.daily.precipitation_probability_max[0] ?? 0;
+
+      document.getElementById("wEmoji").textContent = emoji;
+      document.getElementById("wTemp").textContent = `${cur}°`;
+      document.getElementById("wLocDesc").textContent = `📍 ${LOCATION.name} · ${desc}`;
+      document.getElementById("wFeels").textContent = `체감 ${feels}°`;
+      document.getElementById("wMinMax").textContent = `${lo}° / ${hi}°`;
+      document.getElementById("wRain").textContent = `비 ${rain}%`;
+      document.getElementById("wHumid").textContent = `습도 ${humid}%`;
+    } catch (e) {
+      document.getElementById("wLocDesc").textContent = `📍 ${LOCATION.name} · 연결 확인`;
+    }
+  }
+
+  /* 2. 역할별 할 일 체크리스트 */
+  const roleTabsEl = document.getElementById("roleTabs");
+  const todoListEl = document.getElementById("todoList");
+  const newTodoRole = document.getElementById("newTodoRole");
+  const newTodoInput = document.getElementById("newTodoInput");
+
+  function getRoleObj(key) {
+    return ROLES.find(r => r.key === key) || ROLES[0];
+  }
+
+  function renderRoleTabs() {
+    const allCount = state.todos.length;
+    const allDone = state.todos.filter(t => t.done).length;
+    let html = `<button type="button" class="role-tab ${activeRoleFilter === "all" ? "active-all" : ""}" data-role="all">전체 (${allDone}/${allCount})</button>`;
+    ROLES.forEach(r => {
+      const list = state.todos.filter(t => t.role === r.key);
+      const done = list.filter(t => t.done).length;
+      html += `<button type="button" class="role-tab ${activeRoleFilter === r.key ? "active-" + r.key : ""}" data-role="${r.key}">${r.emoji} ${r.label} (${done}/${list.length})</button>`;
+    });
+    roleTabsEl.innerHTML = html;
+    roleTabsEl.querySelectorAll(".role-tab").forEach(btn => {
+      btn.addEventListener("click", () => {
+        activeRoleFilter = btn.dataset.role;
+        if (activeRoleFilter !== "all") newTodoRole.value = activeRoleFilter;
+        renderTodos();
+      });
+    });
+
+    const pct = allCount > 0 ? Math.round((allDone / allCount) * 100) : 0;
+    document.getElementById("totalProgText").textContent = `달성 ${allDone} / ${allCount} (${pct}%)`;
+    document.getElementById("totalProgFill").style.width = `${pct}%`;
+  }
+
+  function renderTodos() {
+    renderRoleTabs();
+    const filtered = activeRoleFilter === "all"
+      ? state.todos
+      : state.todos.filter(t => t.role === activeRoleFilter);
+
+    if (filtered.length === 0) {
+      todoListEl.innerHTML = '<div class="empty-msg">등록된 할 일이 없어요. 아래에서 추가해 보세요!</div>';
+      return;
+    }
+
+    todoListEl.innerHTML = "";
+    filtered.forEach(item => {
+      const r = getRoleObj(item.role);
+      const row = document.createElement("div");
+      row.className = "todo-item" + (item.done ? " done" : "");
+      row.style.borderLeftColor = r.color;
+      row.innerHTML = `
+        <div class="todo-left">
+          <div class="checkbox">${item.done ? "✓" : ""}</div>
+          <span class="role-badge role-${r.key}">${r.label}</span>
+          <span class="todo-text">${item.text}</span>
+        </div>
+        <div class="item-actions">
+          ${!item.done ? '<button type="button" class="stash-btn" title="못 해결한 할 일로 보류">보류</button>' : ''}
+          <button type="button" class="del-x">삭제</button>
+        </div>
+      `;
+      row.querySelector(".todo-left").addEventListener("click", () => {
+        item.done = !item.done;
+        saveState();
+        renderTodos();
+      });
+      const stashBtn = row.querySelector(".stash-btn");
+      if (stashBtn) {
+        stashBtn.addEventListener("click", () => {
+          const exists = state.unresolved.some(u => u.text === item.text && u.role === item.role);
+          if (!exists) {
+            state.unresolved.unshift({ id: Date.now(), role: item.role, text: item.text, date: getTodayKey() });
+          }
+          state.todos = state.todos.filter(t => t.id !== item.id);
+          saveState();
+          renderTodos();
+          renderUnresolved();
+        });
+      }
+      row.querySelector(".del-x").addEventListener("click", () => {
+        state.todos = state.todos.filter(t => t.id !== item.id);
+        saveState();
+        renderTodos();
+      });
+      todoListEl.appendChild(row);
+    });
+  }
+
+  document.getElementById("addTodoBtn").addEventListener("click", () => {
+    const text = newTodoInput.value.trim();
+    if (!text) return;
+    state.todos.push({ id: Date.now(), role: newTodoRole.value, text, done: false });
+    newTodoInput.value = "";
+    saveState();
+    renderTodos();
+  });
+  newTodoInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") document.getElementById("addTodoBtn").click();
+  });
+  document.getElementById("resetDoneBtn").addEventListener("click", () => {
+    state.todos = state.todos.map(t => ({ ...t, done: false }));
+    saveState();
+    renderTodos();
+  });
+
+  /* 2-2. 못 해결한 할 일 모아보기 */
+  const unresolvedListEl = document.getElementById("unresolvedList");
+  const unresolvedCountEl = document.getElementById("unresolvedCount");
+
+  function renderUnresolved() {
+    unresolvedCountEl.textContent = state.unresolved.length;
+    if (state.unresolved.length === 0) {
+      unresolvedListEl.innerHTML = '<div class="empty-msg">밀린 할 일이 없어요! 아주 잘하고 있어요 👏</div>';
+      return;
+    }
+
+    unresolvedListEl.innerHTML = "";
+    state.unresolved.forEach(item => {
+      const r = getRoleObj(item.role);
+      const shortDate = item.date ? item.date.slice(5).replace("-", "/") : "";
+      const row = document.createElement("div");
+      row.className = "unresolved-item";
+      row.style.borderLeftColor = r.color;
+      row.innerHTML = `
+        <div class="unresolved-left">
+          ${shortDate ? `<span class="u-date">${shortDate}</span>` : ""}
+          <span class="role-badge role-${r.key}">${r.label}</span>
+          <span>${item.text}</span>
+        </div>
+        <div class="item-actions">
+          <button type="button" class="btn-totoday">오늘로</button>
+          <button type="button" class="btn-resolve">해결✓</button>
+        </div>
+      `;
+      row.querySelector(".btn-totoday").addEventListener("click", () => {
+        if (!state.todos.some(t => t.text === item.text && t.role === item.role)) {
+          state.todos.push({ id: Date.now(), role: item.role, text: item.text, done: false });
+        }
+        state.unresolved = state.unresolved.filter(u => u.id !== item.id);
+        saveState();
+        renderTodos();
+        renderUnresolved();
+      });
+      row.querySelector(".btn-resolve").addEventListener("click", () => {
+        state.unresolved = state.unresolved.filter(u => u.id !== item.id);
+        saveState();
+        renderUnresolved();
+      });
+      unresolvedListEl.appendChild(row);
+    });
+  }
+
+  document.getElementById("stashAllBtn").addEventListener("click", () => {
+    const today = getTodayKey();
+    let moved = 0;
+    state.todos.forEach((t, idx) => {
+      if (!t.done) {
+        if (!state.unresolved.some(u => u.text === t.text && u.role === t.role)) {
+          state.unresolved.unshift({ id: Date.now() + idx, role: t.role, text: t.text, date: today });
+          moved++;
+        }
+      }
+    });
+    if (moved > 0) {
+      saveState();
+      renderUnresolved();
+    }
+  });
+
+  /* 3. 역할 색깔 구분 달력 & 일정 */
+  const calTitle = document.getElementById("calTitle");
+  const calGrid = document.getElementById("calGrid");
+  const selDateLabel = document.getElementById("selDateLabel");
+  const scheduleList = document.getElementById("scheduleList");
+
+  document.getElementById("calPrev").addEventListener("click", () => {
+    calMonth--;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    renderCalendar();
+  });
+  document.getElementById("calNext").addEventListener("click", () => {
+    calMonth++;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    renderCalendar();
+  });
+
+  function renderCalendar() {
+    calTitle.textContent = `📅 ${calYear}년 ${calMonth + 1}월`;
+    const dows = ["일", "월", "화", "수", "목", "금", "토"];
+    let html = dows.map(d => `<div class="cal-dow">${d}</div>`).join("");
+    const firstDay = new Date(calYear, calMonth, 1).getDay();
+    const lastDate = new Date(calYear, calMonth + 1, 0).getDate();
+    const todayKey = getTodayKey();
+
+    for (let i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
+    for (let d = 1; d <= lastDate; d++) {
+      const ds = `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+      const evs = state.schedules[ds] || [];
+      const uniqueRoles = [...new Set(evs.map(e => e.role))];
+      const dotsHtml = uniqueRoles.slice(0, 5).map(rk => `<span class="dot dot-${rk}"></span>`).join("");
+      const cls = "cal-day" + (ds === todayKey ? " today" : "") + (ds === selectedDateKey ? " selected" : "");
+      html += `
+        <div class="${cls}" data-date="${ds}">
+          <span>${d}</span>
+          <div class="cal-dots">${dotsHtml}</div>
+        </div>
+      `;
+    }
+    calGrid.innerHTML = html;
+    calGrid.querySelectorAll(".cal-day[data-date]").forEach(el => {
+      el.addEventListener("click", () => {
+        selectedDateKey = el.dataset.date;
+        renderCalendar();
+        renderSchedules();
+        renderMemo();
+      });
+    });
+  }
+
+  function renderSchedules() {
+    const todayKey = getTodayKey();
+    const [, m, d] = selectedDateKey.split("-");
+    selDateLabel.textContent = selectedDateKey === todayKey
+      ? `오늘(${Number(m)}/${Number(d)}) 일정`
+      : `${Number(m)}월 ${Number(d)}일 일정`;
+
+    const items = state.schedules[selectedDateKey] || [];
+    if (items.length === 0) {
+      scheduleList.innerHTML = '<div class="empty-msg">등록된 일정이 없어요.</div>';
+      return;
+    }
+
+    scheduleList.innerHTML = "";
+    items.forEach(ev => {
+      const r = getRoleObj(ev.role);
+      const row = document.createElement("div");
+      row.className = "schedule-item" + (ev.done ? " done" : "");
+      row.style.borderLeftColor = r.color;
+      row.innerHTML = `
+        <div class="schedule-item-left">
+          <span>${ev.done ? "✅" : "📌"}</span>
+          <span class="role-badge role-${r.key}">${r.label}</span>
+          <span>${ev.text}</span>
+        </div>
+        <button type="button" class="del-x">삭제</button>
+      `;
+      row.querySelector(".schedule-item-left").addEventListener("click", () => {
+        ev.done = !ev.done;
+        saveState();
+        renderSchedules();
+      });
+      row.querySelector(".del-x").addEventListener("click", () => {
+        state.schedules[selectedDateKey] = items.filter(x => x.id !== ev.id);
+        saveState();
+        renderCalendar();
+        renderSchedules();
+      });
+      scheduleList.appendChild(row);
+    });
+  }
+
+  /* 일정 추가 모달 */
+  const schedModal = document.getElementById("schedModal");
+  const schedRoleGrid = document.getElementById("schedRoleGrid");
+  const schedInput = document.getElementById("schedInput");
+
+  function renderSchedRolePicker() {
+    schedRoleGrid.innerHTML = ROLES.map(r => `
+      <button type="button" class="role-pick-btn ${schedRole === r.key ? "sel-" + r.key : ""}" data-role="${r.key}">
+        ${r.emoji}<br>${r.label}
+      </button>
+    `).join("");
+    schedRoleGrid.querySelectorAll(".role-pick-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        schedRole = btn.dataset.role;
+        renderSchedRolePicker();
+      });
+    });
+  }
+
+  document.getElementById("openSchedModalBtn").addEventListener("click", () => {
+    const [, m, d] = selectedDateKey.split("-");
+    document.getElementById("schedModalTitle").textContent = `📅 ${Number(m)}월 ${Number(d)}일 일정 추가`;
+    schedInput.value = "";
+    renderSchedRolePicker();
+    schedModal.classList.add("show");
+    setTimeout(() => schedInput.focus(), 100);
+  });
+  document.getElementById("closeSchedModal").addEventListener("click", () => schedModal.classList.remove("show"));
+  schedModal.addEventListener("click", (e) => { if (e.target === schedModal) schedModal.classList.remove("show"); });
+  document.getElementById("saveSchedBtn").addEventListener("click", () => {
+    const text = schedInput.value.trim();
+    if (!text) return;
+    if (!state.schedules[selectedDateKey]) state.schedules[selectedDateKey] = [];
+    state.schedules[selectedDateKey].push({ id: Date.now(), role: schedRole, text, done: false });
+    saveState();
+    renderCalendar();
+    renderSchedules();
+    schedModal.classList.remove("show");
+  });
+  schedInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") document.getElementById("saveSchedBtn").click();
+  });
+
+  /* 4. 고정 메모보드 */
+  const pinTextarea = document.getElementById("pinTextarea");
+  const pinSaved = document.getElementById("pinSaved");
+  let pinTimer = null;
+
+  pinTextarea.value = state.pinnedMemo || "";
+  pinTextarea.addEventListener("input", (e) => {
+    state.pinnedMemo = e.target.value;
+    saveState();
+    pinSaved.classList.add("show");
+    clearTimeout(pinTimer);
+    pinTimer = setTimeout(() => pinSaved.classList.remove("show"), 1300);
+  });
+
+  /* 5. 미국주식 최신 이슈 */
+  const newsListEl = document.getElementById("newsList");
+
+  async function fetchUSStockNews() {
+    newsListEl.innerHTML = '<div class="empty-msg">미국주식 최신 이슈를 불러오는 중...</div>';
+    const rssUrl = encodeURIComponent("https://news.google.com/rss/search?q=미국주식+OR+나스닥+OR+테슬라+OR+엔비디아&hl=ko&gl=KR&ceid=KR:ko");
+    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`;
+
+    try {
+      const res = await fetch(apiUrl);
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (!data.items || data.items.length === 0) throw new Error();
+
+      newsListEl.innerHTML = data.items.slice(0, 6).map(item => {
+        const dt = new Date(item.pubDate.replace(" ", "T") + "Z");
+        const timeStr = isNaN(dt) ? "" : `${dt.getMonth() + 1}/${dt.getDate()} ${String(dt.getHours()).padStart(2, "0")}:${String(dt.getMinutes()).padStart(2, "0")}`;
+        const cleanTitle = (item.title || "").replace(/\s*-\s*[^-]+$/, "");
+        const source = item.author || (item.title.includes(" - ") ? item.title.split(" - ").pop() : "Google News");
+        return `
+          <a class="news-item" href="${item.link}" target="_blank" rel="noopener">
+            <div class="news-title">${cleanTitle}</div>
+            <div class="news-meta"><span>${source}</span><span>${timeStr} ↗</span></div>
+          </a>
+        `;
+      }).join("");
+    } catch (e) {
+      newsListEl.innerHTML = `
+        <a class="news-item" href="https://news.google.com/search?q=%EB%AF%B8%EA%B5%AD%EC%A3%BC%EC%8B%9D&hl=ko&gl=KR&ceid=KR%3Ako" target="_blank" rel="noopener">
+          <div class="news-title">📰 구글 뉴스에서 미국주식 최신 이슈 바로 보기</div>
+          <div class="news-meta"><span>Google News</span><span>바로가기 ↗</span></div>
+        </a>
+      `;
+    }
+  }
+
+  document.getElementById("refreshNewsBtn").addEventListener("click", fetchUSStockNews);
+
+  /* 6. 하루 일정 생각·느낌 메모 */
+  const memoTitle = document.getElementById("memoTitle");
+  const memoSaved = document.getElementById("memoSaved");
+  const moodRow = document.getElementById("moodRow");
+  const memoTextarea = document.getElementById("memoTextarea");
+  let memoTimer = null;
+
+  function showMemoSaved() {
+    memoSaved.classList.add("show");
+    clearTimeout(memoTimer);
+    memoTimer = setTimeout(() => memoSaved.classList.remove("show"), 1300);
+  }
+
+  function getMemoObj(dateKey) {
+    if (!state.memos) state.memos = {};
+    if (!state.memos[dateKey]) state.memos[dateKey] = { mood: "", text: "" };
+    return state.memos[dateKey];
+  }
+
+  function renderMemo() {
+    const todayKey = getTodayKey();
+    const [, m, d] = selectedDateKey.split("-");
+    memoTitle.textContent = selectedDateKey === todayKey
+      ? "📝 오늘의 생각 · 느낌"
+      : `📝 ${Number(m)}월 ${Number(d)}일의 생각 · 느낌`;
+
+    const obj = getMemoObj(selectedDateKey);
+    moodRow.innerHTML = MOODS.map(md => `
+      <button type="button" class="mood-btn ${obj.mood === md.key ? "selected" : ""}" data-mood="${md.key}">
+        <span class="mood-emoji">${md.emoji}</span>
+        <span class="mood-label">${md.label}</span>
+      </button>
+    `).join("");
+
+    moodRow.querySelectorAll(".mood-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        getMemoObj(selectedDateKey).mood = btn.dataset.mood;
+        saveState();
+        renderMemo();
+        showMemoSaved();
+      });
+    });
+
+    if (document.activeElement !== memoTextarea) {
+      memoTextarea.value = obj.text || "";
+    }
+  }
+
+  memoTextarea.addEventListener("input", (e) => {
+    getMemoObj(selectedDateKey).text = e.target.value;
+    saveState();
+    showMemoSaved();
+  });
+
+  /* 지난 메모 모아보기 모달 */
+  const archiveModal = document.getElementById("archiveModal");
+  const archiveList = document.getElementById("archiveList");
+
+  document.getElementById("openArchiveBtn").addEventListener("click", () => {
+    const keys = Object.keys(state.memos || {})
+      .filter(k => state.memos[k].text || state.memos[k].mood)
+      .sort((a, b) => b.localeCompare(a));
+
+    if (keys.length === 0) {
+      archiveList.innerHTML = '<div class="empty-msg" style="padding:24px 0;">아직 저장된 메모가 없어요.</div>';
+    } else {
+      archiveList.innerHTML = keys.map(k => {
+        const m = state.memos[k];
+        const md = MOODS.find(x => x.key === m.mood);
+        return `
+          <div class="archive-item">
+            <div class="archive-head">
+              <span>📅 ${k}</span>
+              <span>${md ? md.emoji + " " + md.label : ""}</span>
+            </div>
+            <div class="archive-body">${m.text || "(기분만 기록됨)"}</div>
+          </div>
+        `;
+      }).join("");
+    }
+    archiveModal.classList.add("show");
+  });
+  document.getElementById("closeArchiveModal").addEventListener("click", () => archiveModal.classList.remove("show"));
+  archiveModal.addEventListener("click", (e) => { if (e.target === archiveModal) archiveModal.classList.remove("show"); });
+
+  /* 초기화 */
+  updateClock();
+  renderTimer();
+  fetchWeather();
+  renderTodos();
+  renderUnresolved();
+  renderCalendar();
+  renderSchedules();
+  renderMemo();
+  fetchUSStockNews();
+
+  setInterval(updateClock, 1000);
+  setInterval(fetchWeather, 30 * 60 * 1000);
+  setInterval(fetchUSStockNews, 30 * 60 * 1000);
+</script>
+</body>
+</html>
